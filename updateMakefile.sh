@@ -1,0 +1,1 @@
+for name in src/**/*.cpp; do echo "SRCS += $name"; done > src.mk 
