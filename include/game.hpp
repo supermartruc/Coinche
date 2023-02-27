@@ -15,8 +15,6 @@ class Jeu{
 	public:
 		Jeu() = default;
 		~Jeu() = default;
-		std::vector<Couleur> couleurs {Couleur::Coeur, Couleur::Carreau, Couleur::Pique, Couleur::Trefle};
-		std::vector<Valeur> valeurs {Valeur::As,Valeur::Roi,Valeur::Dame,Valeur::Valet,Valeur::Dix,Valeur::Neuf,Valeur::Huit,Valeur::Sept};
 		Paquet createPaquet();
 
 	private:
