@@ -67,3 +67,13 @@ Paquet Jeu::createPaquet(){
 	std::shuffle (provPaquet.begin(), provPaquet.end(), gen);
 	return provPaquet;
 }
+
+Paquet Jeu::coupePaquet(Paquet last_game_paquet, int where_to_cut){ 
+    /*Convention : couper APRES la carte d'index where_to_cut ; ex : wtc = 0 -> on place la carte du haut en bas..*/
+    Paquet newPaquet;
+
+}
+
+void Jeu::initPaquet(Paquet last_game_paquet){
+
+}
