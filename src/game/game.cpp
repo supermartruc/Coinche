@@ -56,6 +56,56 @@ std::ostream &operator<<(std::ostream &os, Carte c) {
 	return os;
 }
 
+std::ostream &operator<<(std::ostream &os, Joueur j){
+	switch (j) {
+		case Joueur::Nord:
+			os << "Nord";
+			break;
+		case Joueur::Est:
+			os << "Est";
+			break;
+		case Joueur::Sud:
+			os << "Sud";
+			break;
+		case Joueur::Ouest:
+			os << "Ouest";
+			break;
+	}
+	return os;
+}
+
+std::ostream &operator<<(std::ostream &os, Atout a){
+	switch (a) {
+		case Atout::Pique:
+			os << "Pique";
+			break;
+		case Atout::Carreau:
+			os << "Carreau";
+			break;
+		case Atout::Coeur:
+			os << "Coeur";
+			break;
+		case Atout::Trefle:
+			os << "Trefle";
+			break;
+		case Atout::Sa:
+			os << "Sans atout";
+			break;
+		case Atout::Ta:
+			os << "Tout atout";
+			break;
+		case Atout::Passe:
+			os << "Passe";
+			break;
+	}
+	return os;
+}
+
+std::ostream &operator<<(std::ostream &os, Enchere e){
+    auto [j, point, at, coin, surcoin] = e;
+    return os;
+}
+
 int Jeu::joueurToInt(Joueur j){
     switch(j){
         case Joueur::Nord:
@@ -137,6 +187,34 @@ int Jeu::couleurToInt(Couleur c){
     return -1;
 }
 
+std::string Jeu::joueurToString(Joueur j){
+    switch(j){
+        case Joueur::Nord:
+            return "Nord";
+            break;
+        case Joueur::Est:
+            return "Est";
+            break;
+        case Joueur::Sud:
+            return "Sud";
+            break;
+        case Joueur::Ouest:
+            return "Ouest";
+            break;
+    }
+    return "Error";
+}
+
+Atout Jeu::stringToAtout(std::string s){
+    if (s=="Pique"){return Atout::Pique;}
+    if (s=="Carreau"){return Atout::Carreau;}
+    if (s=="Coeur"){return Atout::Coeur;}
+    if (s=="Trefle"){return Atout::Trefle;}
+    if (s=="Ta"){return Atout::Ta;}
+    if (s=="Sa"){return Atout::Sa;}
+return Atout::Pique;
+}
+
 Atout Jeu::couleurToAtout(Couleur c){
     switch(c){
         case Couleur::Pique:
@@ -179,13 +257,10 @@ Couleur Jeu::atoutToCouleur(Atout a){
 int Jeu::carteToPoint(Carte c, Atout a){
     auto [val, coul] = c;
     bool is_atout=false;
-    if ((a==Atout::Sa)||(atoutToInt(a)==couleurToInt(coul))){
+    if ((a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul))){
         is_atout = true;
     }
     switch (val){
-        case Valeur::As:
-            return 11;
-            break;
         case Valeur::Dix:
             return 10;
             break;
@@ -200,6 +275,9 @@ int Jeu::carteToPoint(Carte c, Atout a){
             break;
         case Valeur::Sept:
             return 0;
+            break;
+        case Valeur::As:
+            if (a==Atout::Sa){return 19;} else {return 11;}
             break;
         case Valeur::Valet:
             if (is_atout) {return 20;} else {return 2;}
@@ -228,6 +306,7 @@ void Jeu::comptePoints(){
     int n = Jeu::defausseNS.size();
     int m = Jeu::defausseOE.size();
     Atout atout_actuel = std::get<2>(Jeu::current_enchere);
+    if (n==0) {Jeu::points_OE += 250;} else {if (m==0) {Jeu::points_NS += 250;} else {
 
     for (int i=0;i<n;i++){
         Jeu::points_NS += carteToPoint(Jeu::defausseNS[i], atout_actuel);
@@ -235,6 +314,7 @@ void Jeu::comptePoints(){
     for (int j=0;j<m;j++){
         Jeu::points_OE += carteToPoint(Jeu::defausseOE[j], atout_actuel);
     }
+    }}
     if (atout_actuel != Atout::Sa && atout_actuel != Atout::Ta){
         Couleur couleur_actuelle = atoutToCouleur(atout_actuel);
         if ((std::find(Jeu::defausseNS.begin(), Jeu::defausseNS.end(), Carte(Valeur::Roi,couleur_actuelle)) != Jeu::defausseNS.end()) && 
@@ -273,6 +353,45 @@ void Jeu::distributionPaquet(Joueur who_cuts, int where_to_cut){
     for (int i=0;i<12;i++){
         allPaquets[(i/3+who_cuts_int+2)%4].push_back(Jeu::paquet[i+20]);
     }
+}
+
+Enchere Jeu::ask_enchere(Joueur who_bids){
+    std::string satout;
+    Atout atout;
+    int points=0;
+    auto [j,p,a,c,sc] = Jeu::current_enchere;
+    std::cout << std::endl << "Au tour de " << joueurToString(who_bids) << " de parier : " << std::endl;
+    std::cout << "Enchere en cours : " << "de " << j << ", " << p << " " << a << std::endl;
+    std::cout << "Atout ? : ";
+    std::cin >> satout;
+    atout = stringToAtout(satout);
+    if (atout==Atout::Passe) {return Enchere{who_bids,0,Atout::Passe,false,false};}
+    else {
+        std::cout << std::endl << "Points ? : ";
+        std::cin >> points;
+        if (not points%10 || points < 10 + p || points < 80 || points > 250) {std::cout << std::endl << "Points invalides"; return ask_enchere(who_bids);}
+        else {
+            return Enchere {who_bids,points,atout,false,false};
+        }
+    }
+}
+
+bool Jeu::next_enchere(Joueur who_bids){
+    Enchere what_bids = ask_enchere(who_bids);
+    if (who_bids == std::get<0>(Jeu::current_enchere)){
+        return true;
+    }
+    else{
+        Jeu::last_enchere[joueurToInt(who_bids)] = what_bids;
+        if (std::get<1>(what_bids) > std::get<1>(Jeu::current_enchere)){
+            Jeu::current_enchere = what_bids;
+        }
+        return false;
+    }
+}
+
+bool Jeu::joue_pli(){
+    return false;
 }
 
 void Jeu::affichePaquetListe(Paquet paquet){
