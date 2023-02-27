@@ -40,4 +40,7 @@ std::ostream &operator<<(std::ostream &os, Valeur v);
 std::ostream &operator<<(std::ostream &os, Couleur c);
 std::ostream &operator<<(std::ostream &os, Carte c);
 
+static std::vector<Couleur> couleurs {Couleur::Coeur, Couleur::Carreau, Couleur::Pique, Couleur::Trefle};
+static std::vector<Valeur> valeurs {Valeur::As,Valeur::Roi,Valeur::Dame,Valeur::Valet,Valeur::Dix,Valeur::Neuf,Valeur::Huit,Valeur::Sept};
+
 #endif
