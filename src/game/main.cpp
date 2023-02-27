@@ -1,4 +1,3 @@
-#include<iostream>
 #include"game.hpp"
 
 
@@ -27,9 +26,9 @@ void loop(Jeu game) {
 
 int main() {
 	Jeu game;
-	Paquet mypaquet = game.createRandomPaquet();
-    game.affichePaquetListe(mypaquet);
-	game.initPaquet(mypaquet, Joueur::Sud, 0);
+	game.createRandomPaquet();
+    game.affichePaquetListe(game.paquet);
+	game.distributionPaquet(Joueur::Sud, 0);
     game.afficheAllPaquetsListe();
 	//loop(game);
 

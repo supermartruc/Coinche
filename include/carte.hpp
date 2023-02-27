@@ -27,23 +27,25 @@ enum class Valeur{
 };
 
 enum class Couleur{
-	Coeur,
 	Pique,
-	Trefle,
 	Carreau,
+	Coeur,
+	Trefle,
 };
 
 enum class Atout{
-	Coeur,
 	Pique,
-	Trefle,
 	Carreau,
+	Coeur,
+	Trefle,
 	Ta,
 	Sa,
+	Passe,
 };
 
 typedef std::tuple<Valeur,Couleur> Carte;
 typedef std::vector<Carte> Paquet;
+typedef std::tuple<Joueur,int,Atout,bool,bool> Enchere; // Joueur, points, atout (ou passe), coinché, surcoinché.
 
 std::ostream &operator<<(std::ostream &os, Valeur v);
 std::ostream &operator<<(std::ostream &os, Couleur c);
