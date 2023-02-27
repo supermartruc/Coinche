@@ -50,12 +50,12 @@ std::ostream &operator<<(std::ostream &os, Valeur v) {
     return os;     
 }
 
-
 std::ostream &operator<<(std::ostream &os, Carte c) {
     auto [val, coul] = c;
     os << val << " de " << coul;
     return os;
 }
+
 
 Paquet Jeu::createPaquet(){
     Paquet provPaquet = {};
