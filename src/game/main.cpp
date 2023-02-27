@@ -1,7 +1,8 @@
 #include<iostream>
 #include"game.hpp"
 
-void	loop(Jeu game) {
+
+void loop(Jeu game) {
 	SDL_Window		*window = create_window();
 	SDL_Renderer	*renderer = create_renderer(window);
 	SDL_Event		event;
@@ -26,8 +27,11 @@ void	loop(Jeu game) {
 
 int main() {
 	Jeu game;
-	Paquet mypaquet = game.createPaquet();
-	std::cout << mypaquet[0] << std::endl;
-	loop(game);
+	Paquet mypaquet = game.createRandomPaquet();
+    game.affichePaquetListe(mypaquet);
+	game.initPaquet(mypaquet, Joueur::Sud, 0);
+    game.afficheAllPaquetsListe();
+	//loop(game);
+
 	return 0;
 }
