@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 
 SDL_Window	*create_window() {
+	SDL_Init(SDL_INIT_VIDEO);
 	SDL_Window *window = SDL_CreateWindow("Coinche", 0, 0, 0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP);
 	if (window == NULL) {
 		SDL_Log("Erreur lors de la creation de la fenetre: %s", SDL_GetError());

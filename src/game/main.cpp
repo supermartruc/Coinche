@@ -1,12 +1,12 @@
 #include"game.hpp"
 
-
-void loop(Jeu game) {
-	SDL_Window		*window = create_window();
-	SDL_Renderer	*renderer = create_renderer(window);
+void	loop(Jeu game) {
 	SDL_Event		event;
 	bool			quit = false;
+	GameView		view;
 
+	SDL_Init(SDL_INIT_VIDEO);
+	view.init();
 	while (!quit) {
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
@@ -19,8 +19,6 @@ void loop(Jeu game) {
 			}
 		}
 	}
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyWindow(window);
 	SDL_Quit();
 }
 

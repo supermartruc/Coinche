@@ -41,7 +41,6 @@ class Jeu{
 		std::vector<Enchere> last_enchere = {};
 		Joueur who_cuts = Joueur::Sud, who_plays = Joueur::Nord;
 		std::vector<Paquet> allPaquets = {nordP,estP,sudP,ouestP};
-
 };
 
 #endif
