@@ -25,8 +25,11 @@ void	loop(Jeu game) {
 
 int main() {
 	Jeu game;
-	Paquet mypaquet = game.createPaquet();
-	std::cout << mypaquet[0] << std::endl;
-	loop(game);
+	Paquet mypaquet = game.createRandomPaquet();
+    game.affichePaquetListe(mypaquet);
+	game.initPaquet(mypaquet, Joueur::Sud, 0);
+    game.afficheAllPaquetsListe();
+	//loop(game);
+
 	return 0;
 }

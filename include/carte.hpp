@@ -33,6 +33,15 @@ enum class Couleur{
 	Carreau,
 };
 
+enum class Atout{
+	Coeur,
+	Pique,
+	Trefle,
+	Carreau,
+	Ta,
+	Sa,
+};
+
 typedef std::tuple<Valeur,Couleur> Carte;
 typedef std::vector<Carte> Paquet;
 
