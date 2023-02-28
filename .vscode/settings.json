@@ -65,6 +65,15 @@
 		"type_traits": "cpp",
 		"typeinfo": "cpp",
 		"variant": "cpp",
-		"algorithm": "cpp"
+		"algorithm": "cpp",
+		"bit": "cpp",
+		"*.tcc": "cpp",
+		"functional": "cpp",
+		"iterator": "cpp",
+		"memory_resource": "cpp",
+		"utility": "cpp",
+		"fstream": "cpp",
+		"numbers": "cpp",
+		"cinttypes": "cpp"
 	}
 }

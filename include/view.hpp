@@ -27,6 +27,9 @@ class GameView {
 		void	renderPaquet(Paquet paquet);
 		void	render();
 		void	clear();
+		int		getWCarte() const;
+		int		getHCarte() const;
+		
 };
 
 #endif

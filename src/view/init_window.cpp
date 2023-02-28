@@ -18,5 +18,6 @@ SDL_Renderer	*create_renderer(SDL_Window *window) {
 		SDL_Log("Erreur lors de la creation du renderer: %s", SDL_GetError());
 		return NULL;
 	}
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 	return renderer;
 }
