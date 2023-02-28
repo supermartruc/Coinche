@@ -1,5 +1,4 @@
 #include"game.hpp"
-
 std::mt19937 gen(std::random_device{}());
 
 std::ostream &operator<<(std::ostream &os, Couleur c) {
@@ -102,8 +101,10 @@ std::ostream &operator<<(std::ostream &os, Atout a){
 }
 
 std::ostream &operator<<(std::ostream &os, Enchere e){
-    auto [j, point, at, coin, surcoin] = e;
-    return os;
+	auto [j,p,a,c,sc] = e;
+    os << j << " : " << p << " " << a;
+    if (sc) {os << "sur";} else {if (c) {os << "coinché";}}
+	return os;
 }
 
 int Jeu::joueurToInt(Joueur j){
@@ -212,7 +213,28 @@ Atout Jeu::stringToAtout(std::string s){
     if (s=="Trefle"){return Atout::Trefle;}
     if (s=="Ta"){return Atout::Ta;}
     if (s=="Sa"){return Atout::Sa;}
+    if (s=="Passe"){return Atout::Passe;}
 return Atout::Pique;
+}
+
+Couleur Jeu::stringToCouleur(std::string s){
+    if (s=="Pique"){return Couleur::Pique;}
+    if (s=="Carreau"){return Couleur::Carreau;}
+    if (s=="Coeur"){return Couleur::Coeur;}
+    if (s=="Trefle"){return Couleur::Trefle;}
+return Couleur::Pique;
+}
+
+Valeur Jeu::stringToValeur(std::string s){
+    if (s=="As"){return Valeur::As;}
+    if (s=="Dix"){return Valeur::Dix;}
+    if (s=="Roi"){return Valeur::Roi;}
+    if (s=="Dame"){return Valeur::Dame;}
+    if (s=="Valet"){return Valeur::Valet;}
+    if (s=="Neuf"){return Valeur::Neuf;}
+    if (s=="Huit"){return Valeur::Huit;}
+    if (s=="Sept"){return Valeur::Sept;}
+return Valeur::As;
 }
 
 Atout Jeu::couleurToAtout(Couleur c){
@@ -289,6 +311,25 @@ int Jeu::carteToPoint(Carte c, Atout a){
     return -1;
 }
 
+bool Jeu::auxCompareValeur(Valeur v1, Valeur v2, std::vector<Valeur> tab, int c){
+    if (tab[c]==v1) {return true;} else {if (tab[c]==v2) {return false;} else {return auxCompareValeur(v1,v2,tab,c+1);}}
+}
+
+bool Jeu::compareCarte(Carte c1, Carte c2, Atout atout_actuel, Couleur couleur_demandee){
+    if (std::get<1>(c1) == std::get<1>(c2)) {
+        if (atout_actuel==Atout::Ta || couleurToAtout(std::get<1>(c1))==atout_actuel) {
+            return auxCompareValeur(std::get<0>(c1),std::get<0>(c2),Jeu::comp_atout,0);
+        }
+            return auxCompareValeur(std::get<0>(c1),std::get<0>(c2),Jeu::comp_non_atout,0);
+    }
+    if(couleurToAtout(std::get<1>(c1)) == atout_actuel && couleurToAtout(std::get<1>(c2)) != atout_actuel) {return true;}
+    if(couleurToAtout(std::get<1>(c2)) == atout_actuel && couleurToAtout(std::get<1>(c1)) != atout_actuel) {return false;}
+    if(std::get<1>(c1) == couleur_demandee && std::get<1>(c2) != couleur_demandee) {return true;}
+    if(std::get<1>(c2) == couleur_demandee && std::get<1>(c1) != couleur_demandee) {return false;}
+    return auxCompareValeur(std::get<0>(c1),std::get<0>(c2),Jeu::comp_non_atout,0);
+
+}
+
 void Jeu::createRandomPaquet(){
 	Paquet provPaquet = {};
 	for (auto c = couleurs.begin(); c != couleurs.end(); c++){
@@ -355,33 +396,44 @@ void Jeu::distributionPaquet(Joueur who_cuts, int where_to_cut){
     }
 }
 
+void Jeu::fusionPaquets(){
+    Jeu::paquet.clear();
+    for (int i=0;i<32;i++){
+        Jeu::paquet.push_back(allPaquets[i/8][i%8]);
+    }
+}
+
 Enchere Jeu::ask_enchere(Joueur who_bids){
     std::string satout;
     Atout atout;
     int points=0;
     auto [j,p,a,c,sc] = Jeu::current_enchere;
-    std::cout << std::endl << "Au tour de " << joueurToString(who_bids) << " de parier : " << std::endl;
+    std::cout << std::endl << "Au tour de " << joueurToString(who_bids) << " de parler : " << std::endl;
     std::cout << "Enchere en cours : " << "de " << j << ", " << p << " " << a << std::endl;
     std::cout << "Atout ? : ";
     std::cin >> satout;
     atout = stringToAtout(satout);
-    if (atout==Atout::Passe) {return Enchere{who_bids,0,Atout::Passe,false,false};}
+    if (atout==Atout::Passe) {Enchere my_enchere = {who_bids,0,Atout::Passe,false,false}; return my_enchere;}
     else {
         std::cout << std::endl << "Points ? : ";
         std::cin >> points;
-        if (not points%10 || points < 10 + p || points < 80 || points > 250) {std::cout << std::endl << "Points invalides"; return ask_enchere(who_bids);}
+        if (points%10 || points < 10 + p || points < 80 || points > 250) {
+            std::cout << std::endl << "Points invalides" << std::flush;
+            return ask_enchere(who_bids);
+        }
         else {
-            return Enchere {who_bids,points,atout,false,false};
+            Enchere my_enchere = {who_bids,points,atout,false,false};
+            return my_enchere;
         }
     }
 }
 
-bool Jeu::next_enchere(Joueur who_bids){
-    Enchere what_bids = ask_enchere(who_bids);
-    if (who_bids == std::get<0>(Jeu::current_enchere)){
+bool Jeu::next_enchere(Joueur who_bids, bool first_enchere){   
+    if (who_bids == std::get<0>(Jeu::current_enchere) && not first_enchere){
         return true;
     }
     else{
+        Enchere what_bids = ask_enchere(who_bids);
         Jeu::last_enchere[joueurToInt(who_bids)] = what_bids;
         if (std::get<1>(what_bids) > std::get<1>(Jeu::current_enchere)){
             Jeu::current_enchere = what_bids;
@@ -390,8 +442,36 @@ bool Jeu::next_enchere(Joueur who_bids){
     }
 }
 
-bool Jeu::joue_pli(){
-    return false;
+Carte Jeu::pose_carte(bool premier_a_jouer){
+    std::string sval_posee; std::string scoul_posee; Valeur val_posee; Couleur coul_posee; std::string de;
+    bool legal_move=true;
+    do {
+        std::cout << std::endl << Jeu::who_plays << " : ";
+        std::cin >> sval_posee >> de >> scoul_posee;
+        val_posee = stringToValeur(sval_posee);
+        coul_posee = stringToCouleur(scoul_posee);
+    } while (true);
+
+}
+
+void Jeu::joue_pli(){
+    Jeu::pli_actuel.clear();
+    for (int player = 0; player < 4; player++){
+        Jeu::pli_actuel.push_back(pose_carte(not player));
+        if (not player) {Jeu::couleur_demandee = std::get<1>(Jeu::pli_actuel[0]);}
+        next_to_play();
+    }
+    Jeu::dernier_pli = Jeu::pli_actuel;
+}
+
+void Jeu::next_to_play(){
+    Joueur provj = Jeu::who_plays;
+    Jeu::who_plays = intToJoueur((1+joueurToInt(provj))%4);
+}
+
+void Jeu::next_to_cut(){
+    Joueur provj = Jeu::who_cuts;
+    Jeu::who_cuts = intToJoueur((1+joueurToInt(provj))%4);
 }
 
 void Jeu::affichePaquetListe(Paquet paquet){
