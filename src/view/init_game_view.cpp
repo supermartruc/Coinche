@@ -17,4 +17,8 @@ void	GameView::init() {
 			SDL_FreeSurface(surface);
 		}
 	}
+	SDL_QueryTexture(textures[Valeur::As][Couleur::Coeur], NULL, NULL, &wCarte, &hCarte);
+	wCarte *= 2;
+	hCarte *= 2;
+	SDL_GetWindowSize(window, &wWindow, &hWindow);
 }

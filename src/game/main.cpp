@@ -19,6 +19,9 @@ void	loop(Jeu game) {
 				}
 			}
 		}
+		view.clear();
+		view.renderPaquet(game.getPaquet(Joueur::Sud));
+		view.render();
 	}
 	SDL_Quit();
 }
@@ -29,7 +32,7 @@ int main() {
     game.affichePaquetListe(mypaquet);
 	game.initPaquet(mypaquet, Joueur::Sud, 0);
     game.afficheAllPaquetsListe();
-	//loop(game);
+	loop(game);
 
 	return 0;
 }

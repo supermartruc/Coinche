@@ -21,6 +21,7 @@ class Jeu{
 		void initPaquet(Paquet last_game_paquet, Joueur who_cuts, int where_to_cut);
 		void affichePaquetListe(Paquet paquet);
 		void afficheAllPaquetsListe();
+		Paquet getPaquet(Joueur j);
 
 
 	private:
