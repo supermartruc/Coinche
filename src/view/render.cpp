@@ -70,32 +70,36 @@ void	GameView::clear() {
 
 void	GameView::renderPaquet(Paquet paquet) {
 	int i = 0;
-	int wStart = (wWindow - (wCarte * paquet.size())) / 2;
-	// Paquet copy_paquet = sorted_main(paquet);
-	for (auto &carte : paquet) {
-		renderCarte(carte, wStart + (i * wCarte), hWindow-hCarte);
+	float temp = hWindow / ( (float) ((paquet.size()+0.5)*wCarte) );
+	float chev = (float) std::min((float) 1, (float) (temp * 4/5.0) );
+	int wStart = (wWindow - (chev*wCarte * paquet.size())) / 2;
+	Paquet copy_paquet = tri_paquet_affichage(paquet, Atout::Sa);
+	for (auto &carte : copy_paquet) {
+		renderCarte(carte, wStart + (i * chev * wCarte), hWindow-hCarte);
 		i++;
 	}
 }
 
 void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
-	float chev = (float) 4/5;
+	float temp = 4/5.0 * hWindow / ( (float) ((haut.size()+1)*wCarte) );
+	float chev = (float) std::min((float) 4/5, (float) temp );
+	std::cout << "chev = " << chev << "\n";
 	int i = 0;
 	int wStart = (wWindow - (chev*wCarte * haut.size())) / 2;
 	for (auto &carte : haut) {
-		renderDosV(wStart + (i * 4*wCarte/5), 0);
+		renderDosV(wStart + i*chev*wCarte, 0);
 		i++;
 	}
 	i = 0;
 	int hStart = (hWindow - (chev*wCarte * gauche.size())) / 2;
 	for (auto &carte : gauche) {
-		renderDosH(0, hStart + (i * 4*wCarte/5));
+		renderDosH(0, hStart + i*chev*wCarte);
 		i++;
 	}
 	i = 0;
 	hStart = (hWindow - (chev*wCarte * droite.size())) / 2;
 	for (auto &carte : droite) {
-		renderDosH(wWindow-hCarte, hStart + (i * 4*wCarte/5));
+		renderDosH(wWindow-hCarte, hStart + i * chev *wCarte);
 		i++;
 	}
 }
