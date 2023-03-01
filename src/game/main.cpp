@@ -18,6 +18,15 @@ void	loop(Jeu game) {
 				}
 			}
 		}
+		view.clear();
+		int you = game.joueurToInt(game.you);
+		Joueur haut = game.intToJoueur((you+2)%4);
+		Joueur gauche = game.intToJoueur((you+1)%4);
+		Joueur droite = game.intToJoueur((you+3)%4);
+		view.renderPaquet(game.getPaquet(game.you));
+		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
+		view.renderDealer(you - (1+game.joueurToInt(game.who_cuts)));
+		view.render();
 	}
 	SDL_Quit();
 }
@@ -27,6 +36,7 @@ int main() {
 	game.createRandomPaquet();
     game.affichePaquetListe(game.paquet);
 	game.distributionPaquet(game.who_cuts, 13);
+	loop(game);
     game.afficheAllPaquetsListe();
 	game.next_enchere(game.who_plays, true);
 	game.next_to_play();
@@ -51,7 +61,5 @@ int main() {
 	for (int pli = 0; pli<8; pli++){
 		game.joue_pli();
 	}
-	//loop(game);
-
 	return 0;
 }

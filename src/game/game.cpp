@@ -516,3 +516,7 @@ void Jeu::afficheAllPaquetsListe(){
     std::cout << "Ouest : ";
     affichePaquetListe(allPaquets[3]);
 }
+
+Paquet Jeu::getPaquet(Joueur j){
+	return allPaquets[joueurToInt(j)];
+}
