@@ -53,7 +53,7 @@ void	GameView::renderDealer(int dist_trigo) {
 	default: 
 		break;
 	}
-	SDL_Rect rect = {x, y, 150, 150};
+	SDL_Rect rect = {x, y, 90, 90};
 	SDL_RenderCopy(renderer, jeton, NULL, &rect);
 }
 void	GameView::render() {
@@ -73,7 +73,7 @@ void	GameView::renderPaquet(Paquet paquet) {
 	float temp = hWindow / ( (float) ((paquet.size()+0.5)*wCarte) );
 	float chev = 1; //(float) std::min((float) 1, (float) (temp * 4/5.0) );
 	int wStart = (wWindow - (chev*wCarte * paquet.size())) / 2;
-	Paquet copy_paquet = tri_paquet_affichage(paquet, Atout::Ta);
+	Paquet copy_paquet = tri_paquet_affichage(paquet, Atout::Sa);
 	for (auto &carte : copy_paquet) {
 		renderCarte(carte, wStart + (i * chev * wCarte), hWindow-hCarte);
 		i++;
