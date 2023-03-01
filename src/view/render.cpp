@@ -83,7 +83,6 @@ void	GameView::renderPaquet(Paquet paquet) {
 void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 	float temp = 4/5.0 * hWindow / ( (float) ((haut.size()+1)*wCarte) );
 	float chev = (float) std::min((float) 4/5, (float) temp );
-	std::cout << "chev = " << chev << "\n";
 	int i = 0;
 	int wStart = (wWindow - (chev*wCarte * haut.size())) / 2;
 	for (auto &carte : haut) {
