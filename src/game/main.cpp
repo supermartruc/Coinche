@@ -57,9 +57,9 @@ int main() {
 		}
 	}
 	std::cout << std::endl << "Contrat : " << game.current_enchere << std::endl;
-
+	/*
 	for (int pli = 0; pli<8; pli++){
 		game.joue_pli();
-	}
+	}*/
 	return 0;
 }

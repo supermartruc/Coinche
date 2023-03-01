@@ -279,10 +279,8 @@ Couleur atoutToCouleur(Atout a){
 
 int carteToPoint(Carte c, Atout a){
     auto [val, coul] = c;
-    bool is_atout=false;
-    if ((a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul))){
-        is_atout = true;
-    }
+    bool is_atout=(a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul));
+    if ((a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul))){is_atout = true;}
     switch (val){
         case Valeur::Dix:
             return 10;
