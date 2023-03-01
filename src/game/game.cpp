@@ -107,7 +107,8 @@ std::ostream &operator<<(std::ostream &os, Enchere e){
 	return os;
 }
 
-int joueurToInt(Joueur j){
+int joueurToInt
+(Joueur j){
     switch(j){
         case Joueur::Nord:
             return 0;
@@ -342,7 +343,7 @@ Carte max_of_paquet(Paquet thepaquet, Couleur couleur_demandee, Atout atout_actu
     if (thepaquet.empty()){return Carte{Valeur::As,Couleur::Pique};}
     Carte provc = thepaquet[0];
     for (int i=1;i<thepaquet.size();i++){
-        if (compareCarte(thepaquet[i],provc,atout_actuel,couleur_demandee)){
+        if (compareCarte(thepaquet[i],provc,couleur_demandee, atout_actuel)){
             provc = thepaquet[i];
         }
     }
@@ -361,7 +362,7 @@ bool est_valide_carte(Carte jcarte, Paquet jpaquet, Couleur couleur_demandee, At
         return (compareCarte(jcarte,max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel) || 
                 compareCarte(max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),max_of_paquet(jpaquet,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel));
     }
-    return 
+	return true ;
 }
 
 void Jeu::createRandomPaquet(){
@@ -476,15 +477,15 @@ bool Jeu::next_enchere(Joueur who_bids, bool first_enchere){
     }
 }
 
-/*
+
 void Jeu::joue_pli(){
-    pli_actuel.clear();
-    for (int player = 0; player < 4; player++){
-        pli_actuel.push_back(pose_carte(not player));
-        next_to_play();
-    }
-    dernier_pli = pli_actuel;
-}*/
+    // pli_actuel.clear();
+    // for (int player = 0; player < 4; player++){
+    //     pli_actuel.push_back(pose_carte(not player));
+    //     next_to_play();
+    // }
+    // dernier_pli = pli_actuel;
+}
 
 void Jeu::next_to_play(){
     Joueur provj = Jeu::who_plays;
