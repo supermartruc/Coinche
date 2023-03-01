@@ -19,13 +19,13 @@ void	loop(Jeu game) {
 			}
 		}
 		view.clear();
-		int you = game.joueurToInt(game.you);
-		Joueur haut = game.intToJoueur((you+2)%4);
-		Joueur gauche = game.intToJoueur((you+1)%4);
-		Joueur droite = game.intToJoueur((you+3)%4);
+		int you = joueurToInt(game.you);
+		Joueur haut = intToJoueur((you+2)%4);
+		Joueur gauche = intToJoueur((you+1)%4);
+		Joueur droite = intToJoueur((you+3)%4);
 		view.renderPaquet(game.getPaquet(game.you));
 		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
-		view.renderDealer(you - (1+game.joueurToInt(game.who_cuts)));
+		view.renderDealer(you - (1+joueurToInt(game.who_cuts)));
 		view.render();
 	}
 	SDL_Quit();
@@ -57,9 +57,9 @@ int main() {
 		}
 	}
 	std::cout << std::endl << "Contrat : " << game.current_enchere << std::endl;
-
+	/*
 	for (int pli = 0; pli<8; pli++){
 		game.joue_pli();
-	}
+	}*/
 	return 0;
 }

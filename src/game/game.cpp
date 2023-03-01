@@ -278,10 +278,8 @@ Couleur atoutToCouleur(Atout a){
 
 int carteToPoint(Carte c, Atout a){
     auto [val, coul] = c;
-    bool is_atout=false;
-    if ((a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul))){
-        is_atout = true;
-    }
+    bool is_atout=(a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul));
+    if ((a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul))){is_atout = true;}
     switch (val){
         case Valeur::Dix:
             return 10;
@@ -361,7 +359,7 @@ bool est_valide_carte(Carte jcarte, Paquet jpaquet, Couleur couleur_demandee, At
         return (compareCarte(jcarte,max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel) || 
                 compareCarte(max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),max_of_paquet(jpaquet,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel));
     }
-    return 
+    return true;
 }
 
 void Jeu::createRandomPaquet(){
