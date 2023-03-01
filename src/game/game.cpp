@@ -107,7 +107,7 @@ std::ostream &operator<<(std::ostream &os, Enchere e){
 	return os;
 }
 
-int Jeu::joueurToInt(Joueur j){
+int joueurToInt(Joueur j){
     switch(j){
         case Joueur::Nord:
             return 0;
@@ -125,7 +125,7 @@ int Jeu::joueurToInt(Joueur j){
     return -1;
 }
 
-Joueur Jeu::intToJoueur(int i){
+Joueur intToJoueur(int i){
     switch(i){
         case 0:
             return Joueur::Nord;
@@ -143,7 +143,7 @@ Joueur Jeu::intToJoueur(int i){
     return Joueur::Nord;
 }
 
-int Jeu::atoutToInt(Atout a){
+int atoutToInt(Atout a){
     switch(a){
         case Atout::Pique:
             return 0;
@@ -170,7 +170,7 @@ int Jeu::atoutToInt(Atout a){
     return -1;
 }
 
-int Jeu::couleurToInt(Couleur c){
+int couleurToInt(Couleur c){
     switch(c){
         case Couleur::Pique:
             return 0;
@@ -188,7 +188,7 @@ int Jeu::couleurToInt(Couleur c){
     return -1;
 }
 
-std::string Jeu::joueurToString(Joueur j){
+std::string joueurToString(Joueur j){
     switch(j){
         case Joueur::Nord:
             return "Nord";
@@ -206,7 +206,7 @@ std::string Jeu::joueurToString(Joueur j){
     return "Error";
 }
 
-Atout Jeu::stringToAtout(std::string s){
+Atout stringToAtout(std::string s){
     if (s=="Pique"){return Atout::Pique;}
     if (s=="Carreau"){return Atout::Carreau;}
     if (s=="Coeur"){return Atout::Coeur;}
@@ -217,7 +217,7 @@ Atout Jeu::stringToAtout(std::string s){
 return Atout::Pique;
 }
 
-Couleur Jeu::stringToCouleur(std::string s){
+Couleur stringToCouleur(std::string s){
     if (s=="Pique"){return Couleur::Pique;}
     if (s=="Carreau"){return Couleur::Carreau;}
     if (s=="Coeur"){return Couleur::Coeur;}
@@ -225,7 +225,7 @@ Couleur Jeu::stringToCouleur(std::string s){
 return Couleur::Pique;
 }
 
-Valeur Jeu::stringToValeur(std::string s){
+Valeur stringToValeur(std::string s){
     if (s=="As"){return Valeur::As;}
     if (s=="Dix"){return Valeur::Dix;}
     if (s=="Roi"){return Valeur::Roi;}
@@ -237,7 +237,7 @@ Valeur Jeu::stringToValeur(std::string s){
 return Valeur::As;
 }
 
-Atout Jeu::couleurToAtout(Couleur c){
+Atout couleurToAtout(Couleur c){
     switch(c){
         case Couleur::Pique:
             return Atout::Pique;
@@ -255,7 +255,7 @@ Atout Jeu::couleurToAtout(Couleur c){
     return Atout::Passe;
 }
 
-Couleur Jeu::atoutToCouleur(Atout a){
+Couleur atoutToCouleur(Atout a){
     switch(a){
         case Atout::Pique:
             return Couleur::Pique;
@@ -276,7 +276,7 @@ Couleur Jeu::atoutToCouleur(Atout a){
     return Couleur::Pique;
 }
 
-int Jeu::carteToPoint(Carte c, Atout a){
+int carteToPoint(Carte c, Atout a){
     auto [val, coul] = c;
     bool is_atout=false;
     if ((a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul))){
@@ -311,23 +311,57 @@ int Jeu::carteToPoint(Carte c, Atout a){
     return -1;
 }
 
-bool Jeu::auxCompareValeur(Valeur v1, Valeur v2, std::vector<Valeur> tab, int c){
+bool paquetContientCouleur(Paquet my_paquet, Couleur my_couleur){
+    int n = my_paquet.size();
+    for (int i=0; i<n; i++){
+        if (std::get<1>(my_paquet[i])==my_couleur) {return true;}
+    }
+    return false;
+}
+
+bool auxCompareValeur(Valeur v1, Valeur v2, std::vector<Valeur> tab, int c){
     if (tab[c]==v1) {return true;} else {if (tab[c]==v2) {return false;} else {return auxCompareValeur(v1,v2,tab,c+1);}}
 }
 
-bool Jeu::compareCarte(Carte c1, Carte c2, Atout atout_actuel, Couleur couleur_demandee){
+bool compareCarte(Carte c1, Carte c2, Couleur couleur_demandee,  Atout atout_actuel){
     if (std::get<1>(c1) == std::get<1>(c2)) {
         if (atout_actuel==Atout::Ta || couleurToAtout(std::get<1>(c1))==atout_actuel) {
-            return auxCompareValeur(std::get<0>(c1),std::get<0>(c2),Jeu::comp_atout,0);
+            return auxCompareValeur(std::get<0>(c1),std::get<0>(c2),comp_atout,0);
         }
-            return auxCompareValeur(std::get<0>(c1),std::get<0>(c2),Jeu::comp_non_atout,0);
+            return auxCompareValeur(std::get<0>(c1),std::get<0>(c2),comp_non_atout,0);
     }
     if(couleurToAtout(std::get<1>(c1)) == atout_actuel && couleurToAtout(std::get<1>(c2)) != atout_actuel) {return true;}
     if(couleurToAtout(std::get<1>(c2)) == atout_actuel && couleurToAtout(std::get<1>(c1)) != atout_actuel) {return false;}
     if(std::get<1>(c1) == couleur_demandee && std::get<1>(c2) != couleur_demandee) {return true;}
     if(std::get<1>(c2) == couleur_demandee && std::get<1>(c1) != couleur_demandee) {return false;}
-    return auxCompareValeur(std::get<0>(c1),std::get<0>(c2),Jeu::comp_non_atout,0);
+    return auxCompareValeur(std::get<0>(c1),std::get<0>(c2),comp_non_atout,0);
 
+}
+
+Carte max_of_paquet(Paquet thepaquet, Couleur couleur_demandee, Atout atout_actuel){
+    if (thepaquet.empty()){return Carte{Valeur::As,Couleur::Pique};}
+    Carte provc = thepaquet[0];
+    for (int i=1;i<thepaquet.size();i++){
+        if (compareCarte(thepaquet[i],provc,atout_actuel,couleur_demandee)){
+            provc = thepaquet[i];
+        }
+    }
+    return provc;
+}
+
+bool est_valide_carte(Carte jcarte, Paquet jpaquet, Couleur couleur_demandee, Atout atout_actuel, Paquet pli_en_cours, Joueur self, Joueur first){
+
+    auto [jval,jcoul] = jcarte;
+
+    if (std::find(jpaquet.begin(),jpaquet.end(),jcarte) == jpaquet.end()){return false;}
+    if (first == self){return true;}
+    if (jcoul == couleur_demandee && atout_actuel != Atout::Ta && couleurToAtout(couleur_demandee) != atout_actuel){return true;}
+    if (jcoul != couleur_demandee && paquetContientCouleur(jpaquet,couleur_demandee)){return false;}
+    if (couleurToAtout(jcoul) == atout_actuel || atout_actuel == Atout::Ta){
+        return (compareCarte(jcarte,max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel) || 
+                compareCarte(max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),max_of_paquet(jpaquet,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel));
+    }
+    return 
 }
 
 void Jeu::createRandomPaquet(){
@@ -442,27 +476,15 @@ bool Jeu::next_enchere(Joueur who_bids, bool first_enchere){
     }
 }
 
-Carte Jeu::pose_carte(bool premier_a_jouer){
-    std::string sval_posee; std::string scoul_posee; Valeur val_posee; Couleur coul_posee; std::string de;
-    bool legal_move=true;
-    do {
-        std::cout << std::endl << Jeu::who_plays << " : ";
-        std::cin >> sval_posee >> de >> scoul_posee;
-        val_posee = stringToValeur(sval_posee);
-        coul_posee = stringToCouleur(scoul_posee);
-    } while (true);
-
-}
-
+/*
 void Jeu::joue_pli(){
-    Jeu::pli_actuel.clear();
+    pli_actuel.clear();
     for (int player = 0; player < 4; player++){
-        Jeu::pli_actuel.push_back(pose_carte(not player));
-        if (not player) {Jeu::couleur_demandee = std::get<1>(Jeu::pli_actuel[0]);}
+        pli_actuel.push_back(pose_carte(not player));
         next_to_play();
     }
-    Jeu::dernier_pli = Jeu::pli_actuel;
-}
+    dernier_pli = pli_actuel;
+}*/
 
 void Jeu::next_to_play(){
     Joueur provj = Jeu::who_plays;

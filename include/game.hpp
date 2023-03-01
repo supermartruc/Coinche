@@ -16,26 +16,13 @@ class Jeu{
 	public:
 		Jeu() = default;
 		~Jeu() = default;
-		int joueurToInt(Joueur j);
-		int atoutToInt(Atout a);
-		int couleurToInt(Couleur c);
-		std::string joueurToString(Joueur j);
-		Atout stringToAtout(std::string s);
-		Atout couleurToAtout(Couleur c);
-		Couleur atoutToCouleur(Atout a);
-		Couleur stringToCouleur(std::string s);
-		Valeur stringToValeur(std::string s);
-		Joueur intToJoueur(int i);
-		int carteToPoint(Carte c, Atout a);
-		bool auxCompareValeur(Valeur v1, Valeur v2, std::vector<Valeur> tab, int c);
-		bool compareCarte(Carte c1, Carte c2, Atout atout_actuel, Couleur couleur_demandee);
 		void createRandomPaquet();
 		void coupePaquet(int where_to_cut);
 		void distributionPaquet(Joueur who_cuts, int where_to_cut);
 		void fusionPaquets();
 		Enchere ask_enchere(Joueur who_bids);
 		bool next_enchere(Joueur who_bids, bool first_enchere);
-		Carte pose_carte(bool premier_a_jouer);
+		bool paquetContientCouleur(Paquet my_paquet, Couleur my_couleur);
 		void joue_pli();
 		void next_to_play();
 		void next_to_cut();
@@ -54,8 +41,6 @@ class Jeu{
 	private:
 		std::vector<Couleur> couleurs {Couleur::Coeur, Couleur::Carreau, Couleur::Pique, Couleur::Trefle};
 		std::vector<Valeur> valeurs {Valeur::As,Valeur::Roi,Valeur::Dame,Valeur::Valet,Valeur::Dix,Valeur::Neuf,Valeur::Huit,Valeur::Sept};
-		std::vector<Valeur> comp_non_atout = {Valeur::As,Valeur::Dix,Valeur::Roi,Valeur::Dame,Valeur::Valet,Valeur::Neuf,Valeur::Huit,Valeur::Sept};
-		std::vector<Valeur> comp_atout = {Valeur::Valet,Valeur::Neuf,Valeur::As,Valeur::Dix,Valeur::Roi,Valeur::Dame,Valeur::Huit,Valeur::Sept};
 };
 
 #endif
