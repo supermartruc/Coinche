@@ -378,7 +378,7 @@ Paquet tri_une_couleur(Paquet jpaquet, Couleur act_coul, Atout atout_actuel){
     for (int i=0; i<n; i++){provpaquet.push_back(jpaquet[i]);}
     for (int i = 0; i<n-1; i++){
         for (int j = i; j<n-1; j++){
-            if (compareCarte(provpaquet[j],provpaquet[j+1],act_coul,atout_actuel)){
+            if (not compareCarte(provpaquet[j],provpaquet[j+1],act_coul,atout_actuel)){
                 Carte provc = provpaquet[j];
                 provpaquet[j] = provpaquet[j+1];
                 provpaquet[j+1] = provc;
@@ -389,7 +389,7 @@ Paquet tri_une_couleur(Paquet jpaquet, Couleur act_coul, Atout atout_actuel){
 }
 
 Paquet tri_paquet_affichage(Paquet jpaquet, Atout atout_actuel){
-    std::vector<Couleur> les_couleurs_aux = {Couleur::Pique,Couleur::Carreau,Couleur::Coeur,Couleur::Trefle};
+    std::vector<Couleur> les_couleurs_aux = {Couleur::Pique,Couleur::Carreau,Couleur::Trefle,Couleur::Coeur};
     std::vector<Couleur> les_couleurs = {};
     int n = jpaquet.size();
     if (atout_actuel == Atout::Sa || atout_actuel == Atout::Ta){
