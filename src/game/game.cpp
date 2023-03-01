@@ -107,8 +107,7 @@ std::ostream &operator<<(std::ostream &os, Enchere e){
 	return os;
 }
 
-int joueurToInt
-(Joueur j){
+int joueurToInt(Joueur j){
     switch(j){
         case Joueur::Nord:
             return 0;
@@ -354,13 +353,84 @@ bool est_valide_carte(Carte jcarte, Paquet jpaquet, Couleur couleur_demandee, At
 
     if (std::find(jpaquet.begin(),jpaquet.end(),jcarte) == jpaquet.end()){return false;}
     if (first == self){return true;}
-    if (jcoul == couleur_demandee && atout_actuel != Atout::Ta && couleurToAtout(couleur_demandee) != atout_actuel){return true;}
-    if (jcoul != couleur_demandee && paquetContientCouleur(jpaquet,couleur_demandee)){return false;}
-    if (couleurToAtout(jcoul) == atout_actuel || atout_actuel == Atout::Ta){
-        return (compareCarte(jcarte,max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel) || 
-                compareCarte(max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),max_of_paquet(jpaquet,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel));
+    bool monte_a_atout = (compareCarte(jcarte,max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel) || 
+        compareCarte(max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),max_of_paquet(jpaquet,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel));
+    if (jcoul == couleur_demandee){
+        if (couleurToAtout(couleur_demandee) == atout_actuel || atout_actuel == Atout::Ta){
+            return monte_a_atout;
+        }
+        return true;
     }
-	return true ;
+    if (paquetContientCouleur(jpaquet,couleur_demandee)){return false;}
+	if (atout_actuel == Atout::Ta || atout_actuel == Atout::Sa){return true;}
+    if (couleurToAtout(jcoul) == atout_actuel){return monte_a_atout;}
+    if (paquetContientCouleur(jpaquet,atoutToCouleur(atout_actuel))){
+        if (self == intToJoueur((joueurToInt(first)+1)%4)){return false;}
+        if (self == intToJoueur((joueurToInt(first)+2)%4)){return (compareCarte(pli_en_cours[0],pli_en_cours[1],couleur_demandee,atout_actuel));}
+        return (compareCarte(pli_en_cours[1],max_of_paquet(pli_en_cours,couleur_demandee,atout_actuel),couleur_demandee,atout_actuel));
+    }
+    return true;
+}
+
+Paquet tri_une_couleur(Paquet jpaquet, Couleur act_coul, Atout atout_actuel){
+    int n = jpaquet.size();
+    Paquet provpaquet = {};
+    for (int i=0; i<n; i++){provpaquet.push_back(jpaquet[i]);}
+    for (int i = 0; i<n-1; i++){
+        for (int j = i; j<n-1; j++){
+            if (compareCarte(provpaquet[j],provpaquet[j+1],act_coul,atout_actuel)){
+                Carte provc = provpaquet[j];
+                provpaquet[j] = provpaquet[j+1];
+                provpaquet[j+1] = provc;
+            }
+        }
+    }
+    return provpaquet;
+}
+
+Paquet tri_paquet_affichage(Paquet jpaquet, Atout atout_actuel){
+    std::vector<Couleur> les_couleurs_aux = {Couleur::Pique,Couleur::Carreau,Couleur::Coeur,Couleur::Trefle};
+    std::vector<Couleur> les_couleurs = {};
+    int n = jpaquet.size();
+    if (atout_actuel == Atout::Sa || atout_actuel == Atout::Ta){
+        les_couleurs = les_couleurs_aux;
+    }
+    else{
+        les_couleurs.push_back(atoutToCouleur(atout_actuel));
+        for (int i=0;i<4;i++){
+            Couleur act_coul = les_couleurs_aux[i];
+            if (act_coul != atoutToCouleur(atout_actuel)){
+                les_couleurs.push_back(act_coul);
+            } 
+        }
+    }
+    Paquet les_piques = {}, les_carreaux = {}, les_coeurs = {}, les_trefles = {};
+    for (int i = 0; i < n; i++){
+        if (std::get<1>(jpaquet[i]) == Couleur::Pique) {les_piques.push_back(jpaquet[i]);}
+        if (std::get<1>(jpaquet[i]) == Couleur::Carreau) {les_carreaux.push_back(jpaquet[i]);}
+        if (std::get<1>(jpaquet[i]) == Couleur::Coeur) {les_coeurs.push_back(jpaquet[i]);}
+        if (std::get<1>(jpaquet[i]) == Couleur::Trefle) {les_trefles.push_back(jpaquet[i]);}
+    }
+    Paquet les_new_piques = tri_une_couleur(les_piques,Couleur::Pique,atout_actuel);
+    Paquet les_new_carreaux = tri_une_couleur(les_carreaux,Couleur::Carreau,atout_actuel);
+    Paquet les_new_coeurs = tri_une_couleur(les_coeurs,Couleur::Coeur,atout_actuel);
+    Paquet les_new_trefles = tri_une_couleur(les_trefles,Couleur::Trefle,atout_actuel);
+
+    std::vector<Paquet> prov_fusion = {};
+    for (int i = 0; i < 4; i++){
+        if (les_couleurs[i]==Couleur::Pique){prov_fusion.push_back(les_new_piques);}
+        if (les_couleurs[i]==Couleur::Carreau){prov_fusion.push_back(les_new_carreaux);}
+        if (les_couleurs[i]==Couleur::Coeur){prov_fusion.push_back(les_new_coeurs);}
+        if (les_couleurs[i]==Couleur::Trefle){prov_fusion.push_back(les_new_trefles);}
+    }
+    Paquet final_res = {};
+    for (int i = 0; i < 4; i++){
+        int taille = prov_fusion[i].size();
+        for (int j = 0; j < taille; j++){
+            final_res.push_back(prov_fusion[i][j]);
+        }
+    }
+    return final_res;
 }
 
 void Jeu::createRandomPaquet(){
@@ -474,7 +544,6 @@ bool Jeu::next_enchere(Joueur who_bids, bool first_enchere){
         return false;
     }
 }
-
 
 void Jeu::joue_pli(){
     // pli_actuel.clear();
