@@ -19,7 +19,13 @@ void	loop(Jeu game) {
 			}
 		}
 		view.clear();
-		view.renderPaquet(game.getPaquet(Joueur::Sud));
+		int you = game.joueurToInt(game.you);
+		Joueur haut = game.intToJoueur((you+2)%4);
+		Joueur gauche = game.intToJoueur((you+1)%4);
+		Joueur droite = game.intToJoueur((you+3)%4);
+		view.renderPaquet(game.getPaquet(game.you));
+		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
+		view.renderDealer(you - (1+game.joueurToInt(game.who_cuts)));
 		view.render();
 	}
 	SDL_Quit();

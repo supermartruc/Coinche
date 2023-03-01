@@ -51,6 +51,7 @@ class Jeu{
 		Enchere current_enchere = {Joueur::Nord,0,Atout::Passe,false,false};
 		std::vector<Enchere> last_enchere = {{Joueur::Nord,0,Atout::Passe,false,false},{Joueur::Est,0,Atout::Passe,false,false},{Joueur::Sud,0,Atout::Passe,false,false},{Joueur::Ouest,0,Atout::Passe,false,false}};
 		Joueur who_cuts = Joueur::Sud, who_plays = Joueur::Nord;
+		Joueur you = Joueur::Sud;
 
 	private:
 		std::vector<Couleur> couleurs {Couleur::Coeur, Couleur::Carreau, Couleur::Pique, Couleur::Trefle};
