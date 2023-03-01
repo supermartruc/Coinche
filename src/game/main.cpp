@@ -36,7 +36,13 @@ int main() {
 	game.createRandomPaquet();
     game.affichePaquetListe(game.paquet);
 	game.distributionPaquet(game.who_cuts, 13);
-	loop(game);
+	
+	//loop(game);
+	game.affichePaquetListe(tri_paquet_affichage(game.allPaquets[2],Atout::Sa));
+	std::cout << compareCarte(Carte{Valeur::Valet,Couleur::Trefle},Carte{Valeur::Huit,Couleur::Trefle},Couleur::Trefle,Atout::Sa) << std::endl;
+
+
+	/*
     game.afficheAllPaquetsListe();
 	game.next_enchere(game.who_plays, true);
 	game.next_to_play();
@@ -57,7 +63,7 @@ int main() {
 		}
 	}
 	std::cout << std::endl << "Contrat : " << game.current_enchere << std::endl;
-	/*
+	
 	for (int pli = 0; pli<8; pli++){
 		game.joue_pli();
 	}*/

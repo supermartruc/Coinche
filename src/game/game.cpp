@@ -375,14 +375,12 @@ bool est_valide_carte(Carte jcarte, Paquet jpaquet, Couleur couleur_demandee, At
 Paquet tri_une_couleur(Paquet jpaquet, Couleur act_coul, Atout atout_actuel){
     int n = jpaquet.size();
     Paquet provpaquet = {};
-    for (int i=0; i<n; i++){provpaquet.push_back(jpaquet[i]);}
-    for (int i = 0; i<n-1; i++){
-        for (int j = i; j<n-1; j++){
-            if (not compareCarte(provpaquet[j],provpaquet[j+1],act_coul,atout_actuel)){
-                Carte provc = provpaquet[j];
-                provpaquet[j] = provpaquet[j+1];
-                provpaquet[j+1] = provc;
-            }
+    std::vector<Valeur> used;
+    if (atout_actuel == Atout::Ta || atout_actuel == couleurToAtout(act_coul)){used = comp_atout;} else {used = comp_non_atout;}
+    for (int i = 0; i < 8; i++){
+        Carte lacarte = Carte {used[i], act_coul};
+        if (std::find(jpaquet.begin(),jpaquet.end(),lacarte) != jpaquet.end()){
+            provpaquet.push_back(lacarte);
         }
     }
     return provpaquet;
@@ -570,7 +568,8 @@ void Jeu::affichePaquetListe(Paquet paquet){
     for (int i=0; i < n-1; i++){
         std::cout << paquet[i] << " ; ";
     }
-    std::cout << paquet[n-1];
+
+    if (n) {std::cout << paquet[n-1];}
     std::cout << "]" << std::endl;
 }
 
