@@ -1,4 +1,5 @@
 #include "view.hpp"
+#include <algorithm>
 
 void 	GameView::DrawDisk(int x, int y, int radius) {
 	SDL_SetRenderDrawColor(renderer, 235, 0, 0, 235);
@@ -37,7 +38,7 @@ void 	GameView::renderDosH(int x, int y) {
 void	GameView::renderDealer(int dist_trigo) {
 	int wy = hCarte + 0.9 * (hWindow - 2*hCarte);
 	int wx = hCarte + 0.9 * (wWindow - 2*hCarte);
-	int h = hCarte + 0.2 * (hWindow - 2*hCarte);
+	int h = hCarte + 150 + 0.1 * (hWindow - 2*hCarte - 150);
 	int x=0;
 	int y=0;
 	switch ((8+dist_trigo)%4) {
@@ -70,6 +71,7 @@ void	GameView::clear() {
 void	GameView::renderPaquet(Paquet paquet) {
 	int i = 0;
 	int wStart = (wWindow - (wCarte * paquet.size())) / 2;
+	// Paquet copy_paquet = sorted_main(paquet);
 	for (auto &carte : paquet) {
 		renderCarte(carte, wStart + (i * wCarte), hWindow-hCarte);
 		i++;
