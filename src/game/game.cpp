@@ -389,7 +389,7 @@ Paquet tri_une_couleur(Paquet jpaquet, Couleur act_coul, Atout atout_actuel){
 }
 
 Paquet tri_paquet_affichage(Paquet jpaquet, Atout atout_actuel){
-    std::vector<Couleur> les_couleurs_aux = {Couleur::Pique,Couleur::Carreau,Couleur::Coeur,Couleur::Trefle};
+    std::vector<Couleur> les_couleurs_aux = {Couleur::Pique,Couleur::Carreau,Couleur::Trefle,Couleur::Coeur};
     std::vector<Couleur> les_couleurs = {};
     int n = jpaquet.size();
     if (atout_actuel == Atout::Sa || atout_actuel == Atout::Ta){

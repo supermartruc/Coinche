@@ -72,7 +72,7 @@ bool est_valide_carte(Carte carte, Couleur couleur_demandee, Atout atout, bool p
 Paquet tri_une_couleur(Paquet jpaquet, Couleur act_coul, Atout atout_actuel);
 Paquet tri_paquet_affichage(Paquet jpaquet, Atout atout_actuel);
 
-static std::vector<Couleur> couleurs {Couleur::Coeur, Couleur::Carreau, Couleur::Pique, Couleur::Trefle};
+static std::vector<Couleur> couleurs {Couleur::Pique, Couleur::Carreau, Couleur::Trefle, Couleur::Coeur};
 static std::vector<Valeur> valeurs {Valeur::As,Valeur::Roi,Valeur::Dame,Valeur::Valet,Valeur::Dix,Valeur::Neuf,Valeur::Huit,Valeur::Sept};
 static std::vector<Valeur> comp_non_atout = {Valeur::As,Valeur::Dix,Valeur::Roi,Valeur::Dame,Valeur::Valet,Valeur::Neuf,Valeur::Huit,Valeur::Sept};
 static std::vector<Valeur> comp_atout = {Valeur::Valet,Valeur::Neuf,Valeur::As,Valeur::Dix,Valeur::Roi,Valeur::Dame,Valeur::Huit,Valeur::Sept};
