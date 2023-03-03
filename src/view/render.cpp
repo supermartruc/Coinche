@@ -62,14 +62,28 @@ void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
 	int wStart = (wWindow - (chev*wCarte * paquet.size())) / 2;
 	Paquet copy_paquet = tri_paquet_affichage(paquet, Atout::Sa);
 	for (auto &carte : copy_paquet) {
+		int l = wStart + (i * chev * wCarte);
+		int h = hWindow-hCarte;
 		if (upordown[find_index_render(carte)] == 0) {
-			renderCarte(carte, wStart + (i * chev * wCarte), hWindow-hCarte);
-			if () {
-
-				addAnimation({})
+			renderCarte(carte, l, h);
+			if (is_inside_rectangle(sx, sy, l, h, chev*hCarte)) {
+				auto [valeur, couleur] = carte;
+				addAnimation({texture[valeur][couleur], l, h, l, h+elevation, carte})
+				upordown[find_index_render(carte)] = 2
 			}
-		} else if (upordown[find_index_render(carte)] == 2) {
-			renderCarte(carte, wStart + (i * chev * wCarte), hWindow-hCarte);
+		} else if (upordown[find_index_render(carte)] == 3) {
+			renderCarte(carte, l, h+elevation);
+			if (not is_inside_rectangle(sx, sy, l, h, chev*hCarte)) {
+				auto [valeur, couleur] = carte;
+				addAnimation({texture[valeur][couleur], l, h, l, h+elevation, carte})
+				upordown[find_index_render(carte)] = 1
+			}
+		} else {
+			for (auto &animation : animations) {
+				if (animation->carte_anim == carte && animation->ended) {
+					upordown[find_index_render(carte)] = 3 * (upordown[find_index_render(carte)]-1);
+				}
+			}
 		}
 		i++;
 	}
