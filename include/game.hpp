@@ -40,6 +40,7 @@ class Jeu{
 		std::vector<Enchere> last_enchere = {{Joueur::Nord,0,Atout::Passe,false,false},{Joueur::Est,0,Atout::Passe,false,false},{Joueur::Sud,0,Atout::Passe,false,false},{Joueur::Ouest,0,Atout::Passe,false,false}};
 		Joueur who_cuts = Joueur::Sud, who_plays = Joueur::Nord, dix_de_der_winner = Joueur::Nord;
 		Joueur you = Joueur::Sud;
+		std::vector<bool> upordown = {};
 
 	private:
 		std::vector<Couleur> couleurs {Couleur::Pique, Couleur::Carreau, Couleur::Trefle, Couleur::Coeur};

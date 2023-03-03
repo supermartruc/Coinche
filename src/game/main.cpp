@@ -39,9 +39,12 @@ void	loop(Jeu game) {
 	SDL_Quit();
 }
 
-int 	main() {
+int main() {
 	Jeu game;
 	game.createRandomPaquet();
+	for (int i = 0; i < 32; i++){
+		game.upordown.push_back(false);
+	}
     game.affichePaquetListe(game.paquet);
 	game.distributionPaquet(game.who_cuts, 13);
 	
