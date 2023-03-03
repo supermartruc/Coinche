@@ -2,24 +2,6 @@
 #include <algorithm>
 #include <vector>
 
-void 	GameView::DrawDisk(int x, int y, int radius) {
-	SDL_SetRenderDrawColor(renderer, 235, 0, 0, 235);
-	int sum_square = 1;
-	for (int i=x-radius+1; i<x+radius; i++) {
-		for (int j=y-radius+1; j<y+radius; j++) {
-			sum_square = (i - x) * (i - x) + (j - y) * (j - y);
-			if ( sum_square < radius * radius ) {
-				if ( sum_square < radius * radius * 0.5 ) {
-					SDL_SetRenderDrawColor(renderer, 235, 20, 20, 235);
-				} else {
-					SDL_SetRenderDrawColor(renderer, 235, 20, 20, ((float) (radius*radius-sum_square)/(radius*radius*0.5)) * 235);
-				}
-				SDL_RenderDrawPoint(renderer, i, j);
-			}
-		}
-	}
-}
-
 void	GameView::renderCarte(Carte carte, int x, int y) {
 	auto [valeur, couleur] = carte;
 	SDL_Rect rect = {x, y, wCarte, hCarte};

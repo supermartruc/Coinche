@@ -54,7 +54,6 @@ class GameView {
 
 	public:
 		void	init();
-		void 	DrawDisk(int x, int y, int radius);
 		void	renderCarte(Carte carte, int x, int y);
 		void	renderPaquet(Paquet paquet);
 		void	renderDealer(int dist_trigo);

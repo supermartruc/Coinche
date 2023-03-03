@@ -39,20 +39,15 @@ void	loop(Jeu game) {
 	SDL_Quit();
 }
 
-int main() {
+int 	main() {
 	Jeu game;
 	game.createRandomPaquet();
     game.affichePaquetListe(game.paquet);
 	game.distributionPaquet(game.who_cuts, 13);
 	
 	loop(game);
-<<<<<<< HEAD
-	game.affichePaquetListe(tri_paquet_affichage(game.allPaquets[2],Atout::Sa));
-	std::cout << compareCarte(Carte{Valeur::Valet,Couleur::Trefle},Carte{Valeur::Huit,Couleur::Trefle},Couleur::Trefle,Atout::Sa) << std::endl;
-=======
 	// game.affichePaquetListe(tri_paquet_affichage(game.allPaquets[2],Atout::Sa));
 	// std::cout << compareCarte(Carte{Valeur::Valet,Couleur::Trefle},Carte{Valeur::Huit,Couleur::Trefle},Couleur::Trefle,Atout::Sa) << std::endl;
->>>>>>> 17455b81708ced210379a2e35bb57596dedba07a
 
 
 	/*
