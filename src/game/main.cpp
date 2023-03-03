@@ -1,12 +1,16 @@
 #include"game.hpp"
+#include"timer.hpp"
 
 void	loop(Jeu game) {
 	SDL_Event		event;
 	bool			quit = false;
 	GameView		view;
+	Timer			timer;
 
 	SDL_Init(SDL_INIT_VIDEO);
 	view.init();
+	timer.start();
+	view.startAnimations();
 	while (!quit) {
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
@@ -26,7 +30,11 @@ void	loop(Jeu game) {
 		view.renderPaquet(game.getPaquet(game.you));
 		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
 		view.renderDealer(you - (1+joueurToInt(game.who_cuts)));
+		view.renderAnimations();
 		view.render();
+		SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
+		view.updateAnimations(timer.get_ticks());
+		timer.start();
 	}
 	SDL_Quit();
 }
@@ -38,6 +46,8 @@ int main() {
 	game.distributionPaquet(game.who_cuts, 13);
 	
 	loop(game);
+	// game.affichePaquetListe(tri_paquet_affichage(game.allPaquets[2],Atout::Sa));
+	// std::cout << compareCarte(Carte{Valeur::Valet,Couleur::Trefle},Carte{Valeur::Huit,Couleur::Trefle},Couleur::Trefle,Atout::Sa) << std::endl;
 
 
 	/*

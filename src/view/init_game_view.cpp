@@ -29,8 +29,10 @@ void GameView::init() {
     loadTexture(cH, renderer, dos_carteH);
     loadTexture(tapis, renderer, fond);
     loadTexture(jeton_str, renderer, jeton);
-    SDL_QueryTexture(textures[Valeur::As][Couleur::Coeur], nullptr, nullptr, &wCarte, &hCarte);
-    wCarte *= 2;
-    hCarte *= 2;
+
+	addAnimation({jeton, 0, 0, 500, 500, 100, 10000});
+    // SDL_QueryTexture(textures[Valeur::As][Couleur::Coeur], nullptr, nullptr, &wCarte, &hCarte);
+    wCarte = 150;
+    hCarte = 240;
     SDL_GetWindowSize(window, &wWindow, &hWindow);
 }
