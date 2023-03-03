@@ -70,26 +70,12 @@ void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
 		carte = copy_paquet[j];
 		int l = wStart + (i * chev * wCarte);
 		int h = hWindow-hCarte;
-		if (upordown[find_index_render(carte)] == 0) {
-			renderCarte(carte, l, h);
-			if (isInsideRectangle(sx, sy, l, h, std::max(chev*wCarte,(float)wCarte*(j==copy_paquet.size()-1)))) {
-				upordown[find_index_render(carte)] = 3;
-			} 
-			
-		} if (upordown[find_index_render(carte)] == 3) {
+		if (isInsideRectangle(sx, sy, l, h, std::max(chev*wCarte,(float)wCarte*(j==copy_paquet.size()-1)))) {
 			renderCarte(carte, l, h-elevation);
-			if (not isInsideRectangle(sx,sy,l,h, std::max(chev*wCarte,(float)wCarte*(j==copy_paquet.size()-1)))){
-				upordown[find_index_render(carte)] = 0;
-			}
-		} 
-			
-		 /*else {
-			for (int k=0; k < animations.size(); k++) {
-				if ((animations[k].carte_anim) == carte && animations[k].ended) {
-					upordown[find_index_render(carte)] = 3 * (upordown[find_index_render(carte)]-1);
-				}
-			}
-		}*/
+		}
+		else{
+			renderCarte(carte, l, h);
+		}
 		i++;
 	}
 }
@@ -119,7 +105,7 @@ void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 }
 
 bool GameView::isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte){
-	return (sx > xcarte && sx < xcarte+wcarte && sy > ycarte);
+	return (sx >= xcarte && sx < xcarte+wcarte && sy >= ycarte);
 }
 
 void	GameView::addAnimation(Animation animation) {

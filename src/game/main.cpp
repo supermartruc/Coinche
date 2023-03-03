@@ -13,7 +13,6 @@ void	loop(Jeu game) {
 	view.init();
 	timer.start();
 	view.startAnimations();
-	for (int i = 0; i < 32; i++){view.upordown.push_back(0);}
 	while (!quit) {
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {

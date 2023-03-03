@@ -73,7 +73,6 @@ class GameView {
 		void	addAnimation(Animation animation);
 		void	updateAnimations(int deltaTime);
 		void	renderAnimations();
-		std::vector<int> 									upordown = {};
 };
 
 #endif
