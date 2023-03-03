@@ -64,6 +64,7 @@ class GameView {
 		void	clear();
 		int		getWCarte() const;
 		int		getHCarte() const;
+		bool isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte);
 
 		void	startAnimations();
 		void	addAnimation(Animation animation);

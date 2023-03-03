@@ -448,7 +448,7 @@ void Jeu::createRandomPaquet(){
 		}
 	}
 	std::shuffle (provPaquet.begin(), provPaquet.end(), gen);
-	Jeu::paquet = provPaquet;
+	paquet = provPaquet;
 }
 
 int find_index_render(Carte c){
@@ -479,13 +479,13 @@ void Jeu::comptePoints(){
     }}
     if (atout_actuel != Atout::Sa && atout_actuel != Atout::Ta){
         Couleur couleur_actuelle = atoutToCouleur(atout_actuel);
-        if ((std::find(defausseNS.begin(), defausseNS.end(), Carte(Valeur::Roi,couleur_actuelle)) != Jeu::defausseNS.end()) && 
-            (std::find(defausseNS.begin(), defausseNS.end(), Carte(Valeur::Dame,couleur_actuelle)) != Jeu::defausseNS.end())){
-                Jeu::points_NS += 20;
+        if ((std::find(defausseNS.begin(), defausseNS.end(), Carte(Valeur::Roi,couleur_actuelle)) != defausseNS.end()) && 
+            (std::find(defausseNS.begin(), defausseNS.end(), Carte(Valeur::Dame,couleur_actuelle)) != defausseNS.end())){
+                points_NS += 20;
             }
-        if ((std::find(defausseOE.begin(), defausseOE.end(), Carte(Valeur::Roi,couleur_actuelle)) != Jeu::defausseOE.end()) && 
-            (std::find(defausseOE.begin(), defausseOE.end(), Carte(Valeur::Dame,couleur_actuelle)) != Jeu::defausseOE.end())){
-                Jeu::points_OE += 20;
+        if ((std::find(defausseOE.begin(), defausseOE.end(), Carte(Valeur::Roi,couleur_actuelle)) != defausseOE.end()) && 
+            (std::find(defausseOE.begin(), defausseOE.end(), Carte(Valeur::Dame,couleur_actuelle)) != defausseOE.end())){
+                points_OE += 20;
             }
     }
     if (dix_de_der_winner == Joueur::Nord || dix_de_der_winner == Joueur::Sud){points_NS += 10;}
@@ -497,32 +497,32 @@ void Jeu::coupePaquet(int where_to_cut){
     Paquet newPaquet;
     int n = Jeu::paquet.size();
     for (int i = 1+where_to_cut; i < n; i++){
-        newPaquet.push_back(Jeu::paquet[i]);
+        newPaquet.push_back(paquet[i]);
     }
     for (int i = 0; i < 1+where_to_cut; i++) {
-        newPaquet.push_back(Jeu::paquet[i]);
+        newPaquet.push_back(paquet[i]);
     }
-    Jeu::paquet = newPaquet;
+    paquet = newPaquet;
 }
 
 void Jeu::distributionPaquet(Joueur who_cuts, int where_to_cut){
     int who_cuts_int = joueurToInt(who_cuts);
     coupePaquet(where_to_cut);
     for (int i=0;i<12;i++){
-        allPaquets[(i/3+who_cuts_int+2)%4].push_back(Jeu::paquet[i]);
+        allPaquets[(i/3+who_cuts_int+2)%4].push_back(paquet[i]);
     }
     for (int i=0;i<8;i++){
-        allPaquets[(i/2+who_cuts_int+2)%4].push_back(Jeu::paquet[i+12]);
+        allPaquets[(i/2+who_cuts_int+2)%4].push_back(paquet[i+12]);
     }
     for (int i=0;i<12;i++){
-        allPaquets[(i/3+who_cuts_int+2)%4].push_back(Jeu::paquet[i+20]);
+        allPaquets[(i/3+who_cuts_int+2)%4].push_back(paquet[i+20]);
     }
 }
 
 void Jeu::fusionPaquets(){
-    Jeu::paquet.clear();
+    paquet.clear();
     for (int i=0;i<32;i++){
-        Jeu::paquet.push_back(allPaquets[i/8][i%8]);
+        paquet.push_back(allPaquets[i/8][i%8]);
     }
 }
 
@@ -552,14 +552,14 @@ Enchere Jeu::ask_enchere(Joueur who_bids){
 }
 
 bool Jeu::next_enchere(Joueur who_bids, bool first_enchere){   
-    if (who_bids == std::get<0>(Jeu::current_enchere) && not first_enchere){
+    if (who_bids == std::get<0>(current_enchere) && not first_enchere){
         return true;
     }
     else{
         Enchere what_bids = ask_enchere(who_bids);
-        Jeu::last_enchere[joueurToInt(who_bids)] = what_bids;
-        if (std::get<1>(what_bids) > std::get<1>(Jeu::current_enchere)){
-            Jeu::current_enchere = what_bids;
+        last_enchere[joueurToInt(who_bids)] = what_bids;
+        if (std::get<1>(what_bids) > std::get<1>(current_enchere)){
+            current_enchere = what_bids;
         }
         return false;
     }
@@ -625,13 +625,13 @@ void Jeu::joue_pli(){
 }
 
 void Jeu::next_to_play(){
-    Joueur provj = Jeu::who_plays;
-    Jeu::who_plays = intToJoueur((1+joueurToInt(provj))%4);
+    Joueur provj = who_plays;
+    who_plays = intToJoueur((1+joueurToInt(provj))%4);
 }
 
 void Jeu::next_to_cut(){
-    Joueur provj = Jeu::who_cuts;
-    Jeu::who_cuts = intToJoueur((1+joueurToInt(provj))%4);
+    Joueur provj = who_cuts;
+    who_cuts = intToJoueur((1+joueurToInt(provj))%4);
 }
 
 void Jeu::affichePaquetListe(Paquet paquet){

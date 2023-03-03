@@ -90,6 +90,10 @@ void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 	}
 }
 
+bool GameView::isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte){
+	return (sx >= xcarte && sx <= xcarte+wcarte && sy >= ycarte);
+}
+
 
 void	GameView::addAnimation(Animation animation) {
 	animations.push_back(animation);
