@@ -451,6 +451,17 @@ void Jeu::createRandomPaquet(){
 	Jeu::paquet = provPaquet;
 }
 
+int find_index_render(Carte c){
+    for (int i = 0; i < 4; i++){
+        for (int j = 0; j < 8; j++){
+            if (c == Carte{valeurs[j], couleurs[i]}){
+                return (4*i+j);
+            }
+        }
+    }
+    return -1;
+}
+
 void Jeu::comptePoints(){
     points_OE = 0;
     points_NS = 0;

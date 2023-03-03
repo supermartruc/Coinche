@@ -72,6 +72,7 @@ bool paquetContientCouleur(Paquet my_paquet, Couleur my_couleur);
 bool est_valide_carte(Carte jcarte, Paquet jpaquet, Couleur couleur_demandee, Atout atout_actuel, Paquet pli_en_cours, Joueur self, Joueur first);
 Paquet tri_une_couleur(Paquet jpaquet, Couleur act_coul, Atout atout_actuel);
 Paquet tri_paquet_affichage(Paquet jpaquet, Atout atout_actuel);
+int find_index_render(Carte c);
 
 static std::vector<Couleur> couleurs {Couleur::Pique, Couleur::Carreau, Couleur::Trefle, Couleur::Coeur};
 static std::vector<Valeur> valeurs {Valeur::As,Valeur::Roi,Valeur::Dame,Valeur::Valet,Valeur::Dix,Valeur::Neuf,Valeur::Huit,Valeur::Sept};

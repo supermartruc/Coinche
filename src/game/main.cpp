@@ -47,9 +47,7 @@ void	loop(Jeu game) {
 int main() {
 	Jeu game;
 	game.createRandomPaquet();
-	for (int i = 0; i < 32; i++){
-		game.upordown.push_back(false);
-	}
+	for (int i = 0; i < 32; i++){game.upordown.push_back(0);}
     game.affichePaquetListe(game.paquet);
 	game.distributionPaquet(game.who_cuts, 13);
 	
