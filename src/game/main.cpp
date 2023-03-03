@@ -6,6 +6,8 @@ void	loop(Jeu game) {
 	bool			quit = false;
 	GameView		view;
 	Timer			timer;
+	int 			sx;
+	int				sy;
 
 	SDL_Init(SDL_INIT_VIDEO);
 	view.init();
@@ -21,6 +23,9 @@ void	loop(Jeu game) {
 					quit = true;
 				}
 			}
+			if (event.type == SDL_MOUSEMOTION) {
+				SDL_GetMouseState(&sx, &sy);
+        	}	
 		}
 		view.clear();
 		int you = joueurToInt(game.you);
