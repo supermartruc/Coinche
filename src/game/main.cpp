@@ -30,7 +30,7 @@ void	loop(Jeu game) {
 		view.renderPaquet(game.getPaquet(game.you));
 		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
 		view.renderDealer(you - (1+joueurToInt(game.who_cuts)));
-		view.renderAnimations();
+		//view.renderAnimations();
 		view.render();
 		SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
 		view.updateAnimations(timer.get_ticks());
@@ -45,13 +45,12 @@ int 	main() {
     game.affichePaquetListe(game.paquet);
 	game.distributionPaquet(game.who_cuts, 13);
 	
-	loop(game);
+	//loop(game);
 	// game.affichePaquetListe(tri_paquet_affichage(game.allPaquets[2],Atout::Sa));
-	// std::cout << compareCarte(Carte{Valeur::Valet,Couleur::Trefle},Carte{Valeur::Huit,Couleur::Trefle},Couleur::Trefle,Atout::Sa) << std::endl;
+	//std::cout << compareCarte(Carte{Valeur::Valet,Couleur::Trefle},Carte{Valeur::Huit,Couleur::Trefle},Couleur::Trefle,Atout::Sa) << std::endl;
 
-
-	/*
     game.afficheAllPaquetsListe();
+	Joueur first_player = game.who_plays;
 	game.next_enchere(game.who_plays, true);
 	game.next_to_play();
 	while (not game.next_enchere(game.who_plays, false)){
@@ -60,6 +59,7 @@ int 	main() {
 	while (std::get<2>(game.current_enchere)==Atout::Passe){
 		game.next_to_cut();
 		game.next_to_play();
+		first_player = game.who_plays;
 		game.fusionPaquets();
 		game.current_enchere = {game.who_plays,0,Atout::Passe,false,false};
 		std::cout << std::endl << "Pas d'enchere, redistribution ; " << game.who_cuts << " coupe. " << std::endl;
@@ -71,9 +71,10 @@ int 	main() {
 		}
 	}
 	std::cout << std::endl << "Contrat : " << game.current_enchere << std::endl;
-	
+	game.atout_actuel = std::get<2>(game.current_enchere);
+	game.who_plays = first_player;
 	for (int pli = 0; pli<8; pli++){
 		game.joue_pli();
-	}*/
+	}
 	return 0;
 }

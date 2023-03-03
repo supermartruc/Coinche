@@ -50,6 +50,7 @@ typedef std::tuple<Joueur,int,Atout,bool,bool> Enchere; // Joueur, points, atout
 std::ostream &operator<<(std::ostream &os, Valeur v);
 std::ostream &operator<<(std::ostream &os, Couleur c);
 std::ostream &operator<<(std::ostream &os, Carte c);
+std::ostream &operator<<(std::ostream &os, Paquet p);
 std::ostream &operator<<(std::ostream &os, Joueur j);
 std::ostream &operator<<(std::ostream &os, Atout a);
 std::ostream &operator<<(std::ostream &os, Enchere e);
@@ -68,7 +69,7 @@ bool auxCompareValeur(Valeur v1, Valeur v2, std::vector<Valeur> tab, int c);
 bool compareCarte(Carte c1, Carte c2, Couleur couleur_demande, Atout atout_actuel);
 Carte max_of_paquet(Paquet thepaquet, Couleur couleur_demandee, Atout atout_actuel);
 bool paquetContientCouleur(Paquet my_paquet, Couleur my_couleur);
-bool est_valide_carte(Carte carte, Couleur couleur_demandee, Atout atout, bool premier_a_jouer);
+bool est_valide_carte(Carte jcarte, Paquet jpaquet, Couleur couleur_demandee, Atout atout_actuel, Paquet pli_en_cours, Joueur self, Joueur first);
 Paquet tri_une_couleur(Paquet jpaquet, Couleur act_coul, Atout atout_actuel);
 Paquet tri_paquet_affichage(Paquet jpaquet, Atout atout_actuel);
 

@@ -55,6 +55,15 @@ std::ostream &operator<<(std::ostream &os, Carte c) {
 	return os;
 }
 
+std::ostream &operator<<(std::ostream &os, Paquet p) {
+    os << "{";
+	for (int i=0; i < p.size(); i++){
+        os << p[i] << " ";
+    }
+    os << "}";
+	return os;
+}
+
 std::ostream &operator<<(std::ostream &os, Joueur j){
 	switch (j) {
 		case Joueur::Nord:
@@ -443,31 +452,33 @@ void Jeu::createRandomPaquet(){
 }
 
 void Jeu::comptePoints(){
-    Jeu::points_OE = 0;
-    Jeu::points_NS = 0;
-    int n = Jeu::defausseNS.size();
-    int m = Jeu::defausseOE.size();
-    Atout atout_actuel = std::get<2>(Jeu::current_enchere);
-    if (n==0) {Jeu::points_OE += 250;} else {if (m==0) {Jeu::points_NS += 250;} else {
+    points_OE = 0;
+    points_NS = 0;
+    int n = defausseNS.size();
+    int m = defausseOE.size();
+    Atout atout_actuel = std::get<2>(current_enchere);
+    if (n==0) {points_OE += 250;} else {if (m==0) {points_NS += 250;} else {
 
     for (int i=0;i<n;i++){
-        Jeu::points_NS += carteToPoint(Jeu::defausseNS[i], atout_actuel);
+        points_NS += carteToPoint(defausseNS[i], atout_actuel);
     }
     for (int j=0;j<m;j++){
-        Jeu::points_OE += carteToPoint(Jeu::defausseOE[j], atout_actuel);
+        points_OE += carteToPoint(defausseOE[j], atout_actuel);
     }
     }}
     if (atout_actuel != Atout::Sa && atout_actuel != Atout::Ta){
         Couleur couleur_actuelle = atoutToCouleur(atout_actuel);
-        if ((std::find(Jeu::defausseNS.begin(), Jeu::defausseNS.end(), Carte(Valeur::Roi,couleur_actuelle)) != Jeu::defausseNS.end()) && 
-            (std::find(Jeu::defausseNS.begin(), Jeu::defausseNS.end(), Carte(Valeur::Dame,couleur_actuelle)) != Jeu::defausseNS.end())){
+        if ((std::find(defausseNS.begin(), defausseNS.end(), Carte(Valeur::Roi,couleur_actuelle)) != Jeu::defausseNS.end()) && 
+            (std::find(defausseNS.begin(), defausseNS.end(), Carte(Valeur::Dame,couleur_actuelle)) != Jeu::defausseNS.end())){
                 Jeu::points_NS += 20;
             }
-        if ((std::find(Jeu::defausseOE.begin(), Jeu::defausseOE.end(), Carte(Valeur::Roi,couleur_actuelle)) != Jeu::defausseOE.end()) && 
-            (std::find(Jeu::defausseOE.begin(), Jeu::defausseOE.end(), Carte(Valeur::Dame,couleur_actuelle)) != Jeu::defausseOE.end())){
+        if ((std::find(defausseOE.begin(), defausseOE.end(), Carte(Valeur::Roi,couleur_actuelle)) != Jeu::defausseOE.end()) && 
+            (std::find(defausseOE.begin(), defausseOE.end(), Carte(Valeur::Dame,couleur_actuelle)) != Jeu::defausseOE.end())){
                 Jeu::points_OE += 20;
             }
     }
+    if (dix_de_der_winner == Joueur::Nord || dix_de_der_winner == Joueur::Sud){points_NS += 10;}
+    else {points_OE += 10;}
 }
 
 void Jeu::coupePaquet(int where_to_cut){ 
@@ -544,19 +555,62 @@ bool Jeu::next_enchere(Joueur who_bids, bool first_enchere){
 }
 
 Carte demande_carte(Joueur joueur){
-    std::cout << "Jouez une carte, " << joueurToString(joueur) << " : " << std::endl;
+    std::cout << "Jouez une carte, " << joueurToString(joueur) << " : " << std::endl << std::flush;
     std::string vs, cs, de; 
     std::cin >> vs >> de >> cs;
     return Carte{stringToValeur(vs), stringToCouleur(cs)};
 }
 
 void Jeu::joue_pli(){
-    // pli_actuel.clear();
-    // for (int player = 0; player < 4; player++){
-    //     pli_actuel.push_back(pose_carte(not player));
-    //     next_to_play();
-    // }
-    // dernier_pli = pli_actuel;
+    dernier_pli = pli_actuel;
+    pli_actuel.clear();
+    std::cout << std::endl << "A " << joueurToString(who_plays) << " de commencer : " << std::endl;
+    Carte carte_jouee; Paquet jpaquet;
+    for (int i = 0; i < 4; i++){
+        afficheAllPaquetsListe();
+        if (i != 0) {std::cout << std::endl << "A " << joueurToString(who_plays) << " de jouer : " << std::endl;}
+        jpaquet = getPaquet(who_plays);
+        carte_jouee = demande_carte(who_plays);
+        while (true){
+            std::cout << carte_jouee << jpaquet << pli_actuel << std::endl;
+            std::cout << est_valide_carte(carte_jouee,jpaquet,couleur_demandee,atout_actuel,pli_actuel,who_plays,intToJoueur((joueurToInt(who_plays)-i+4)%4)) << std::endl;
+            if (est_valide_carte(carte_jouee,jpaquet,couleur_demandee,atout_actuel,pli_actuel,who_plays,intToJoueur((joueurToInt(who_plays)-i+4)%4))){
+                std::cout << "CEST BON" << std::endl;
+                break;
+            }
+            else {std::cout << "CEST PAS BON" << std::endl; carte_jouee = demande_carte(who_plays);}
+        }
+        if (i==0) {couleur_demandee = std::get<1>(carte_jouee);}
+        pli_actuel.push_back(carte_jouee);
+        (allPaquets[joueurToInt(who_plays)]).erase(std::find(allPaquets[joueurToInt(who_plays)].begin(),allPaquets[joueurToInt(who_plays)].end(),carte_jouee));
+        next_to_play();
+    }
+    Joueur winner_du_pli = Joueur::Nord;
+    Carte carte_winneuse = max_of_paquet(pli_actuel,couleur_demandee,atout_actuel);
+    for (int i = 0; i < 4; i++){
+        if (pli_actuel[i] == carte_winneuse){ // astuce : avec les next_to_play(), who_plays vaut le joueur qui a iniitié le pli
+            winner_du_pli = intToJoueur(i);
+            if (winner_du_pli == Joueur::Nord || winner_du_pli == Joueur::Sud){
+                for (int j=0; j < 4; j++){
+                    defausseNS.push_back(pli_actuel[j]);
+                }
+                if (not allPaquets[0].size()){
+                    dix_de_der_winner = Joueur::Nord;
+                }
+                break;
+            }
+            else{
+                for (int j=0; j < 4; j++){
+                    defausseOE.push_back(pli_actuel[j]);
+                }
+                if (not allPaquets[0].size()){
+                    dix_de_der_winner = Joueur::Ouest;
+                }
+                break;
+            }
+        }
+    }
+    who_plays = winner_du_pli;
 }
 
 void Jeu::next_to_play(){
