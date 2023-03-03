@@ -543,6 +543,13 @@ bool Jeu::next_enchere(Joueur who_bids, bool first_enchere){
     }
 }
 
+Carte demande_carte(Joueur joueur){
+    std::cout << "Jouez une carte, " << joueurToString(joueur) << " : " << std::endl;
+    std::string vs, cs, de; 
+    std::cin >> vs >> de >> cs;
+    return Carte{stringToValeur(vs), stringToCouleur(cs)};
+}
+
 void Jeu::joue_pli(){
     // pli_actuel.clear();
     // for (int player = 0; player < 4; player++){
