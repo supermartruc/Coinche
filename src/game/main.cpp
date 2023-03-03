@@ -30,7 +30,7 @@ void	loop(Jeu game) {
 		view.renderPaquet(game.getPaquet(game.you));
 		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
 		view.renderDealer(you - (1+joueurToInt(game.who_cuts)));
-		//view.renderAnimations();
+		view.renderAnimations();
 		view.render();
 		SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
 		view.updateAnimations(timer.get_ticks());
@@ -45,7 +45,7 @@ int 	main() {
     game.affichePaquetListe(game.paquet);
 	game.distributionPaquet(game.who_cuts, 13);
 	
-	//loop(game);
+	loop(game);
 	// game.affichePaquetListe(tri_paquet_affichage(game.allPaquets[2],Atout::Sa));
 	//std::cout << compareCarte(Carte{Valeur::Valet,Couleur::Trefle},Carte{Valeur::Huit,Couleur::Trefle},Couleur::Trefle,Atout::Sa) << std::endl;
 
