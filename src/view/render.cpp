@@ -1,5 +1,6 @@
 #include "view.hpp"
 #include <algorithm>
+#include <vector>
 
 void 	GameView::DrawDisk(int x, int y, int radius) {
 	SDL_SetRenderDrawColor(renderer, 235, 0, 0, 235);
@@ -23,6 +24,10 @@ void	GameView::renderCarte(Carte carte, int x, int y) {
 	auto [valeur, couleur] = carte;
 	SDL_Rect rect = {x, y, wCarte, hCarte};
 	SDL_RenderCopy(renderer, textures[valeur][couleur], NULL, &rect);
+	rect = {x - 1, y - 1, wCarte + 2, hCarte + 2};
+	SDL_RenderDrawRect(renderer, &rect);
+	rect = {x - 2, y - 2, wCarte + 4, hCarte + 4};
+	SDL_RenderDrawRect(renderer, &rect);
 }
 
 void 	GameView::renderDosV(int x, int y) {
@@ -100,5 +105,29 @@ void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 	for (auto &carte : droite) {
 		renderDosH(wWindow-hCarte, hStart + i * chev *wCarte);
 		i++;
+	}
+}
+
+
+void	GameView::addAnimation(Animation animation) {
+	animations.push_back(animation);
+}
+
+void	GameView::updateAnimations(int deltaTime) {
+	for (auto &animation : animations) {
+		animation.update(deltaTime);
+	}
+	animations.erase(std::remove_if(animations.begin(), animations.end(), [](Animation &animation) { return animation.isEnded(); }), animations.end());
+}
+
+void	GameView::renderAnimations() {
+	for (auto &animation : animations) {
+		animation.render(renderer);
+	}
+}
+
+void	GameView::startAnimations() {
+	for (auto &animation : animations) {
+		animation.start();
 	}
 }
