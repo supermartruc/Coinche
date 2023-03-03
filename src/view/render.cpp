@@ -55,14 +55,22 @@ void	GameView::clear() {
 	SDL_RenderCopy(renderer, fond, NULL, &rect);
 }
 
-void	GameView::renderPaquet(Paquet paquet) {
+void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
 	int i = 0;
 	float temp = hWindow / ( (float) ((paquet.size()+0.5)*wCarte) );
 	float chev = (float) std::min((float) 1, (float) (temp * 4/5.0) );
 	int wStart = (wWindow - (chev*wCarte * paquet.size())) / 2;
 	Paquet copy_paquet = tri_paquet_affichage(paquet, Atout::Sa);
 	for (auto &carte : copy_paquet) {
-		renderCarte(carte, wStart + (i * chev * wCarte), hWindow-hCarte);
+		if (upordown[find_index_render(carte)] == 0) {
+			renderCarte(carte, wStart + (i * chev * wCarte), hWindow-hCarte);
+			if () {
+
+				addAnimation({})
+			}
+		} else if (upordown[find_index_render(carte)] == 2) {
+			renderCarte(carte, wStart + (i * chev * wCarte), hWindow-hCarte);
+		}
 		i++;
 	}
 }
@@ -90,6 +98,11 @@ void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 	}
 }
 
+void update_upordown(int sx, itn sy) {
+	for (auto &anim: animations) {
+		if 
+	}
+}
 
 void	GameView::addAnimation(Animation animation) {
 	animations.push_back(animation);

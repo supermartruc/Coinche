@@ -1,6 +1,6 @@
 #include "view.hpp"
 
-void	Animation::init(SDL_Renderer *renderer, std::string path, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd) {
+void	Animation::init(SDL_Renderer *renderer, std::string path, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd, Carte carte_anim) {
 	SDL_Surface	*tmp = IMG_Load(path.c_str());
 	if (tmp == nullptr) {
 		std::cerr << "Error: " << SDL_GetError() << std::endl;
@@ -18,6 +18,7 @@ void	Animation::init(SDL_Renderer *renderer, std::string path, int xStart, int y
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->time = 0;
+	this->carte_anim = carte_anim;
 }
 
 void	Animation::init(SDL_Texture *texture, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd) {
@@ -29,6 +30,7 @@ void	Animation::init(SDL_Texture *texture, int xStart, int yStart, int xEnd, int
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->time = 0;
+	this->carte_anim = NULL;
 }
 
 void	Animation::start() {
@@ -38,7 +40,6 @@ void	Animation::start() {
 
 void	Animation::render(SDL_Renderer *renderer) {
 	SDL_Rect	dst;
-
 	dst.x = xStart + (xEnd - xStart) * time / (timeEnd - timeStart);
 	dst.y = yStart + (yEnd - yStart) * time / (timeEnd - timeStart);
 	SDL_QueryTexture(this->texture, NULL, NULL, &dst.w, &dst.h);

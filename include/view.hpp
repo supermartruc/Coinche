@@ -35,12 +35,14 @@ class Animation {
 		int			time;
 		bool		started;
 		bool		ended;
+		Carte		*carte_anim;
 };
 
 class GameView {
 	private:
 		std::map<Valeur, std::map<Couleur, SDL_Texture*>>	textures;
 		std::vector<Animation>								animations;
+		std::vector<int> 									upordown = {};
 		SDL_Window		*window;
 		SDL_Renderer	*renderer;
 		SDL_Texture* 	dos_carteV;
@@ -51,6 +53,7 @@ class GameView {
 		int				hCarte;
 		int				wWindow;
 		int				hWindow;
+		int 			elevation;
 
 	public:
 		void	init();
@@ -64,6 +67,7 @@ class GameView {
 		void	clear();
 		int		getWCarte() const;
 		int		getHCarte() const;
+		void 	update_upordown(int sx, int sy, std::vector<int> upordown);
 
 		void	startAnimations();
 		void	addAnimation(Animation animation);

@@ -34,11 +34,14 @@ void loadTexture_dim(std::string ss, SDL_Renderer* renderer, SDL_Texture*& textu
 void GameView::init() {
     window = create_window();
     renderer = create_renderer(window);
+    wCarte = 150;
+    hCarte = 240;
+    elevation = 0.3 * hCarte;
     for (auto& couleur : couleurs) {
         for (auto& valeur : valeurs) {
             std::stringstream ss;
 			ss << "ressources/" << couleur << "/" << valeur << ".png";
-            loadTexture(ss.str(), renderer, textures[valeur][couleur]);
+            loadTexture_dim(ss.str(), renderer, textures[valeur][couleur], wCarte, hCarte);
         }
     }
 	std::string cV = "ressources/Autres/carte_dosV.png";
@@ -51,8 +54,6 @@ void GameView::init() {
     loadTexture_dim(jeton_str, renderer, jeton, 90, 90);
     addAnimation({dos_carteV, 0, 0, 500, 500, 100, 5000});
     // SDL_QueryTexture(textures[Valeur::As][Couleur::Coeur], nullptr, nullptr, &wCarte, &hCarte);
-    wCarte = 150;
-    hCarte = 240;
     SDL_GetWindowSize(window, &wWindow, &hWindow);
     addAnimation({jeton, 0, 0, wWindow, 1000, 1000, 15000});
 }
