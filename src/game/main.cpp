@@ -24,7 +24,7 @@ void	loop(Jeu game) {
 				}
 			}
 			if (event.type == SDL_MOUSEMOTION) {
-				SDL_GetMouseState(&x, &y);
+				SDL_GetMouseState(&sx, &sy);
         	}	
 		}
 		view.clear();
