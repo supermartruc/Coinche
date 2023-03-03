@@ -13,6 +13,7 @@ void	loop(Jeu game) {
 	view.init();
 	timer.start();
 	view.startAnimations();
+	for (int i = 0; i < 32; i++){view.upordown.push_back(0);}
 	while (!quit) {
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
@@ -32,7 +33,7 @@ void	loop(Jeu game) {
 		Joueur haut = intToJoueur((you+2)%4);
 		Joueur gauche = intToJoueur((you+1)%4);
 		Joueur droite = intToJoueur((you+3)%4);
-		view.renderPaquet(game.getPaquet(game.you));
+		view.renderPaquet(game.getPaquet(game.you), sx, sy, timer.get_ticks());
 		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
 		view.renderDealer(you - (1+joueurToInt(game.who_cuts)));
 		view.renderAnimations();
@@ -47,13 +48,10 @@ void	loop(Jeu game) {
 int main() {
 	Jeu game;
 	game.createRandomPaquet();
-	for (int i = 0; i < 32; i++){game.upordown.push_back(0);}
     game.affichePaquetListe(game.paquet);
 	game.distributionPaquet(game.who_cuts, 13);
 	
 	loop(game);
-	// game.affichePaquetListe(tri_paquet_affichage(game.allPaquets[2],Atout::Sa));
-	//std::cout << compareCarte(Carte{Valeur::Valet,Couleur::Trefle},Carte{Valeur::Huit,Couleur::Trefle},Couleur::Trefle,Atout::Sa) << std::endl;
 
     game.afficheAllPaquetsListe();
 	Joueur first_player = game.who_plays;

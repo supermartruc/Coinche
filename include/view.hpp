@@ -16,15 +16,15 @@ SDL_Renderer	*create_renderer(SDL_Window *window);
 class Animation {
 	public:
 		Animation() = default;
-		Animation(SDL_Texture *texture, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd) : texture(texture), xStart(xStart), yStart(yStart), xEnd(xEnd), yEnd(yEnd), timeStart(timeStart), timeEnd(timeEnd), time(0), started(false), ended(false) {};
+		Animation(SDL_Texture *texture, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd, Carte* carte_anim) : texture(texture), xStart(xStart), yStart(yStart), xEnd(xEnd), yEnd(yEnd), timeStart(timeStart), timeEnd(timeEnd), time(0), started(false), ended(false) {};
 		~Animation() = default;
 		void	init(SDL_Renderer *renderer, std::string path, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd);
-		void	init(SDL_Texture *texture, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd);
+		void	init(SDL_Texture *texture, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd, Carte* carte_anim);
 		void	start();
 		void	render(SDL_Renderer *renderer);
 		void	update(int deltaTime);
 		bool	isEnded() const;
-	private:
+
 		SDL_Texture	*texture;
 		int			xStart;
 		int			yStart;
@@ -42,7 +42,6 @@ class GameView {
 	private:
 		std::map<Valeur, std::map<Couleur, SDL_Texture*>>	textures;
 		std::vector<Animation>								animations;
-		std::vector<int> 									upordown = {};
 		SDL_Window		*window;
 		SDL_Renderer	*renderer;
 		SDL_Texture* 	dos_carteV;
@@ -58,7 +57,7 @@ class GameView {
 	public:
 		void	init();
 		void	renderCarte(Carte carte, int x, int y);
-		void	renderPaquet(Paquet paquet);
+		void	renderPaquet(Paquet paquet, int sx, int sy, int actual_time);
 		void	renderDealer(int dist_trigo);
 		void	renderDosV(int x, int y);
 		void	renderDosH(int x, int y);
@@ -74,6 +73,7 @@ class GameView {
 		void	addAnimation(Animation animation);
 		void	updateAnimations(int deltaTime);
 		void	renderAnimations();
+		std::vector<int> 									upordown = {};
 };
 
 #endif

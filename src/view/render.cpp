@@ -55,7 +55,7 @@ void	GameView::clear() {
 	SDL_RenderCopy(renderer, fond, NULL, &rect);
 }
 
-void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
+void	GameView::renderPaquet(Paquet paquet, int sx, int sy, int actual_time) {
 	int i = 0;
 	float temp = hWindow / ( (float) ((paquet.size()+0.5)*wCarte) );
 	float chev = (float) std::min((float) 1, (float) (temp * 4/5.0) );
@@ -66,21 +66,21 @@ void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
 		int h = hWindow-hCarte;
 		if (upordown[find_index_render(carte)] == 0) {
 			renderCarte(carte, l, h);
-			if (is_inside_rectangle(sx, sy, l, h, chev*hCarte)) {
+			if (isInsideRectangle(sx, sy, l, h, chev*hCarte)) {
 				auto [valeur, couleur] = carte;
-				addAnimation({texture[valeur][couleur], l, h, l, h+elevation, carte})
-				upordown[find_index_render(carte)] = 2
+				addAnimation({textures[valeur][couleur], l, h, l, h+elevation, actual_time, actual_time+1000, &carte});
+				upordown[find_index_render(carte)] = 2;
 			}
 		} else if (upordown[find_index_render(carte)] == 3) {
 			renderCarte(carte, l, h+elevation);
-			if (not is_inside_rectangle(sx, sy, l, h, chev*hCarte)) {
+			if (not isInsideRectangle(sx, sy, l, h, chev*hCarte)) {
 				auto [valeur, couleur] = carte;
-				addAnimation({texture[valeur][couleur], l, h, l, h+elevation, carte})
-				upordown[find_index_render(carte)] = 1
+				addAnimation({textures[valeur][couleur], l, h, l, h+elevation, actual_time, actual_time+1000, &carte});
+				upordown[find_index_render(carte)] = 1;
 			}
 		} else {
-			for (auto &animation : animations) {
-				if (animation->carte_anim == carte && animation->ended) {
+			for (int k=0; k < animations.size(); k++) {
+				if (*(animations[k].carte_anim) == carte && animations[k].ended) {
 					upordown[find_index_render(carte)] = 3 * (upordown[find_index_render(carte)]-1);
 				}
 			}
@@ -112,10 +112,8 @@ void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 	}
 }
 
-void update_upordown(int sx, itn sy) {
-	for (auto &anim: animations) {
-		if 
-	}
+bool GameView::isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte){
+	return (sx >= xcarte && sx <= xcarte+wcarte && sy >= ycarte);
 }
 
 void	GameView::addAnimation(Animation animation) {
