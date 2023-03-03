@@ -37,9 +37,7 @@ int main() {
     game.affichePaquetListe(game.paquet);
 	game.distributionPaquet(game.who_cuts, 13);
 	
-	//loop(game);
-	game.affichePaquetListe(tri_paquet_affichage(game.allPaquets[2],Atout::Sa));
-	std::cout << compareCarte(Carte{Valeur::Valet,Couleur::Trefle},Carte{Valeur::Huit,Couleur::Trefle},Couleur::Trefle,Atout::Sa) << std::endl;
+	loop(game);
 
 
 	/*
