@@ -20,7 +20,7 @@ void	Animation::init(SDL_Renderer *renderer, std::string path, int xStart, int y
 	this->time = 0;
 }
 
-void	Animation::init(SDL_Texture *texture, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd, Carte* carte_anim) {
+void	Animation::init(SDL_Texture *texture, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd, Carte carte_anim) {
 	this->texture = texture;
 	this->xStart = xStart;
 	this->yStart = yStart;
@@ -39,8 +39,8 @@ void	Animation::start() {
 
 void	Animation::render(SDL_Renderer *renderer) {
 	SDL_Rect	dst;
-	dst.x = xStart + (xEnd - xStart) * time / (timeEnd - timeStart);
-	dst.y = yStart + (yEnd - yStart) * time / (timeEnd - timeStart);
+	dst.x = xStart + (xEnd - xStart) * std::max(0,(time - timeStart)) / (timeEnd - timeStart);
+	dst.y = yStart + (yEnd - yStart) * std::max(0,(time - timeStart)) / (timeEnd - timeStart);
 	SDL_QueryTexture(this->texture, NULL, NULL, &dst.w, &dst.h);
 	SDL_RenderCopy(renderer, this->texture, NULL, &dst);
 }
@@ -50,8 +50,8 @@ void	Animation::update(int deltaTime) {
 		return;
 	}
 	this->time += deltaTime;
-	if (this->time > this->timeEnd) {
-		this->time = this->timeEnd;
+	if (this->time > this->timeEnd-this->timeStart) {
+		this->time = this->timeEnd-this->timeStart;
 		this->ended = true;
 	}
 }

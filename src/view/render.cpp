@@ -5,11 +5,14 @@
 void	GameView::renderCarte(Carte carte, int x, int y) {
 	auto [valeur, couleur] = carte;
 	SDL_Rect rect = {x, y, wCarte, hCarte};
-	SDL_RenderCopy(renderer, textures[valeur][couleur], NULL, &rect);
+	SDL_RenderCopy(renderer, textures[valeur][couleur], NULL, &rect); 
+	/*
 	rect = {x - 1, y - 1, wCarte + 2, hCarte + 2};
 	SDL_RenderDrawRect(renderer, &rect);
 	rect = {x - 2, y - 2, wCarte + 4, hCarte + 4};
 	SDL_RenderDrawRect(renderer, &rect);
+	*/
+	
 }
 
 void 	GameView::renderDosV(int x, int y) {
@@ -55,39 +58,42 @@ void	GameView::clear() {
 	SDL_RenderCopy(renderer, fond, NULL, &rect);
 }
 
-void	GameView::renderPaquet(Paquet paquet, int sx, int sy, int actual_time) {
+void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
+	std::cout << animations.size() << std::endl;
 	int i = 0;
 	float temp = hWindow / ( (float) ((paquet.size()+0.5)*wCarte) );
 	float chev = (float) std::min((float) 1, (float) (temp * 4/5.0) );
 	int wStart = (wWindow - (chev*wCarte * paquet.size())) / 2;
 	Paquet copy_paquet = tri_paquet_affichage(paquet, Atout::Sa);
-	for (auto &carte : copy_paquet) {
+	Carte carte;
+	for (int j=0; j < copy_paquet.size(); j++) {
+		carte = copy_paquet[j];
 		int l = wStart + (i * chev * wCarte);
 		int h = hWindow-hCarte;
 		if (upordown[find_index_render(carte)] == 0) {
 			renderCarte(carte, l, h);
-			if (isInsideRectangle(sx, sy, l, h, chev*hCarte)) {
-				auto [valeur, couleur] = carte;
-				addAnimation({textures[valeur][couleur], l, h, l, h+elevation, actual_time, actual_time+1000, &carte});
-				upordown[find_index_render(carte)] = 2;
+			if (isInsideRectangle(sx, sy, l, h, std::max(chev*wCarte,(float)wCarte*(j==copy_paquet.size()-1)))) {
+				upordown[find_index_render(carte)] = 3;
+			} 
+			
+		} if (upordown[find_index_render(carte)] == 3) {
+			renderCarte(carte, l, h-elevation);
+			if (not isInsideRectangle(sx,sy,l,h, std::max(chev*wCarte,(float)wCarte*(j==copy_paquet.size()-1)))){
+				upordown[find_index_render(carte)] = 0;
 			}
-		} else if (upordown[find_index_render(carte)] == 3) {
-			renderCarte(carte, l, h+elevation);
-			if (not isInsideRectangle(sx, sy, l, h, chev*hCarte)) {
-				auto [valeur, couleur] = carte;
-				addAnimation({textures[valeur][couleur], l, h, l, h+elevation, actual_time, actual_time+1000, &carte});
-				upordown[find_index_render(carte)] = 1;
-			}
-		} else {
+		} 
+			
+		 /*else {
 			for (int k=0; k < animations.size(); k++) {
-				if (*(animations[k].carte_anim) == carte && animations[k].ended) {
+				if ((animations[k].carte_anim) == carte && animations[k].ended) {
 					upordown[find_index_render(carte)] = 3 * (upordown[find_index_render(carte)]-1);
 				}
 			}
-		}
+		}*/
 		i++;
 	}
 }
+
 
 void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 	float temp = 4/5.0 * hWindow / ( (float) ((haut.size()+1)*wCarte) );
@@ -113,7 +119,7 @@ void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 }
 
 bool GameView::isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte){
-	return (sx >= xcarte && sx <= xcarte+wcarte && sy >= ycarte);
+	return (sx > xcarte && sx < xcarte+wcarte && sy > ycarte);
 }
 
 void	GameView::addAnimation(Animation animation) {

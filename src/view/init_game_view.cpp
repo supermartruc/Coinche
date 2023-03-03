@@ -36,7 +36,7 @@ void GameView::init() {
     renderer = create_renderer(window);
     wCarte = 150;
     hCarte = 240;
-    elevation = 0.3 * hCarte;
+    elevation = 0.1 * hCarte;
     for (auto& couleur : couleurs) {
         for (auto& valeur : valeurs) {
             std::stringstream ss;
@@ -52,8 +52,8 @@ void GameView::init() {
     loadTexture(cH, renderer, dos_carteH);
     loadTexture(tapis, renderer, fond);
     loadTexture_dim(jeton_str, renderer, jeton, 90, 90);
-    addAnimation({dos_carteV, 0, 0, 500, 500, 100, 5000, nullptr});
+    addAnimation({dos_carteV, 0, 0, 500, 500, 100, 5000, Carte{Valeur::Valet, Couleur::Pique}});
     // SDL_QueryTexture(textures[Valeur::As][Couleur::Coeur], nullptr, nullptr, &wCarte, &hCarte);
     SDL_GetWindowSize(window, &wWindow, &hWindow);
-    addAnimation({jeton, 0, 0, wWindow, 1000, 1000, 15000, nullptr});
+    addAnimation({jeton, 0, 0, wWindow, 1000, 1000, 5000, Carte{Valeur::Valet, Couleur::Pique}});
 }

@@ -33,7 +33,7 @@ void	loop(Jeu game) {
 		Joueur haut = intToJoueur((you+2)%4);
 		Joueur gauche = intToJoueur((you+1)%4);
 		Joueur droite = intToJoueur((you+3)%4);
-		view.renderPaquet(game.getPaquet(game.you), sx, sy, timer.get_ticks());
+		view.renderPaquet(game.getPaquet(game.you), sx, sy);
 		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
 		view.renderDealer(you - (1+joueurToInt(game.who_cuts)));
 		view.renderAnimations();
