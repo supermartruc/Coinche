@@ -8,6 +8,7 @@
 #include <iostream>
 #include <algorithm>
 
+
 enum class Joueur{
 	Nord,
 	Est,
@@ -60,6 +61,7 @@ int couleurToInt(Couleur c);
 std::string joueurToString(Joueur j);
 Atout stringToAtout(std::string s);
 Atout couleurToAtout(Couleur c);
+Atout keyToAtout(char c);
 Couleur atoutToCouleur(Atout a);
 Couleur stringToCouleur(std::string s);
 Valeur stringToValeur(std::string s);

@@ -59,7 +59,6 @@ void	GameView::clear() {
 }
 
 void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
-	std::cout << animations.size() << std::endl;
 	int i = 0;
 	float temp = hWindow / ( (float) ((paquet.size()+0.5)*wCarte) );
 	float chev = (float) std::min((float) 1, (float) (temp * 4/5.0) );

@@ -285,6 +285,28 @@ Couleur atoutToCouleur(Atout a){
     return Couleur::Pique;
 }
 
+Atout keyToAtout(char c){
+    switch (c){
+        case 'a':
+            return Atout::Ta;
+        case 't':
+            return Atout::Trefle;
+        case 's':
+            return Atout::Sa;
+        case 'c':
+            return Atout::Carreau;
+        case 'p':
+            return Atout::Pique;
+        case 'k':
+            return Atout::Coeur;
+        case ' ':
+            return Atout::Passe;
+        default:
+            return Atout::Passe;
+    }
+    return Atout::Passe;
+}
+
 int carteToPoint(Carte c, Atout a){
     auto [val, coul] = c;
     bool is_atout=(a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul));
@@ -530,7 +552,7 @@ Enchere Jeu::ask_enchere(Joueur who_bids){
     std::string satout;
     Atout atout;
     int points=0;
-    auto [j,p,a,c,sc] = Jeu::current_enchere;
+    auto [j,p,a,c,sc] = current_enchere;
     std::cout << std::endl << "Au tour de " << joueurToString(who_bids) << " de parler : " << std::endl;
     std::cout << "Enchere en cours : " << "de " << j << ", " << p << " " << a << std::endl;
     std::cout << "Atout ? : ";
