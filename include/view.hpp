@@ -50,15 +50,17 @@ class GameView {
 		SDL_Texture* 	jeton;
 		SDL_Texture* 	menu;
 		std::map<Couleur, SDL_Texture*>	icones;
-		int				wCarte;
-		int				hCarte;
 		int 			wMenu;
 		int 			hMenu;
-		int				wWindow;
+		int 			wIcone;
+		int 			dec; // decalage des icones sur le menu
 		int				hWindow;
 		int 			elevation;
 
 	public:
+		int				wCarte;
+		int				hCarte;
+		int				wWindow;
 		void	init();
 		void	renderCarte(Carte carte, int x, int y);
 		void	renderPaquet(Paquet paquet, int sx, int sy);
@@ -67,12 +69,14 @@ class GameView {
 		void	renderDosH(int x, int y);
 		void	renderRetournees(Paquet haut, Paquet droite, Paquet gauche);
 		void	renderMenu(int x, int y);
+		int	iconeToInt(int sx, int sy);
 		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
 		void	render();
 		void	clear();
 		int		getWCarte() const;
 		int		getHCarte() const;
 		bool 	isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte);
+		bool 	isInsideCarre(int sx, int sy, int x, int y, int c);
 
 		void	startAnimations();
 		void	addAnimation(Animation animation);

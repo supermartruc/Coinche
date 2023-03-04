@@ -70,7 +70,7 @@ void	loop(Jeu game) {
 		view.renderPaquet(game.getPaquet(game.you), sx, sy);
 		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
 		view.renderDealer(you - (1+joueurToInt(game.who_cuts)));
-		view.renderMenu(1000, 300);
+		view.renderMenu((int) (5 / 8.0 * view.wWindow), (int) (1.1 * view.hCarte) );
 		view.renderAnimations();
 		view.render();
 		SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
