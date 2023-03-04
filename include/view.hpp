@@ -48,8 +48,12 @@ class GameView {
 		SDL_Texture* 	dos_carteH;
 		SDL_Texture* 	fond;
 		SDL_Texture* 	jeton;
+		SDL_Texture* 	menu;
+		std::map<Couleur, SDL_Texture*>	icones;
 		int				wCarte;
 		int				hCarte;
+		int 			wMenu;
+		int 			hMenu;
 		int				wWindow;
 		int				hWindow;
 		int 			elevation;
@@ -62,6 +66,8 @@ class GameView {
 		void	renderDosV(int x, int y);
 		void	renderDosH(int x, int y);
 		void	renderRetournees(Paquet haut, Paquet droite, Paquet gauche);
+		void	renderMenu(int x, int y);
+		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
 		void	render();
 		void	clear();
 		int		getWCarte() const;

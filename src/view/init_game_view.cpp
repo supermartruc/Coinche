@@ -36,15 +36,21 @@ void GameView::init() {
     renderer = create_renderer(window);
     wCarte = 150;
     hCarte = 240;
+    wMenu = hCarte;
+    hMenu = wCarte;
     elevation = 0.1 * hCarte;
+    loadTexture_dim("ressources/Autres/menu.png", renderer, menu, wMenu, hMenu);
     for (auto& couleur : couleurs) {
+        std::stringstream ss;
+        ss << "ressources/Autres/" << "icone_" << couleur << ".png";
+        loadTexture_dim(ss.str(), renderer, icones[couleur], 200, 200);
         for (auto& valeur : valeurs) {
             std::stringstream ss;
 			ss << "ressources/" << couleur << "/" << valeur << ".png";
             loadTexture_dim(ss.str(), renderer, textures[valeur][couleur], wCarte, hCarte);
         }
     }
-	std::string cV = "ressources/Autres/carte_dosV.png";
+	std::string cV = "ressources/Trefle/Dos.png"; //carte_dosV.png";
 	std::string cH = "ressources/Autres/carte_dosH.png";
     std::string tapis = "ressources/Autres/tapis_vert.png";
     std::string jeton_str = "ressources/Autres/jeton1.png";

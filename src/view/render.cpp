@@ -104,6 +104,21 @@ void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 	}
 }
 
+void GameView::renderMenu(int x, int y) {
+	int wIcone = (int) (hMenu / 4.0);
+	int dec = wMenu / 10.0;
+	SDL_Rect rect = {x, y, wMenu, hMenu};
+	SDL_RenderCopy(renderer, menu, NULL, &rect);
+	rect = {x+dec, y+dec, wIcone, wIcone};
+	SDL_RenderCopy(renderer, icones[Couleur::Trefle], NULL, &rect);
+	rect = {x+2*dec+wIcone, y+dec, wIcone, wIcone};
+	SDL_RenderCopy(renderer, icones[Couleur::Coeur], NULL, &rect);
+	rect = {x+dec, y+2*dec+wIcone, wIcone, wIcone};
+	SDL_RenderCopy(renderer, icones[Couleur::Carreau], NULL, &rect);
+	rect = {x+2*dec+wIcone, y+2*dec+wIcone, wIcone, wIcone};
+	SDL_RenderCopy(renderer, icones[Couleur::Pique], NULL, &rect);
+}
+
 bool GameView::isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte){
 	return (sx >= xcarte && sx < xcarte+wcarte && sy >= ycarte);
 }
@@ -130,3 +145,16 @@ void	GameView::startAnimations() {
 		animation.start();
 	}
 }
+/*
+void GameView::renderTexte(std::string text, int x, int y, int taille, SDL_Color color) {
+	TTF_Init();
+	TTF_Font* font = TTF_OpenFont("ressources/Autres/the_nature.ttf", taille);
+	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text, color);
+	SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
+	SDL_Rect position = { 0, 0, surfaceMessage->w, surfaceMessage->h };
+	SDL_RenderCopy(renderer, message, NULL, &position);
+	SDL_FreeSurface(surfaceMessage);
+	SDL_DestroyTexture(message);
+	TTF_CloseFont(font);
+	TTF_Quit();
+}*/
