@@ -39,6 +39,8 @@ void GameView::init() {
     wMenu = hCarte;
     hMenu = wCarte;
     elevation = 0.1 * hCarte;
+    wIcone = (int) (hMenu / 4.0);
+	dec = (int) (wMenu / 10.0);
     loadTexture_dim("ressources/Autres/menu.png", renderer, menu, wMenu, hMenu);
     for (auto& couleur : couleurs) {
         std::stringstream ss;

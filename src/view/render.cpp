@@ -11,8 +11,7 @@ void	GameView::renderCarte(Carte carte, int x, int y) {
 	SDL_RenderDrawRect(renderer, &rect);
 	rect = {x - 2, y - 2, wCarte + 4, hCarte + 4};
 	SDL_RenderDrawRect(renderer, &rect);
-	*/
-	
+	*/	
 }
 
 void 	GameView::renderDosV(int x, int y) {
@@ -120,6 +119,24 @@ void GameView::renderMenu(int x, int y) {
 
 bool GameView::isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte){
 	return (sx >= xcarte && sx < xcarte+wcarte && sy >= ycarte);
+}
+
+bool GameView::isInsideCarre(int sx, int sy, int x, int y, int c) {
+	return (sx >= x && sx < x+c && sy >= y && sy < y+c);
+}
+
+int GameView::iconeToInt(int sx, int sy) { //0, P, C, T, Coeur, TA, SA, Passe
+	if (isInsideCarre(sx, sy, sx+dec, sy+dec, wIcone)) {
+		return 3;
+	} else if (isInsideCarre(sx, sy, sx+2*dec+wIcone, sy+2*dec+wIcone, wIcone)) {
+		return 1;
+	} else if (isInsideCarre(sx, sy, sx+2*dec+wIcone, sy+dec, wIcone)) {
+		return 4;
+	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
+		return 2;
+	} else {
+		return 0;
+	}
 }
 
 void	GameView::addAnimation(Animation animation) {
