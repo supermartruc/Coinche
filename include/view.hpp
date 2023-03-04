@@ -66,7 +66,6 @@ class GameView {
 		void	clear();
 		int		getWCarte() const;
 		int		getHCarte() const;
-		void 	update_upordown(int sx, int sy, std::vector<int> upordown);
 		bool 	isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte);
 
 		void	startAnimations();
