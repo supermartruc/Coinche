@@ -1,38 +1,10 @@
-#include "game.hpp"
-#include <SFML/Network.hpp>
+#include "server.hpp"
 
-int servmain(){
-
-    bool connection_phase_done = false;
+void ConnexionPhase(int nb_joueurs_max, sockvec &NetJoueurs, std::vector<std::string> &Pseudos, sf::TcpListener &listener, sf::SocketSelector selector){
     bool all_connected = false;
-
-    int nb_joueurs_max = 4;
     int nb_joueurs_connectes = 0;
-
-    int port = 1234;
-    
-    std::vector<sf::TcpSocket*> NetJoueurs;
-    std::vector<std::string> Pseudos;
-
-    NetJoueurs.clear();
-    Pseudos.clear();
-
-    sf::TcpListener listener;
-    listener.listen(port);
-    sf::SocketSelector selector;
-    selector.add(listener);
-
-    if (listener.listen(port) == sf::Socket::Done){
-        std::cout << "Serveur opérationnel" << std::endl << "IP adress : " << std::flush;
-        system("curl ifconfig.me");
-        std::cout << std::endl;
-    }
-    else{
-        std::cout << "Serveur down..." << std::endl;
-    }
-
-    while (!connection_phase_done){
-        if (selector.wait()){
+    while (!all_connected){
+        if (selector.wait(sf::milliseconds(100))){
             if (not all_connected && selector.isReady(listener)){
                 sf::TcpSocket* socket_joueur = new sf::TcpSocket();
                 listener.accept(*socket_joueur);
@@ -53,6 +25,40 @@ int servmain(){
 
 
     }
+}
+
+int servermain(){
+
+    int nb_joueurs_max = 4;
+
+    int port = 1234;
+    
+    sockvec NetJoueurs;
+    std::vector<std::string> Pseudos;
+
+    NetJoueurs.clear();
+    Pseudos.clear();
+
+    sf::TcpListener listener;
+    listener.listen(port);
+    sf::SocketSelector selector;
+    selector.add(listener);
+
+    if (listener.listen(port) == sf::Socket::Done){
+        std::cout << "Serveur opérationnel !" << std::endl << "IP adress : " << std::flush;
+        system("curl ifconfig.me");
+        std::cout << std::endl;
+    }
+    else{
+        std::cout << "Serveur down..." << std::endl;
+    }
+
+    ConnexionPhase(nb_joueurs_max, NetJoueurs, Pseudos, listener, selector);
+    std::cout << "Everyone is connected ; here are the pseudos : " << std::endl;
+    for (int i=0;i<nb_joueurs_max;i++){
+        std::cout << "- " << Pseudos[i] << std::endl;
+    }
+
     return 0;
 
 }
