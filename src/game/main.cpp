@@ -141,6 +141,10 @@ int main() {
 			exit(0);
 		}
 	}
+	else {
+		std::cout << "Role invalide ! " << std::endl;
+		exit(0);
+	}
 	//loop(game);
 	/*
     game.afficheAllPaquetsListe();

@@ -8,7 +8,8 @@
 #include "carte.hpp"
 #include "game.hpp"
 
-typedef std::vector<sf::TcpSocket*> sockvec;
+int ConnexionServer(sf::TcpSocket &client_socket, std::string ipaddress, int port, std::string &my_pseudo);
+void getPseudoRole(std::vector<std::pair<std::string,Joueur>> &assoc_pseudo_role, sf::TcpSocket &client_socket, std::string my_pseudo, Joueur &my_role, int nb_joueurs);
 
 int clientmain();
 
