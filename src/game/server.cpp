@@ -46,6 +46,10 @@ void RoleDistribution(sockvec NetJoueurs, std::vector<Joueur> Roles, std::vector
     }
 }
 
+int CreeEnvoiPaquet(Jeu game, sockvec NetJoueurs, sf::SocketSelector &selector){
+    return 0;
+}
+
 
 int servermain(){
 
@@ -83,6 +87,8 @@ int servermain(){
     }
 
     RoleDistribution(NetJoueurs, Roles, Pseudos, nb_joueurs_max, selector);
+
+    CreeEnvoiPaquet(game, NetJoueurs, selector);
 
     return 0;
 
