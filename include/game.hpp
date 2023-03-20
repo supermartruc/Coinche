@@ -43,6 +43,7 @@ class Jeu{
 
 	private:
 		std::vector<Couleur> couleurs {Couleur::Pique, Couleur::Carreau, Couleur::Trefle, Couleur::Coeur};
+		std::vector<Atout> atouts {Atout::Pique, Atout::Carreau, Atout::Trefle, Atout::Coeur, Atout::Passe, Atout::Ta, Atout::Sa};
 		std::vector<Valeur> valeurs {Valeur::As,Valeur::Roi,Valeur::Dame,Valeur::Valet,Valeur::Dix,Valeur::Neuf,Valeur::Huit,Valeur::Sept};
 };
 

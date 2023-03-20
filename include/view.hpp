@@ -49,18 +49,18 @@ class GameView {
 		SDL_Texture* 	fond;
 		SDL_Texture* 	jeton;
 		SDL_Texture* 	menu;
-		std::map<Couleur, SDL_Texture*>	icones;
+		std::map<Atout, SDL_Texture*>	icones;
 		int 			wMenu;
 		int 			hMenu;
 		int 			wIcone;
 		int 			dec; // decalage des icones sur le menu
-		int				hWindow;
 		int 			elevation;
 
 	public:
 		int				wCarte;
 		int				hCarte;
 		int				wWindow;
+		int				hWindow;
 		void	init();
 		void	renderCarte(Carte carte, int x, int y);
 		void	renderPaquet(Paquet paquet, int sx, int sy);
