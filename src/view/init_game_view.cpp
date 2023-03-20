@@ -11,7 +11,7 @@ void loadTexture(std::string ss, SDL_Renderer* renderer, SDL_Texture*& texture) 
     SDL_FreeSurface(surface);
 }
 
-void loadTexture_dim(std::string ss, SDL_Renderer* renderer, SDL_Texture*& texture, int width, int height) {
+void loadTexture_dim(std::string ss, SDL_Renderer* renderer, SDL_Texture*& texture, int width, int height, bool transp) {
     SDL_Surface* surface = IMG_Load(ss.c_str());
     if (surface == nullptr) {
         std::cerr << "Error: " << SDL_GetError() << std::endl;
@@ -24,7 +24,7 @@ void loadTexture_dim(std::string ss, SDL_Renderer* renderer, SDL_Texture*& textu
     SDL_Rect rect = { 0, 0, width, height };
     Uint32 color = SDL_MapRGBA(image_surface->format, 0, 0, 0, 0);
     SDL_FillRect(image_surface, &rect, color);
-    SDL_SetSurfaceAlphaMod(surface, 128);
+    SDL_SetSurfaceAlphaMod(surface, transp ? 255 : 150);
     SDL_Rect dest_rect = { 0, 0, width, height };
     SDL_BlitScaled(surface, NULL, image_surface, &dest_rect);
     //SDL_Flip(image_surface);
@@ -46,24 +46,25 @@ void GameView::init() {
     for (auto& atout : atouts) {
         std::stringstream ss;
         ss << "ressources/Autres/" << "icone_" << atout << ".png";
-        loadTexture_dim(ss.str(), renderer, icones[atout], 200, 200);
+        loadTexture_dim(ss.str(), renderer, icones[{atout,true}], 200, 200, true);
+        loadTexture_dim(ss.str(), renderer, icones[{atout,false}], 200, 200, false);
     }
     for (auto& couleur : couleurs) {
         for (auto& valeur : valeurs) {
             std::stringstream ss;
 			ss << "ressources/" << couleur << "/" << valeur << ".png";
-            loadTexture_dim(ss.str(), renderer, textures[valeur][couleur], wCarte, hCarte);
+            loadTexture_dim(ss.str(), renderer, textures[valeur][couleur], wCarte, hCarte, true);
         }
     }
 	std::string cV = "ressources/Autres/carte_dosV.png";
 	std::string cH = "ressources/Autres/carte_dosH.png";
     std::string tapis = "ressources/Autres/tapis_vert.png";
     std::string jeton_str = "ressources/Autres/jeton1.png";
-    loadTexture_dim("ressources/Autres/menu.png", renderer, menu, wMenu, hMenu);
+    loadTexture_dim("ressources/Autres/menu.png", renderer, menu, wMenu, hMenu, true);
     loadTexture(cV, renderer, dos_carteV);
     loadTexture(cH, renderer, dos_carteH);
     loadTexture(tapis, renderer, fond);
-    loadTexture_dim(jeton_str, renderer, jeton, 90, 90);
+    loadTexture_dim(jeton_str, renderer, jeton, 90, 90, true);
     // SDL_QueryTexture(textures[Valeur::As][Couleur::Coeur], nullptr, nullptr, &wCarte, &hCarte);
     SDL_GetWindowSize(window, &wWindow, &hWindow);
 }
