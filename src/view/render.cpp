@@ -139,10 +139,10 @@ bool GameView::isInsideCarre(int sx, int sy, int x, int y, int c) {
 	return (sx >= x && sx < x+c && sy >= y && sy < y+c);
 }
 
-int GameView::iconeToInt(int sx, int sy) { //0, P, C, T, Coeur, TA, SA, Passe
-	if (isInsideCarre(sx, sy, sx+dec, sy+dec, wIcone)) {
+int GameView::iconeToInt(int sx, int sy) { //0, P, Carreau, T, Coeur, TA, SA, Passe
+	if (isInsideCarre(sx, sy, sx+dec, sy+dec, wIcone)) { 
 		return 3;
-	} else if (isInsideCarre(sx, sy, sx+2*deuc+wIcone, sy+2*dec+wIcone, wIcone)) {
+	} else if (isInsideCarre(sx, sy, sx+2*dec+wIcone, sy+2*dec+wIcone, wIcone)) {
 		return 1;
 	} else if (isInsideCarre(sx, sy, sx+2*dec+wIcone, sy+dec, wIcone)) {
 		return 4;
@@ -150,15 +150,13 @@ int GameView::iconeToInt(int sx, int sy) { //0, P, C, T, Coeur, TA, SA, Passe
 		return 2;
 
 	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
-		return ;
-	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
 		return 2;
 	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
 		return 2;
-
-	} else {
-		return 0;
+	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
+		return 2;
 	}
+	return 0;
 }
 
 void	GameView::addAnimation(Animation animation) {

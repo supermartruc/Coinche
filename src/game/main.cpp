@@ -145,34 +145,6 @@ int main() {
 		exit(0);
 	}
 	//loop(game);
-	/*
-    game.afficheAllPaquetsListe();
-	Joueur first_player = game.who_plays;
-	game.next_enchere(game.who_plays, true);
-	game.next_to_play();
-	while (not game.next_enchere(game.who_plays, false)){
-		game.next_to_play();
-	}
-	while (std::get<2>(game.current_enchere)==Atout::Passe){
-		game.next_to_cut();
-		game.next_to_play();
-		first_player = game.who_plays;
-		game.fusionPaquets();
-		game.current_enchere = {game.who_plays,0,Atout::Passe,false,false};
-		std::cout << std::endl << "Pas d'enchere, redistribution ; " << game.who_cuts << " coupe. " << std::endl;
-		game.distributionPaquet(game.who_cuts, 13);
-		game.next_enchere(game.who_plays, true);
-		game.next_to_play();
-		while (not game.next_enchere(game.who_plays, false)){
-			game.next_to_play();
-		}
-	}
-	std::cout << std::endl << "Contrat : " << game.current_enchere << std::endl;
-	game.atout_actuel = std::get<2>(game.current_enchere);
-	game.who_plays = first_player;
-	for (int pli = 0; pli<8; pli++){
-		game.joue_pli();
-	}
-	*/
+	
 	return 0;
 }

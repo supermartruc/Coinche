@@ -36,9 +36,26 @@ void getPseudoRole(std::vector<std::pair<std::string,Joueur>> &assoc_pseudo_role
     }
 }
 
-int clientmain(){
+void RecupereCartes(Paquet &mesCartes, sf::TcpSocket &client_socket){
+    mesCartes.clear();
+    std::string mesCartesString = "";
+    sf::Packet mesCartesStringPacket;
+    if (client_socket.receive(mesCartesStringPacket) == sf::Socket::Done){
+        mesCartesStringPacket >> mesCartesString;
+    }
+    std::string UneCarteString = "";
+    for (int i=0; i < mesCartesString.size(); i++){
+        if (mesCartesString[i] == ' '){
+            mesCartes.push_back(intToCarte(std::stoi(UneCarteString)));
+            UneCarteString = "";
+        }
+        else{
+            UneCarteString += mesCartesString[i];
+        }
+    }
+}
 
-    Jeu game;
+int clientmain(){
 
     int nb_joueurs = 4;
     Joueur my_role;
@@ -58,6 +75,8 @@ int clientmain(){
 
     sf::TcpSocket client_socket;
     
+    Paquet mesCartes = {};
+
     if (ConnexionServer(client_socket,ipaddress,port,my_pseudo)){
         return 1;
     }
@@ -73,6 +92,10 @@ int clientmain(){
         if (paffiche == my_pseudo){std::cout << " (vous)";}
         std::cout << std::endl;
     }
+
+    RecupereCartes(mesCartes, client_socket);
+
+    std::cout << std::endl << "Mes cartes : " << mesCartes << std::endl;
 
     while (true){
 
