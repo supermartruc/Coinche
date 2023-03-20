@@ -160,7 +160,6 @@ Atout GameView::iconeToAtout(int sx, int sy) { //0, P, C, T, Coeur, TA, SA, Pass
 	} else {
 		return Atout::Rien;
 	}
-	return 0;
 }
 
 void	GameView::addAnimation(Animation animation) {
