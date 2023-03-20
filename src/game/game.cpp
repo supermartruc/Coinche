@@ -669,7 +669,7 @@ bool Jeu::next_enchere(Joueur who_bids, bool first_enchere){
     }
     else{
         Enchere what_bids = ask_enchere(who_bids);
-        last_enchere[joueurToInt(who_bids)] = what_bids;
+        all_enchere[joueurToInt(who_bids)] = what_bids;
         if (std::get<1>(what_bids) > std::get<1>(current_enchere)){
             current_enchere = what_bids;
         }
