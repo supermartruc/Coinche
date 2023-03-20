@@ -3,6 +3,7 @@
 # define VIEW_HPP
 
 #include "carte.hpp"
+#include "timer.hpp"
 
 #include <map>
 #include <vector>
@@ -67,7 +68,7 @@ class GameView {
 		void	renderDealer(int dist_trigo);
 		void	renderDosV(int x, int y);
 		void	renderDosH(int x, int y);
-		void	renderRetournees(Paquet haut, Paquet droite, Paquet gauche);
+		void	renderRetournees(int gauche, int haut, int droite);
 		void	renderMenu(int x, int y, int sx, int sy);
 		Atout	iconeToAtout(int sx, int sy);
 		std::pair <Atout, bool> pair_icone(Atout atout, int sx, int sy);
@@ -83,6 +84,7 @@ class GameView {
 		void	addAnimation(Animation animation);
 		void	updateAnimations(int deltaTime);
 		void	renderAnimations();
+		void 	render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, int sx, int sy, Timer timer);
 };
 
 #endif

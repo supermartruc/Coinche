@@ -88,24 +88,24 @@ void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
 	}
 }
 
-void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
-	float temp = 4/5.0 * hWindow / ( (float) ((haut.size()+1)*wCarte) );
+void GameView::renderRetournees(int gauche, int haut, int droite) {
+	float temp = 4/5.0 * hWindow / ( (float) ((haut+1)*wCarte) );
 	float chev = (float) std::min((float) 4/5, (float) temp );
 	int i = 0;
-	int wStart = (wWindow - (chev*wCarte * haut.size())) / 2;
-	for (auto &carte : haut) {
+	int wStart = (wWindow - (chev*wCarte * haut)) / 2;
+	while (haut--) {
 		renderDosV(wStart + i*chev*wCarte, 0);
 		i++;
 	}
 	i = 0;
-	int hStart = (hWindow - (chev*wCarte * gauche.size())) / 2;
-	for (auto &carte : gauche) {
+	int hStart = (hWindow - (chev*wCarte * gauche)) / 2;
+	while (gauche--) {
 		renderDosH(0, hStart + i*chev*wCarte);
 		i++;
 	}
 	i = 0;
-	hStart = (hWindow - (chev*wCarte * droite.size())) / 2;
-	for (auto &carte : droite) {
+	hStart = (hWindow - (chev*wCarte * droite)) / 2;
+	while (droite--) {
 		renderDosH(wWindow-hCarte, hStart + i * chev *wCarte);
 		i++;
 	}
@@ -202,3 +202,18 @@ void GameView::renderTexte(std::string text, int x, int y, int taille, SDL_Color
 	TTF_CloseFont(font);
 	TTF_Quit();
 }*/
+
+void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, int sx, int sy, Timer timer) {
+	int int_you = joueurToInt(you);
+	clear();
+	renderPaquet(mypaquet, sx, sy);
+	renderRetournees(taille_paquets[(int_you+1)%4], taille_paquets[(int_you+2)%4], taille_paquets[(int_you+3)%4]);
+
+	renderDealer(int_you - (1+joueurToInt(who_deals)));
+	renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (2.1 * hCarte), sx, sy);
+	renderAnimations();
+	render();
+	SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
+	updateAnimations(timer.get_ticks());
+	timer.start();
+}
