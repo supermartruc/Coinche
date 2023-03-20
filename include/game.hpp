@@ -37,9 +37,10 @@ class Jeu{
 		std::vector<Paquet> allPaquets = {nordP,estP,sudP,ouestP};
 		int tot_points_NS=0, tot_points_OE=0, points_NS=0, points_OE=0;
 		Enchere current_enchere = {Joueur::Nord,0,Atout::Passe,false,false};
-		std::vector<Enchere> last_enchere = {{Joueur::Nord,0,Atout::Passe,false,false},{Joueur::Est,0,Atout::Passe,false,false},{Joueur::Sud,0,Atout::Passe,false,false},{Joueur::Ouest,0,Atout::Passe,false,false}};
-		Joueur who_cuts = Joueur::Sud, who_plays = Joueur::Nord, dix_de_der_winner = Joueur::Nord;
+		std::vector<Enchere> all_enchere = {{Joueur::Nord,0,Atout::Passe,false,false},{Joueur::Est,0,Atout::Passe,false,false},{Joueur::Sud,0,Atout::Passe,false,false},{Joueur::Ouest,0,Atout::Passe,false,false}};
+		Joueur who_cuts = Joueur::Sud, who_speaks = Joueur::Nord, who_plays = Joueur::Nord, dix_de_der_winner = Joueur::Nord;
 		Joueur you = Joueur::Nord;
+		bool enchere_en_cours = false;
 
 	private:
 		std::vector<Couleur> couleurs {Couleur::Pique, Couleur::Carreau, Couleur::Trefle, Couleur::Coeur};

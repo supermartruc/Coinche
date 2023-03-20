@@ -52,7 +52,7 @@ int AskCuts(Jeu game, sockvec NetJoueurs){
 
 int CreeEnvoiePaquet(Jeu game, sockvec NetJoueurs){
     game.createRandomPaquet();
-    game.distributionPaquet(Joueur::Nord, 1);
+    game.distributionPaquet(Joueur::Sud, 1);
     for (int i=0; i < game.allPaquets.size(); i++){
         Paquet paquetJoueur = game.allPaquets[i];
         sf::TcpSocket *client_socket = NetJoueurs[i];
@@ -73,12 +73,31 @@ int CreeEnvoiePaquet(Jeu game, sockvec NetJoueurs){
     return 0;
 }
 
+void SendGameInfo(Jeu game, sockvec NetJoueurs){
+    int InfoInt = (int)(game.enchere_en_cours) + 10*joueurToInt(game.who_speaks) + 100*joueurToInt(game.who_plays) + 1000*((joueurToInt(game.who_cuts)+1)%4);
+    sf::Packet InfoIntPacket;
+    InfoIntPacket << InfoInt;
+    for (int i=0; i<NetJoueurs.size();i++){
+        sf::TcpSocket *client_socket = NetJoueurs[i];
+        if (client_socket->send(InfoIntPacket) == sf::Socket::Done){
+        }
+        else{
+            std::cout << "Envoi échoué" << std::endl;
+        }
+    }
+}
+
+
+void PhaseEncheres(Jeu game, sockvec NetJoueurs){
+    
+}
+
+
 
 int servermain(){
 
     Jeu game;
     std::vector<Joueur> Roles = {Joueur::Nord,Joueur::Est,Joueur::Sud,Joueur::Ouest};
-
 
     int nb_joueurs_max = 4;
 
@@ -115,6 +134,11 @@ int servermain(){
     RoleDistribution(NetJoueurs, Roles, Pseudos, nb_joueurs_max, selector);
 
     CreeEnvoiePaquet(game, NetJoueurs);
+
+    game.enchere_en_cours = true;
+    SendGameInfo(game, NetJoueurs);
+
+    PhaseEncheres(game, NetJoueurs);
 
     selector.clear();
     NetJoueurs.clear();

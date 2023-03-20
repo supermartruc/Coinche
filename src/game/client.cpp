@@ -1,4 +1,5 @@
 #include "client.hpp"
+#include"timer.hpp"
 
 int ConnexionServer(sf::TcpSocket &client_socket, std::string ipaddress, int port, std::string &my_pseudo){
     if (client_socket.connect(ipaddress,port) == sf::Socket::Done){
@@ -55,10 +56,39 @@ void RecupereCartes(Paquet &mesCartes, sf::TcpSocket &client_socket){
     }
 }
 
+void GetGameInfo(Joueur &who_deals, Joueur &who_speaks, Joueur &who_plays, bool &enchere_en_cours, sf::TcpSocket &client_socket){
+    int InfoInt=0;
+    
+    sf::Packet InfoIntPacket;
+    if (client_socket.receive(InfoIntPacket) == sf::Socket::Done){
+        InfoIntPacket >> InfoInt;
+    }
+    who_deals = intToJoueur((InfoInt/1000)%10);
+    who_plays = intToJoueur((InfoInt/100)%10);
+    who_speaks = intToJoueur((InfoInt/10)%10);
+    enchere_en_cours = (bool)(InfoInt%10);
+}
+
+
 int clientmain(){
+
+	SDL_Event		event;
+	bool			quit = false;
+	bool 			mouse_pressed = false;
+	GameView		view;
+	Timer			timer;
+	int 			sx;
+	int				sy;
+	int 			t = 100;
+
+
 
     int nb_joueurs = 4;
     Joueur my_role;
+
+    Joueur who_deals = Joueur::Ouest;
+    Joueur who_speaks = Joueur::Nord;
+    Joueur who_plays = Joueur::Nord;
 
     std::vector<std::pair<std::string,Joueur>> assoc_pseudo_role;
 
@@ -86,7 +116,7 @@ int clientmain(){
     getPseudoRole(assoc_pseudo_role, client_socket, my_pseudo, my_role, nb_joueurs);
 
     std::cout << "Joueurs : " << std::endl;
-
+    
 
     for (int i=0; i < nb_joueurs; i++){
         std::string paffiche = std::get<0>(assoc_pseudo_role[i]);
@@ -100,7 +130,17 @@ int clientmain(){
 
     std::cout << std::endl << "Mes cartes : " << mesCartes << std::endl;
 
-    while (true){
+    std::vector<Enchere> all_encheres = {{Joueur::Nord,0,Atout::Rien,false,false},
+                                         {Joueur::Est,0,Atout::Rien,false,false},
+                                         {Joueur::Sud,0,Atout::Rien,false,false},
+                                         {Joueur::Ouest,0,Atout::Rien,false,false}};    
+    bool enchere_en_cours = true;
+
+    GetGameInfo(who_deals, who_speaks, who_plays, enchere_en_cours, client_socket);
+
+    std::cout << who_deals << " deals ; " << who_speaks << " speaks ; " << who_plays << " plays ; " << enchere_en_cours << " enchere? " << std::endl;
+
+    while (enchere_en_cours){ // Encheres
 
     }
 
