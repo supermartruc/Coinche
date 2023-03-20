@@ -69,7 +69,7 @@ class GameView {
 		void	renderDosH(int x, int y);
 		void	renderRetournees(Paquet haut, Paquet droite, Paquet gauche);
 		void	renderMenu(int x, int y);
-		int	iconeToInt(int sx, int sy);
+		Atout	iconeToAtout(int sx, int sy);
 		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
 		void	render();
 		void	clear();

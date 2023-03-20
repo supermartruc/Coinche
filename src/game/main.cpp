@@ -13,7 +13,7 @@ void	loop(Jeu game) {
 	int 			sx;
 	int				sy;
 	int 			sotg = 0;
-	int 			t = 50;
+	int 			t = 100;
 
 	SDL_Init(SDL_INIT_VIDEO);
 	view.init();
@@ -50,7 +50,7 @@ void	loop(Jeu game) {
 					case SDLK_SPACE:
 						key_pressed = ' ';
 						break;
-				} if (quit) {break;} else if (t != 0) {key_pressed = '/';}
+				}
 			}
 
 			if (event.type == SDL_MOUSEMOTION) {
@@ -78,6 +78,7 @@ void	loop(Jeu game) {
 		SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
 		view.updateAnimations(timer.get_ticks());
 		timer.start();
+
 		switch (sotg)
 		{
 		case 0: // Phase des enchères
@@ -85,7 +86,7 @@ void	loop(Jeu game) {
 				int points = std::get<1>(game.current_enchere);
 				Joueur who_bids = std::get<0>(game.current_enchere);
 				if (key_pressed == ' '){
-					t = 50;
+					t = 100;
 					key_pressed = '/';
 					game.next_to_play();
 					game.you = game.who_plays;
@@ -96,7 +97,7 @@ void	loop(Jeu game) {
 				}
 				else{
 					game.current_enchere = Enchere {game.you,std::max(80,points+10),keyToAtout(key_pressed),false,false};
-					t = 50;
+					t = 100;
 					key_pressed = '/';
 					game.next_to_play();
 					game.you = game.who_plays;
