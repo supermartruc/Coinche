@@ -175,8 +175,39 @@ int atoutToInt(Atout a){
         case Atout::Passe:
             return 6;
             break;
+        case Atout::Rien:
+            return 7;
     }
     return -1;
+}
+
+Atout intToAtout(int a){
+    switch(a){
+        case 0:
+            return Atout::Pique;
+            break;
+        case 1:
+            return Atout::Carreau;
+            break;
+        case 2:
+            return Atout::Trefle;
+            break;
+        case 3:
+            return Atout::Coeur;
+            break;
+        case 4:
+            return Atout::Ta;
+            break;
+        case 5:
+            return Atout::Sa;
+            break;
+        case 6:
+            return Atout::Passe;
+            break;
+        case 7:
+            return Atout::Rien;
+    }
+    return Atout::Rien;
 }
 
 int couleurToInt(Couleur c){
@@ -706,13 +737,12 @@ void Jeu::joue_pli(){
         if (i==0) {couleur_demandee = std::get<1>(carte_jouee);}
         pli_actuel.push_back(carte_jouee);
         (allPaquets[joueurToInt(who_plays)]).erase(std::find(allPaquets[joueurToInt(who_plays)].begin(),allPaquets[joueurToInt(who_plays)].end(),carte_jouee));
-        next_to_play();
+        who_plays = intToJoueur((1+joueurToInt(who_plays))%4);
     }
     Joueur winner_du_pli = Joueur::Nord;
     Carte carte_winneuse = max_of_paquet(pli_actuel,couleur_demandee,atout_actuel);
     for (int i = 0; i < 4; i++){
-        if (pli_actuel[i] == carte_winneuse){ // astuce : avec les next_to_play(), who_plays vaut le joueur qui a iniitié le pli
-            winner_du_pli = intToJoueur(i);
+        if (pli_actuel[i] == carte_winneuse){
             if (winner_du_pli == Joueur::Nord || winner_du_pli == Joueur::Sud){
                 for (int j=0; j < 4; j++){
                     defausseNS.push_back(pli_actuel[j]);
@@ -734,16 +764,6 @@ void Jeu::joue_pli(){
         }
     }
     who_plays = winner_du_pli;
-}
-
-void Jeu::next_to_play(){
-    Joueur provj = who_plays;
-    who_plays = intToJoueur((1+joueurToInt(provj))%4);
-}
-
-void Jeu::next_to_cut(){
-    Joueur provj = who_cuts;
-    who_cuts = intToJoueur((1+joueurToInt(provj))%4);
 }
 
 void Jeu::affichePaquetListe(Paquet paquet){

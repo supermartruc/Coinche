@@ -62,6 +62,7 @@ int couleurToInt(Couleur c);
 int valeurToInt(Valeur v);
 int carteToInt(Carte carte);
 std::string joueurToString(Joueur j);
+Atout intToAtout(int a);
 Atout stringToAtout(std::string s);
 Atout couleurToAtout(Couleur c);
 Atout keyToAtout(char c);
