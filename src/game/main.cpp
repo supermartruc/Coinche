@@ -120,10 +120,6 @@ void	loop(Jeu game) {
 }
 
 int main() {
-//	Jeu game;
-//	game.createRandomPaquet();
-//    game.affichePaquetListe(game.paquet);
-//	game.distributionPaquet(game.who_cuts, 13);
 	
 	std::cout << "Serveur ou client ? (s/c)" << std::endl;
 
@@ -131,12 +127,12 @@ int main() {
 	std::cin >> instance_role;
 
 	if (instance_role == "s"){
-		if (not servermain()){
+		if (servermain()){
 			exit(0);
 		}
 	}
 	else if(instance_role == "c"){
-		if (not clientmain()){
+		if (clientmain()){
 			exit(0);
 		}
 	}

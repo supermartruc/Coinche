@@ -1,7 +1,7 @@
 #!/bin/bash
 
 generateTest(){
-    printf "c\n140.77.177.250\nmartin" > generate.txt
+    printf "c\n192.168.150.82\nmartin" > generate.txt
     printf $1 >> generate.txt
     printf "\n" >> generate.txt
 }
@@ -26,7 +26,7 @@ export -f serveurProcess
 # Open a new terminal window and execute the function
 loop(){
     make
-    gnome-terminal -- bash -c "serveurProcess; exec bash"
+    gnome-terminal -- bash -c "serveurProcess $1; exec bash"
 
     count=1
 
@@ -37,4 +37,4 @@ loop(){
     done
 }
 
-loop 4
+loop 4 $1
