@@ -56,7 +56,8 @@ void RecupereCartes(Paquet &mesCartes, sf::TcpSocket &client_socket){
     }
 }
 
-void GetGameInfo(Joueur &who_deals, Joueur &who_speaks, Joueur &who_plays, bool &enchere_en_cours, sf::TcpSocket &client_socket){
+void GetGameInfo(Joueur &who_deals, Joueur &who_speaks, Joueur &who_plays, bool &enchere_en_cours, sf::TcpSocket &client_socket,
+                std::vector<Enchere> &all_encheres, Enchere &current_enchere){
     int InfoInt=0;
     
     sf::Packet InfoIntPacket;
@@ -67,8 +68,58 @@ void GetGameInfo(Joueur &who_deals, Joueur &who_speaks, Joueur &who_plays, bool 
     who_plays = intToJoueur((InfoInt/100)%10);
     who_speaks = intToJoueur((InfoInt/10)%10);
     enchere_en_cours = (bool)(InfoInt%10);
+
 }
 
+void GetEnchere(Joueur my_role, int &pointclient, Atout &atoutclient, bool &coincheclient, bool &surcoincheclient, Enchere current_enchere){
+    bool enchere_not_valid = true;
+    while (enchere_not_valid){
+        std::cout << "Enchere en cours : " << current_enchere << std::endl;
+        if (std::get<3>(current_enchere)){ //enchere deja coinche
+            std::cout << "Surcoincher ? " << std::flush;
+            std::cin >> surcoincheclient;
+            if (surcoincheclient){
+                break;
+            }
+        }
+        if (std::get<2>(current_enchere) != Atout::Passe && std::get<2>(current_enchere) != Atout::Rien && std::get<0>(current_enchere) != intToJoueur((2+joueurToInt(my_role))%4)){
+            std::cout << "Coincher ? " << std::flush;
+            std::cin >> coincheclient;
+            if (coincheclient){
+                break;
+            }
+        }
+        std::cout << "Atout : " << std::flush;
+        std::string tempatout;
+        std::cin >> tempatout;
+        atoutclient = stringToAtout(tempatout);
+        if (atoutclient == Atout::Passe){
+            pointclient = 0;
+            enchere_not_valid = false;
+            break;
+        }
+        else{
+            std::cout << "Points : " << std::flush;
+            std::cin >> pointclient;
+            if (pointclient%10 == 0 && pointclient >= 80 && pointclient <= 270 && pointclient >= 10 + std::get<1>(current_enchere)){
+                enchere_not_valid = false;
+                break;
+            }
+            
+        }
+        std::cout << "Enchere invalide, recommencez." << std::endl;
+    }
+
+}
+
+void SendEnchere(int pointclient, Atout atoutclient, bool coincheclient, bool surcoincheclient, sf::TcpSocket &client_socket){
+    sf::Packet EnchereStringPacket;
+    std::string EnchereString = "";
+    EnchereString += std::to_string(pointclient) + " " + std::to_string(atoutToInt(atoutclient)) + std::to_string((int)(coincheclient)) + std::to_string((int)(surcoincheclient));
+    EnchereStringPacket << EnchereString;
+    if (client_socket.send(EnchereStringPacket) == sf::Socket::Done){}
+    else {std::cout << "Erreur envoi enchere." << std::endl;}
+}
 
 int clientmain(){
 
@@ -133,15 +184,25 @@ int clientmain(){
     std::vector<Enchere> all_encheres = {{Joueur::Nord,0,Atout::Rien,false,false},
                                          {Joueur::Est,0,Atout::Rien,false,false},
                                          {Joueur::Sud,0,Atout::Rien,false,false},
-                                         {Joueur::Ouest,0,Atout::Rien,false,false}};    
+                                         {Joueur::Ouest,0,Atout::Rien,false,false}};
+
+    Enchere current_enchere = {Joueur::Nord,0,Atout::Rien,false,false};    
     bool enchere_en_cours = true;
 
-    GetGameInfo(who_deals, who_speaks, who_plays, enchere_en_cours, client_socket);
+    Joueur joueurEnchere;
+    int pointclient;
+    Atout atoutclient;
+    bool coincheclient;
+    bool surcoincheclient;
 
-    std::cout << who_deals << " deals ; " << who_speaks << " speaks ; " << who_plays << " plays ; " << enchere_en_cours << " enchere? " << std::endl;
+    GetGameInfo(who_deals, who_speaks, who_plays, enchere_en_cours, client_socket, all_encheres, current_enchere);
 
-    while (enchere_en_cours){ // Encheres
-
+    while (enchere_en_cours){ 
+        if (who_speaks == my_role){
+            GetEnchere(my_role, pointclient,atoutclient,coincheclient,surcoincheclient,current_enchere);
+            SendEnchere(pointclient,atoutclient,coincheclient,surcoincheclient,client_socket);
+        }
+    GetGameInfo(who_deals, who_speaks, who_plays, enchere_en_cours, client_socket, all_encheres, current_enchere);
     }
 
     return 0;

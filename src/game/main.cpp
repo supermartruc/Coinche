@@ -88,7 +88,7 @@ void	loop(Jeu game) {
 				if (key_pressed == ' '){
 					t = 100;
 					key_pressed = '/';
-					game.next_to_play();
+					game.who_plays = intToJoueur((1+joueurToInt(game.who_plays))%4);
 					game.you = game.who_plays;
 					if (who_bids == game.you){
 						sotg = 1;
@@ -99,7 +99,7 @@ void	loop(Jeu game) {
 					game.current_enchere = Enchere {game.you,std::max(80,points+10),keyToAtout(key_pressed),false,false};
 					t = 100;
 					key_pressed = '/';
-					game.next_to_play();
+					game.who_plays = intToJoueur((1+joueurToInt(game.who_plays))%4);
 					game.you = game.who_plays;
 					break;
 				}

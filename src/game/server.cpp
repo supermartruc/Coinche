@@ -88,8 +88,48 @@ void SendGameInfo(Jeu game, sockvec NetJoueurs){
 }
 
 
-void PhaseEncheres(Jeu game, sockvec NetJoueurs){
-    
+void PhaseEncheres(Jeu game, sockvec NetJoueurs, sf::SocketSelector &selector){
+    if (game.who_speaks == std::get<0>(game.current_enchere) && std::get<2>(game.current_enchere) == Atout::Passe){
+        game.enchere_en_cours = false;
+    }
+    else{
+        sf::TcpSocket *client_socket = NetJoueurs[joueurToInt(game.who_speaks)];
+        while(selector.wait()){
+            if (selector.isReady(*client_socket)){
+                break;
+            }
+        }
+        sf::Packet EnchereStringPacket;
+        std::string EnchereString = "";
+        int pointsRecup;
+        Atout atoutRecup;
+        bool coincheRecup, surcoincheRecup;
+        if (client_socket->receive(EnchereStringPacket) == sf::Socket::Done) {
+            EnchereStringPacket >> EnchereString;
+            if (EnchereString[3] == ' '){
+                int pointsRecup = std::stoi(std::string {EnchereString[0], EnchereString[1]});
+                Atout atoutRecup = intToAtout(std::stoi(std::string {EnchereString[4]}));
+                bool coincheRecup = bool(std::stoi(std::string {EnchereString[5]}));
+                bool surcoincheRecup = bool(std::stoi(std::string {EnchereString[6]}));
+            }
+            else{
+                int pointsRecup = std::stoi(std::string {EnchereString[0], EnchereString[1], EnchereString[2]});
+                Atout atoutRecup = intToAtout(std::stoi(std::string {EnchereString[5]}));
+                bool coincheRecup = bool(std::stoi(std::string {EnchereString[6]}));
+                bool surcoincheRecup = bool(std::stoi(std::string {EnchereString[7]}));
+            }
+            if (std::get<2>(game.current_enchere) == Atout::Rien || atoutRecup != Atout::Passe){
+                game.current_enchere = Enchere {game.who_speaks, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};
+            }
+            game.all_enchere[joueurToInt(game.who_speaks)] = Enchere {game.who_speaks, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};
+        }
+        else {
+            std::cout << "Echec de la reception de l'enchere." << std::endl;
+        }
+
+        game.who_speaks = intToJoueur((1+joueurToInt(game.who_speaks))%4);
+    }
+
 }
 
 
@@ -102,7 +142,7 @@ int servermain(){
     int nb_joueurs_max = 4;
 
     int port = 1234;
-    std::cout << "Entrez le port : " <<std::flush;
+    std::cout << "Entrez le port : " << std::flush;
     std::cin >> port;
     sockvec NetJoueurs; // Nord, Est, Sud, Ouest dans l'ordre
     std::vector<std::string> Pseudos;
@@ -138,8 +178,10 @@ int servermain(){
     game.enchere_en_cours = true;
     SendGameInfo(game, NetJoueurs);
 
-    PhaseEncheres(game, NetJoueurs);
-
+    while (game.enchere_en_cours){
+        PhaseEncheres(game, NetJoueurs, selector);
+        SendGameInfo(game, NetJoueurs);
+    }
     selector.clear();
     NetJoueurs.clear();
 
