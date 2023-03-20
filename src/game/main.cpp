@@ -72,7 +72,7 @@ void	loop(Jeu game) {
 		view.renderPaquet(game.getPaquet(game.you), sx, sy);
 		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
 		view.renderDealer(you - (1+joueurToInt(game.who_cuts)));
-		view.renderMenu((int) (3 / 8.0 * view.wWindow), view.hWindow - (int) (2.1 * view.hCarte) );
+		view.renderMenu((int) (3 / 8.0 * view.wWindow), view.hWindow - (int) (2.1 * view.hCarte), sx, sy);
 		view.renderAnimations();
 		view.render();
 		SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
@@ -121,7 +121,7 @@ void	loop(Jeu game) {
 }
 
 int main() {
-	
+	/*
 	std::cout << "Serveur ou client ? (s/c)" << std::endl;
 
 	std::string instance_role;
@@ -141,7 +141,12 @@ int main() {
 		std::cout << "Role invalide ! " << std::endl;
 		exit(0);
 	}
-	//loop(game);
+	*/
+	Jeu game;
+	game.createRandomPaquet();
+	game.distributionPaquet(Joueur::Sud, 16);
+
+	loop(game);
 	
 	return 0;
 }
