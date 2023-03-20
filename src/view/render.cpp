@@ -25,23 +25,33 @@ void 	GameView::renderDosH(int x, int y) {
 }
 
 void	GameView::renderDealer(int dist_trigo) {
-	int wy = hCarte + 0.9 * (hWindow - 2*hCarte);
-	int wx = hCarte + 0.9 * (wWindow - 2*hCarte);
-	int h = hCarte + 150 + 0.1 * (hWindow - 2*hCarte - 150);
 	int x=0;
 	int y=0;
 	switch ((8+dist_trigo)%4) {
 	case 0:
-		x = wx; y = hWindow-h; break;
+		x = 1000; y = 500; break;
 	case 1:
-		x = h; y = wy; break;
+		x = 400; y = 500; break;
 	case 2:
-		x = hWindow-wx; y = h; break;
+		x = 600; y = 500; break;
 	case 3:
-		x = wWindow-h; y = hWindow-wy; break;
+		x = 800; y = 500; break;
 	default: 
 		break;
 	}
+	/*
+	switch ((8+dist_trigo)%4) {
+	case 0:
+		x = wWindow-100; y = hWindow-hCarte-10; break;
+	case 1:
+		x = hCarte+10; y = hWindow-100; break;
+	case 2:
+		x = wWindow-100; y = hCarte+10; break;
+	case 3:
+		x = wWindow-hCarte-10; y = 100; break;
+	default: 
+		break;
+	}*/
 	SDL_Rect rect = {x, y, 90, 90};
 	SDL_RenderCopy(renderer, jeton, NULL, &rect);
 }
@@ -78,7 +88,6 @@ void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
 	}
 }
 
-
 void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 	float temp = 4/5.0 * hWindow / ( (float) ((haut.size()+1)*wCarte) );
 	float chev = (float) std::min((float) 4/5, (float) temp );
@@ -103,18 +112,23 @@ void GameView::renderRetournees(Paquet gauche, Paquet haut, Paquet droite) {
 }
 
 void GameView::renderMenu(int x, int y) {
-	int wIcone = (int) (hMenu / 4.0);
-	int dec = wMenu / 10.0;
+	int wIcone = (int) (hMenu / 6.0);
 	SDL_Rect rect = {x, y, wMenu, hMenu};
 	SDL_RenderCopy(renderer, menu, NULL, &rect);
 	rect = {x+dec, y+dec, wIcone, wIcone};
-	SDL_RenderCopy(renderer, icones[Couleur::Trefle], NULL, &rect);
+	SDL_RenderCopy(renderer, icones[Atout::Trefle], NULL, &rect);
 	rect = {x+2*dec+wIcone, y+dec, wIcone, wIcone};
-	SDL_RenderCopy(renderer, icones[Couleur::Coeur], NULL, &rect);
+	SDL_RenderCopy(renderer, icones[Atout::Coeur], NULL, &rect);
 	rect = {x+dec, y+2*dec+wIcone, wIcone, wIcone};
-	SDL_RenderCopy(renderer, icones[Couleur::Carreau], NULL, &rect);
+	SDL_RenderCopy(renderer, icones[Atout::Carreau], NULL, &rect);
 	rect = {x+2*dec+wIcone, y+2*dec+wIcone, wIcone, wIcone};
-	SDL_RenderCopy(renderer, icones[Couleur::Pique], NULL, &rect);
+	SDL_RenderCopy(renderer, icones[Atout::Pique], NULL, &rect);
+	rect = {x+2*dec+wIcone, y+5*dec/2+2*wIcone, wIcone, wIcone};
+	SDL_RenderCopy(renderer, icones[Atout::Sa], NULL, &rect);
+	rect = {x+dec, y+5*dec/2+2*wIcone, wIcone, wIcone};
+	SDL_RenderCopy(renderer, icones[Atout::Ta], NULL, &rect);
+	rect = {x+dec/2+wIcone/2, y+3*dec+3*wIcone, dec+2*wIcone, 5*wIcone/6};
+	SDL_RenderCopy(renderer, icones[Atout::Passe], NULL, &rect);
 }
 
 bool GameView::isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte){
@@ -128,12 +142,20 @@ bool GameView::isInsideCarre(int sx, int sy, int x, int y, int c) {
 int GameView::iconeToInt(int sx, int sy) { //0, P, C, T, Coeur, TA, SA, Passe
 	if (isInsideCarre(sx, sy, sx+dec, sy+dec, wIcone)) {
 		return 3;
-	} else if (isInsideCarre(sx, sy, sx+2*dec+wIcone, sy+2*dec+wIcone, wIcone)) {
+	} else if (isInsideCarre(sx, sy, sx+2*deuc+wIcone, sy+2*dec+wIcone, wIcone)) {
 		return 1;
 	} else if (isInsideCarre(sx, sy, sx+2*dec+wIcone, sy+dec, wIcone)) {
 		return 4;
 	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
 		return 2;
+
+	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
+		return ;
+	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
+		return 2;
+	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
+		return 2;
+
 	} else {
 		return 0;
 	}

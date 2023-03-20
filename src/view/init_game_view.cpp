@@ -36,32 +36,32 @@ void GameView::init() {
     renderer = create_renderer(window);
     wCarte = 150;
     hCarte = 240;
-    wMenu = hCarte;
-    hMenu = wCarte;
+    wMenu = 2*hCarte;
+    hMenu = (int) (1.5 * wCarte);
     elevation = 0.1 * hCarte;
     wIcone = (int) (hMenu / 4.0);
-	dec = (int) (wMenu / 10.0);
-    loadTexture_dim("ressources/Autres/menu.png", renderer, menu, wMenu, hMenu);
-    for (auto& couleur : couleurs) {
+	dec = (int) (wMenu / 20.0);
+    for (auto& atout : atouts) {
         std::stringstream ss;
-        ss << "ressources/Autres/" << "icone_" << couleur << ".png";
-        loadTexture_dim(ss.str(), renderer, icones[couleur], 200, 200);
+        ss << "ressources/Autres/" << "icone_" << atout << ".png";
+        loadTexture_dim(ss.str(), renderer, icones[atout], 200, 200);
+    }
+    for (auto& couleur : couleurs) {
         for (auto& valeur : valeurs) {
             std::stringstream ss;
 			ss << "ressources/" << couleur << "/" << valeur << ".png";
             loadTexture_dim(ss.str(), renderer, textures[valeur][couleur], wCarte, hCarte);
         }
     }
-	std::string cV = "ressources/Trefle/Dos.png"; //carte_dosV.png";
+	std::string cV = "ressources/Autres/carte_dosV.png";
 	std::string cH = "ressources/Autres/carte_dosH.png";
     std::string tapis = "ressources/Autres/tapis_vert.png";
     std::string jeton_str = "ressources/Autres/jeton1.png";
+    loadTexture_dim("ressources/Autres/menu.png", renderer, menu, wMenu, hMenu);
     loadTexture(cV, renderer, dos_carteV);
     loadTexture(cH, renderer, dos_carteH);
     loadTexture(tapis, renderer, fond);
     loadTexture_dim(jeton_str, renderer, jeton, 90, 90);
-    addAnimation({dos_carteV, 0, 0, 500, 500, 100, 5000, Carte{Valeur::Valet, Couleur::Pique}});
     // SDL_QueryTexture(textures[Valeur::As][Couleur::Coeur], nullptr, nullptr, &wCarte, &hCarte);
     SDL_GetWindowSize(window, &wWindow, &hWindow);
-    addAnimation({jeton, 0, 0, wWindow, 1000, 1000, 5000, Carte{Valeur::Valet, Couleur::Pique}});
 }
