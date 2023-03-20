@@ -1,7 +1,7 @@
 #!/bin/bash
 
 generateTest(){
-    printf "c\n192.168.150.82\nmartin" > generate.txt
+    printf "c\n192.168.150.82\n$2\nmartin" > generate.txt
     printf $1 >> generate.txt
     printf "\n" >> generate.txt
 }
@@ -9,14 +9,14 @@ export -f generateTest
 
 # Define a function
 clientProcess() {
-    generateTest $1
+    generateTest $1 $2
     cat generate.txt - | ./bin/coinche
 }
 
 export -f clientProcess
 
 serveurProcess() {
-    printf "s\n" > generate.txt
+    printf "s\n$1\n" > generate.txt
     cat generate.txt - | ./bin/coinche
 }
 
@@ -25,14 +25,15 @@ export -f serveurProcess
 
 # Open a new terminal window and execute the function
 loop(){
+    echo $2
     make
-    gnome-terminal -- bash -c "serveurProcess $1; exec bash"
+    gnome-terminal -- bash -c "serveurProcess $2; exec bash"
 
     count=1
 
     while [ $count -le $1 ];
     do
-    gnome-terminal -- bash -c "clientProcess $count; exec bash"
+    gnome-terminal -- bash -c "clientProcess $count $2; exec bash"
     ((count++))
     done
 }

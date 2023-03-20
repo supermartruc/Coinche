@@ -67,6 +67,9 @@ int clientmain(){
 
     std::cout << "Adresse IP : " << std::flush;
     std::cin >> ipaddress;
+    std::cout << "Port : " << std::flush;
+    std::cin >> port;
+
 
     std::string my_pseudo;
     std::cout << "Votre pseudo : ";

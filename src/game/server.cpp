@@ -83,7 +83,8 @@ int servermain(){
     int nb_joueurs_max = 4;
 
     int port = 1234;
-    
+    std::cout << "Entrez le port : " <<std::flush;
+    std::cin >> port;
     sockvec NetJoueurs; // Nord, Est, Sud, Ouest dans l'ordre
     std::vector<std::string> Pseudos;
 
@@ -96,7 +97,8 @@ int servermain(){
     selector.add(listener);
 
     if (listener.listen(port) == sf::Socket::Done){
-        std::cout << "Serveur opérationnel !" << std::endl << "IP adress : " << sf::IpAddress::getLocalAddress() << std::endl;
+        std::cout << "Serveur opérationnel !" << std::endl << "IP adress : " << sf::IpAddress::getLocalAddress() << std::endl 
+        << "Port : " << port << std::endl;
     }
     else{
         std::cout << "Serveur down..." << std::endl;
