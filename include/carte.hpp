@@ -76,6 +76,7 @@ Paquet tri_une_couleur(Paquet jpaquet, Couleur act_coul, Atout atout_actuel);
 Paquet tri_paquet_affichage(Paquet jpaquet, Atout atout_actuel);
 int find_index_render(Carte c);
 
+static std::vector<Atout> atouts {Atout::Pique, Atout::Carreau, Atout::Trefle, Atout::Coeur, Atout::Passe, Atout::Ta, Atout::Sa};
 static std::vector<Couleur> couleurs {Couleur::Pique, Couleur::Carreau, Couleur::Trefle, Couleur::Coeur};
 static std::vector<Valeur> valeurs {Valeur::As,Valeur::Roi,Valeur::Dame,Valeur::Valet,Valeur::Dix,Valeur::Neuf,Valeur::Huit,Valeur::Sept};
 static std::vector<Valeur> comp_non_atout = {Valeur::As,Valeur::Dix,Valeur::Roi,Valeur::Dame,Valeur::Valet,Valeur::Neuf,Valeur::Huit,Valeur::Sept};
