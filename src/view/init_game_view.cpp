@@ -24,8 +24,10 @@ void loadTexture_dim(std::string ss, SDL_Renderer* renderer, SDL_Texture*& textu
     SDL_Rect rect = { 0, 0, width, height };
     Uint32 color = SDL_MapRGBA(image_surface->format, 0, 0, 0, 0);
     SDL_FillRect(image_surface, &rect, color);
+    SDL_SetSurfaceAlphaMod(surface, 128);
     SDL_Rect dest_rect = { 0, 0, width, height };
     SDL_BlitScaled(surface, NULL, image_surface, &dest_rect);
+    SDL_Flip(image_surface);
     texture = SDL_CreateTextureFromSurface(renderer, image_surface);
     SDL_FreeSurface(image_surface);
     SDL_FreeSurface(surface);

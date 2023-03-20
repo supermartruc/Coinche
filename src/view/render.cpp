@@ -139,25 +139,26 @@ bool GameView::isInsideCarre(int sx, int sy, int x, int y, int c) {
 	return (sx >= x && sx < x+c && sy >= y && sy < y+c);
 }
 
-int GameView::iconeToInt(int sx, int sy) { //0, P, C, T, Coeur, TA, SA, Passe
+Atout GameView::iconeToAtout(int sx, int sy) { //0, P, C, T, Coeur, TA, SA, Passe
+	int x = (int) (3 / 8.0 * wWindow);
+	int y = hWindow - (int) (2.1 * hCarte);
 	if (isInsideCarre(sx, sy, sx+dec, sy+dec, wIcone)) {
-		return 3;
-	} else if (isInsideCarre(sx, sy, sx+2*deuc+wIcone, sy+2*dec+wIcone, wIcone)) {
-		return 1;
+		return Atout::Trefle;
+	} else if (isInsideCarre(sx, sy, sx+2*dec+wIcone, sy+2*dec+wIcone, wIcone)) {
+		return Atout::Pique;
 	} else if (isInsideCarre(sx, sy, sx+2*dec+wIcone, sy+dec, wIcone)) {
-		return 4;
+		return Atout::Carreau;
 	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
-		return 2;
-
-	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
-		return ;
-	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
-		return 2;
-	} else if (isInsideCarre(sx, sy, sx+dec, sy+2*dec+wIcone, wIcone)) {
-		return 2;
+		return Atout::Coeur;
+	} else if (isInsideCarre(sx, sy, x+2*dec+wIcone, y+5*dec/2+2*wIcone, wIcone)) {
+		return Atout::Sa;
+	} else if (isInsideCarre(sx, sy, sx+dec, y+5*dec/2+2*wIcone, wIcone)) {
+		return Atout::Ta;
+	} else if (isInsideCarre(sx, sy, x+dec/2+wIcone/2, y+3*dec+3*wIcone, 5*wIcone/6)) {
+		return Atout::Passe;
 
 	} else {
-		return 0;
+		return Atout::Rien;
 	}
 }
 

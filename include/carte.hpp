@@ -42,6 +42,7 @@ enum class Atout{
 	Ta,
 	Sa,
 	Passe,
+	Rien,
 };
 
 typedef std::tuple<Valeur,Couleur> Carte;
