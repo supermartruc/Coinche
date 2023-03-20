@@ -1,7 +1,7 @@
 CFLAGS+= -Iinclude -Iphoton -std=c++17
 CFLAGS+= `sdl2-config --cflags`
 
-LDFLAGS+= `sdl2-config --libs` -lSDL2_image
+LDFLAGS+= `sdl2-config --libs` -lSDL2_image -lsfml-system -lsfml-network
 
 RM=rm -rf
 

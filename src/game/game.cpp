@@ -160,10 +160,10 @@ int atoutToInt(Atout a){
         case Atout::Carreau:
             return 1;
             break;
-        case Atout::Coeur:
+        case Atout::Trefle:
             return 2;
             break;
-        case Atout::Trefle:
+        case Atout::Coeur:
             return 3;
             break;
         case Atout::Ta:
@@ -187,14 +187,104 @@ int couleurToInt(Couleur c){
         case Couleur::Carreau:
             return 1;
             break;
-        case Couleur::Coeur:
+        case Couleur::Trefle:
             return 2;
             break;
-        case Couleur::Trefle:
+        case Couleur::Coeur:
             return 3;
             break;
     }
     return -1;
+}
+
+int valeurToInt(Valeur v){
+    switch(v){
+    case Valeur::As:
+			return 7;
+			break;
+		case Valeur::Roi:
+			return 6;
+			break;
+		case Valeur::Dame:
+			return 5;
+			break;
+		case Valeur::Valet:
+			return 4;
+			break;
+		case Valeur::Dix:
+			return 3;
+			break;
+		case Valeur::Neuf:
+			return 2;
+			break;
+		case Valeur::Huit:
+			return 1;
+			break;
+		case Valeur::Sept:
+			return 0;
+			break;
+	}
+    return -1;
+}
+
+int carteToInt(Carte carte){
+    int carteInt = 0;
+    carteInt += 5*valeurToInt(std::get<0>(carte));
+    carteInt += couleurToInt(std::get<1>(carte));
+    return carteInt;
+
+}
+
+Valeur intToValeur(int valeurInt){
+    switch(valeurInt){
+        case 7:
+			return Valeur::As;
+			break;
+		case 6:
+			return Valeur::Roi;
+			break;
+		case 5:
+			return Valeur::Dame;
+			break;
+		case 4:
+			return Valeur::Valet;
+			break;
+		case 3:
+			return Valeur::Dix;
+			break;
+		case 2:
+			return Valeur::Neuf;
+			break;
+		case 1:
+			return Valeur::Huit;
+			break;
+		case 0:
+			return Valeur::Sept;
+			break;
+	}
+    return Valeur::As;
+}
+
+Couleur intToCouleur(int couleurInt){
+    switch(couleurInt){
+        case 0:
+            return Couleur::Pique;
+            break;
+        case 1:
+            return Couleur::Carreau;
+            break;
+        case 2:
+            return Couleur::Trefle;
+            break;
+        case 3:
+            return Couleur::Coeur;
+            break;
+    }
+    return Couleur::Pique;
+}
+
+Carte intToCarte(int carteInt){
+    return Carte {(intToValeur(carteInt/5)),(intToCouleur(carteInt%5))};
 }
 
 std::string joueurToString(Joueur j){
