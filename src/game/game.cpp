@@ -229,7 +229,7 @@ int valeurToInt(Valeur v){
 
 int carteToInt(Carte carte){
     int carteInt = 0;
-    carteInt += 5*valeurToInt(std::get<0>(carte));
+    carteInt += 4*valeurToInt(std::get<0>(carte));
     carteInt += couleurToInt(std::get<1>(carte));
     return carteInt;
 
@@ -284,7 +284,7 @@ Couleur intToCouleur(int couleurInt){
 }
 
 Carte intToCarte(int carteInt){
-    return Carte {(intToValeur(carteInt/5)),(intToCouleur(carteInt%5))};
+    return Carte {(intToValeur(carteInt/4)),(intToCouleur(carteInt%4))};
 }
 
 std::string joueurToString(Joueur j){

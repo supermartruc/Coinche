@@ -1,7 +1,7 @@
 #!/bin/bash
 
 generateTest(){
-    printf "c\n192.168.1.79\nmartin" > generate.txt
+    printf "c\n140.77.177.250\nmartin" > generate.txt
     printf $1 >> generate.txt
     printf "\n" >> generate.txt
 }

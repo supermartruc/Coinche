@@ -46,7 +46,30 @@ void RoleDistribution(sockvec NetJoueurs, std::vector<Joueur> Roles, std::vector
     }
 }
 
-int CreeEnvoiPaquet(Jeu game, sockvec NetJoueurs, sf::SocketSelector &selector){
+int AskCuts(Jeu game, sockvec NetJoueurs){
+    return 0;
+}
+
+int CreeEnvoiePaquet(Jeu game, sockvec NetJoueurs){
+    game.createRandomPaquet();
+    game.distributionPaquet(Joueur::Nord, 1);
+    for (int i=0; i < game.allPaquets.size(); i++){
+        Paquet paquetJoueur = game.allPaquets[i];
+        sf::TcpSocket *client_socket = NetJoueurs[i];
+        std::string paquetString = "";
+        sf::Packet paquetStringPacket;
+        for (Carte carte : paquetJoueur){
+            paquetString += std::to_string(carteToInt(carte)) + " ";
+        }
+        paquetStringPacket << paquetString;
+        if (client_socket->send(paquetStringPacket) == sf::Socket::Done){
+            std::cout << "Paquet bien envoyé à " << intToJoueur(i) << " : " << paquetString << std::endl;
+        }
+        else{
+            std::cout << "Paquet NON envoyé à " << intToJoueur(i) << " : " << paquetString << std::endl;
+            return 1;
+        }
+    }
     return 0;
 }
 
@@ -56,11 +79,12 @@ int servermain(){
     Jeu game;
     std::vector<Joueur> Roles = {Joueur::Nord,Joueur::Est,Joueur::Sud,Joueur::Ouest};
 
+
     int nb_joueurs_max = 4;
 
     int port = 1234;
     
-    sockvec NetJoueurs;
+    sockvec NetJoueurs; // Nord, Est, Sud, Ouest dans l'ordre
     std::vector<std::string> Pseudos;
 
     NetJoueurs.clear();
@@ -88,7 +112,10 @@ int servermain(){
 
     RoleDistribution(NetJoueurs, Roles, Pseudos, nb_joueurs_max, selector);
 
-    CreeEnvoiPaquet(game, NetJoueurs, selector);
+    CreeEnvoiePaquet(game, NetJoueurs);
+
+    selector.clear();
+    NetJoueurs.clear();
 
     return 0;
 

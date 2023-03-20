@@ -124,6 +124,7 @@ int main() {
     game.affichePaquetListe(game.paquet);
 	game.distributionPaquet(game.who_cuts, 13);
 	
+<<<<<<< HEAD
 	loop(game);
 	/*
     game.afficheAllPaquetsListe();
@@ -154,5 +155,28 @@ int main() {
 		game.joue_pli();
 	}
 	*/
+=======
+	std::cout << "Serveur ou client ? (s/c)" << std::endl;
+
+	std::string instance_role;
+	std::cin >> instance_role;
+
+	if (instance_role == "s"){
+		if (not servermain()){
+			exit(0);
+		}
+	}
+	else if(instance_role == "c"){
+		if (not clientmain()){
+			exit(0);
+		}
+	}
+	else {
+		std::cout << "Role invalide ! " << std::endl;
+		exit(0);
+	}
+	//loop(game);
+	
+>>>>>>> 79dfa3e93a4aef0b3aaff7604ac8822939ff5aa8
 	return 0;
 }
