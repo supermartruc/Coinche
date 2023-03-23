@@ -28,28 +28,6 @@ void	loop(Jeu game) {
 				switch(event.key.keysym.sym){
 					case SDLK_ESCAPE:
 						quit = true;
-						break;
-					case SDLK_p:
-						key_pressed = 'p';
-						break;
-					case SDLK_c:
-						key_pressed = 'c';
-						break;
-					case SDLK_k:
-						key_pressed = 'k';
-						break;
-					case SDLK_t:
-						key_pressed = 't';
-						break;
-					case SDLK_s:
-						key_pressed = 's';
-						break;
-					case SDLK_a:
-						key_pressed = 'a';
-						break;
-					case SDLK_SPACE:
-						key_pressed = ' ';
-						break;
 				}
 			}
 
@@ -63,21 +41,17 @@ void	loop(Jeu game) {
 				mouse_pressed = false;
         	}
 		}
-		t = std::max(0,t-1);
 		int you = joueurToInt(game.you);
-		Joueur haut = intToJoueur((you+2)%4);
-		Joueur gauche = intToJoueur((you+1)%4);
-		Joueur droite = intToJoueur((you+3)%4);
-		view.clear();
-		view.renderPaquet(game.getPaquet(game.you), sx, sy);
-		view.renderRetournees(game.getPaquet(gauche), game.getPaquet(haut), game.getPaquet(droite));
-		view.renderDealer(you - (1+joueurToInt(game.who_cuts)));
-		view.renderMenu((int) (3 / 8.0 * view.wWindow), view.hWindow - (int) (2.1 * view.hCarte), sx, sy);
-		view.renderAnimations();
-		view.render();
-		SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
-		view.updateAnimations(timer.get_ticks());
-		timer.start();
+		int deal = (1+joueurToInt(game.who_cuts))%4;
+		//Atout annonce;
+		
+		view.render(game.you, intToJoueur(deal), game.allPaquets[you], {8, 8, 8, 8}, sx, sy, timer);
+
+		/* if (mouse_pressed) {
+			annonce = iconeToAtout(sx, sy)
+		}*/
+
+		}
 
 		switch (sotg)
 		{
@@ -115,7 +89,6 @@ void	loop(Jeu game) {
 
 		default:
 			break;
-		}
 	}
 	SDL_Quit();
 }
