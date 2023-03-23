@@ -1,12 +1,20 @@
 #include "client.hpp"
 #include"timer.hpp"
 
+void InitView(GameView &view, Timer &timer){
+    SDL_Init(SDL_INIT_VIDEO);
+	view.init();
+	//timer.start();
+	//view.startAnimations();
+}
+
 int ConnexionServer(sf::TcpSocket &client_socket, std::string ipaddress, int port, std::string &my_pseudo){
     if (client_socket.connect(ipaddress,port) == sf::Socket::Done){
         std::cout << "Connexion réussie ! " << std::endl;
         sf::Packet my_pseudoPacket;
         my_pseudoPacket << my_pseudo;
         client_socket.send(my_pseudoPacket);
+        std::cout << "OK apres connexion serv" << std::endl;
         return 0;
     }
     else {
@@ -15,26 +23,27 @@ int ConnexionServer(sf::TcpSocket &client_socket, std::string ipaddress, int por
     }
 }
 
-void getPseudoRole(std::vector<std::pair<std::string,Joueur>> &assoc_pseudo_role, sf::TcpSocket &client_socket, std::string my_pseudo, Joueur &my_role, int nb_joueurs){
+void getPseudoRole(std::vector<std::pair<std::string,Joueur>> &assoc_pseudo_role, sf::TcpSocket &client_socket, std::string my_pseudo, Joueur &my_role, int nb_joueurs, GameView &view){
     sf::Packet PseudoReceivePacket;
     sf::Packet RoleReceivePacket;
     std::string pseudoReceive;
     int roleIntReceive;
     Joueur roleReceive;
 
+    client_socket.setBlocking(false);
+
     for (int i = 0; i<nb_joueurs; i++){
-        if (client_socket.receive(PseudoReceivePacket) == sf::Socket::Done){
-            PseudoReceivePacket >> pseudoReceive;
-            if (client_socket.receive(RoleReceivePacket) == sf::Socket::Done){
-                RoleReceivePacket >> roleIntReceive;
-                roleReceive = intToJoueur(roleIntReceive);
-                if (pseudoReceive == my_pseudo){
-                    my_role = roleReceive;
-                }
-            }
+        while (client_socket.receive(PseudoReceivePacket) != sf::Socket::Done){view.clear();}
+        PseudoReceivePacket >> pseudoReceive;
+        while (client_socket.receive(RoleReceivePacket) != sf::Socket::Done){view.clear();}
+        RoleReceivePacket >> roleIntReceive;
+        roleReceive = intToJoueur(roleIntReceive);
+        if (pseudoReceive == my_pseudo){
+            my_role = roleReceive;
         }
         assoc_pseudo_role.push_back({pseudoReceive,roleReceive});
     }
+    client_socket.setBlocking(true);
 }
 
 void RecupereCartes(Paquet &mesCartes, sf::TcpSocket &client_socket){
@@ -57,13 +66,17 @@ void RecupereCartes(Paquet &mesCartes, sf::TcpSocket &client_socket){
 }
 
 void GetGameInfo(Joueur &who_deals, Joueur &who_speaks, Joueur &who_plays, bool &enchere_en_cours, sf::TcpSocket &client_socket,
-                std::vector<Enchere> &all_encheres, Enchere &current_enchere){
+                std::vector<Enchere> &all_encheres, Enchere &current_enchere, GameView &view, Joueur my_role, Paquet mesCartes, Timer &timer){
     int InfoInt=0;
     
+    view.render(my_role, who_deals, mesCartes, {8,8,8,8}, timer);
+
     sf::Packet InfoIntPacket;
-    if (client_socket.receive(InfoIntPacket) == sf::Socket::Done){
-        InfoIntPacket >> InfoInt;
+    client_socket.setBlocking(false);
+    while (client_socket.receive(InfoIntPacket) != sf::Socket::Done){
+        view.render(my_role, who_deals, mesCartes, {8,8,8,8}, timer);
     }
+        InfoIntPacket >> InfoInt;
     who_deals = intToJoueur((InfoInt/1000)%10);
     who_plays = intToJoueur((InfoInt/100)%10);
     who_speaks = intToJoueur((InfoInt/10)%10);
@@ -77,25 +90,24 @@ void GetGameInfo(Joueur &who_deals, Joueur &who_speaks, Joueur &who_plays, bool 
     bool coincheRecup, surcoincheRecup;
 
     for (int i=0; i<5; i++){
-        if (client_socket.receive(EnchereStringPacket) == sf::Socket::Done) {
-            EnchereStringPacket >> EnchereString;
-            if (EnchereString[3] == ' '){
-                joueurRecup = intToJoueur(std::stoi(std::string {EnchereString[0]}));
-                pointsRecup = std::stoi(std::string {EnchereString[1], EnchereString[2]});
-                atoutRecup = intToAtout(std::stoi(std::string {EnchereString[4]}));
-                coincheRecup = bool(std::stoi(std::string {EnchereString[5]}));
-                surcoincheRecup = bool(std::stoi(std::string {EnchereString[6]}));
-            }
-            else{
-                joueurRecup = intToJoueur(std::stoi(std::string {EnchereString[0]}));
-                pointsRecup = std::stoi(std::string {EnchereString[1], EnchereString[2], EnchereString[3]});
-                atoutRecup = intToAtout(std::stoi(std::string {EnchereString[5]}));
-                coincheRecup = (bool)(std::stoi(std::string {EnchereString[6]}));
-                surcoincheRecup = (bool)(std::stoi(std::string {EnchereString[7]}));
-            }
-            if (i==0){current_enchere = Enchere {joueurRecup, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};}
-            else{all_encheres[i-1] = Enchere {joueurRecup, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};}      
+        while (client_socket.receive(EnchereStringPacket) != sf::Socket::Done) {view.render(my_role, who_deals, mesCartes, {8,8,8,8}, timer);}
+        EnchereStringPacket >> EnchereString;
+        if (EnchereString[3] == ' '){
+            joueurRecup = intToJoueur(std::stoi(std::string {EnchereString[0]}));
+            pointsRecup = std::stoi(std::string {EnchereString[1], EnchereString[2]});
+            atoutRecup = intToAtout(std::stoi(std::string {EnchereString[4]}));
+            coincheRecup = bool(std::stoi(std::string {EnchereString[5]}));
+            surcoincheRecup = bool(std::stoi(std::string {EnchereString[6]}));
         }
+        else{
+            joueurRecup = intToJoueur(std::stoi(std::string {EnchereString[0]}));
+            pointsRecup = std::stoi(std::string {EnchereString[1], EnchereString[2], EnchereString[3]});
+            atoutRecup = intToAtout(std::stoi(std::string {EnchereString[5]}));
+            coincheRecup = (bool)(std::stoi(std::string {EnchereString[6]}));
+            surcoincheRecup = (bool)(std::stoi(std::string {EnchereString[7]}));
+        }
+        if (i==0){current_enchere = Enchere {joueurRecup, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};}
+        else{all_encheres[i-1] = Enchere {joueurRecup, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};}      
     }
 }
 
@@ -153,16 +165,8 @@ void SendEnchere(int pointclient, Atout atoutclient, bool coincheclient, bool su
 
 int clientmain(){
 
-	SDL_Event		event;
-	bool			quit = false;
-	bool 			mouse_pressed = false;
 	GameView		view;
 	Timer			timer;
-	int 			sx;
-	int				sy;
-	int 			t = 100;
-
-
 
     int nb_joueurs = 4;
     Joueur my_role;
@@ -191,10 +195,15 @@ int clientmain(){
     
     Paquet mesCartes = {};
 
+    InitView(view, timer);
+    //view.render(Joueur::Nord, Joueur::Sud, Paquet{Carte{Valeur::As,Couleur::Pique}},{1,8,8,8},timer );
+    view.clear();
+
     if (ConnexionServer(client_socket,ipaddress,port,my_pseudo)){
         return 1;
     }
-    getPseudoRole(assoc_pseudo_role, client_socket, my_pseudo, my_role, nb_joueurs);
+
+    getPseudoRole(assoc_pseudo_role, client_socket, my_pseudo, my_role, nb_joueurs, view);
 
     std::cout << "Joueurs : " << std::endl;
     
@@ -225,16 +234,19 @@ int clientmain(){
     bool coincheclient;
     bool surcoincheclient;
 
-    GetGameInfo(who_deals, who_speaks, who_plays, enchere_en_cours, client_socket, all_encheres, current_enchere);
+    GetGameInfo(who_deals, who_speaks, who_plays, enchere_en_cours, client_socket, all_encheres, current_enchere, view, my_role, mesCartes, timer);
 
     while (enchere_en_cours){ 
+        view.render(my_role, who_deals, mesCartes, {8,8,8,8}, timer);
         if (who_speaks == my_role){
             GetEnchere(my_role, pointclient,atoutclient,coincheclient,surcoincheclient,current_enchere);
             SendEnchere(pointclient,atoutclient,coincheclient,surcoincheclient,client_socket);
         }
-        GetGameInfo(who_deals, who_speaks, who_plays, enchere_en_cours, client_socket, all_encheres, current_enchere);
+        GetGameInfo(who_deals, who_speaks, who_plays, enchere_en_cours, client_socket, all_encheres, current_enchere, view, my_role, mesCartes, timer);
     }
     std::cout << "ENCHERE TERMINEE" << std::endl;
 
+    SDL_Quit();
+    
     return 0;
 }

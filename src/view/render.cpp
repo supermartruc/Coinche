@@ -58,10 +58,35 @@ void	GameView::renderDealer(int dist_trigo) {
 
 void	GameView::clear() {
 	//204021
+	while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_QUIT) {
+				quit = true;
+			}
+			if (event.type == SDL_KEYDOWN) {
+				switch(event.key.keysym.sym){
+					case SDLK_ESCAPE:
+						quit = true;
+				}
+			}
+			if (event.type == SDL_MOUSEMOTION) {
+				SDL_GetMouseState(&sx, &sy);
+        	}
+			if (event.type == SDL_MOUSEBUTTONDOWN) {
+				mouse_pressed = true;
+        	}
+			if (event.type == SDL_MOUSEBUTTONUP) {
+				mouse_pressed = false;
+        	}
+		}
+	if (quit){
+		SDL_Quit();
+		exit(0);
+	}
 	SDL_SetRenderDrawColor(renderer, 0x20, 0x40, 0x33, 0xFF);
 	SDL_RenderClear(renderer);
 	SDL_Rect rect = {0, 0, wWindow, hWindow};
 	SDL_RenderCopy(renderer, fond, NULL, &rect);
+    SDL_RenderPresent(renderer);
 }
 
 void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
@@ -220,7 +245,7 @@ void GameView::renderTexte(std::string text, int x, int y, int taille, SDL_Color
 	TTF_Quit();
 }*/
 
-void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, int sx, int sy, Timer timer) {
+void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Timer timer) {
 	int int_you = joueurToInt(you);
 	clear();
 	renderPaquet(mypaquet, sx, sy);

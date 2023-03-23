@@ -48,19 +48,24 @@ class GameView {
 		std::map<bool, SDL_Texture*> 						plus;
 		std::map<bool, SDL_Texture*> 						moins;
 		SDL_Window		*window;
-		SDL_Renderer	*renderer;
 		SDL_Texture* 	dos_carteV;
 		SDL_Texture* 	dos_carteH;
 		SDL_Texture* 	fond;
 		SDL_Texture* 	jeton;
 		SDL_Texture* 	menu;
+		SDL_Event		event;
+		bool			mouse_pressed;
 		int 			wMenu;
 		int 			hMenu;
 		int 			wIcone;
 		int 			dec; // decalage des icones sur le menu
 		int 			elevation;
+		int 			sx;
+		int 			sy;
 
 	public:
+		SDL_Renderer	*renderer;
+		bool			quit=0;
 		int				wCarte;
 		int				hCarte;
 		int				wWindow;
@@ -87,7 +92,7 @@ class GameView {
 		void	addAnimation(Animation animation);
 		void	updateAnimations(int deltaTime);
 		void	renderAnimations();
-		void 	render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, int sx, int sy, Timer timer);
+		void 	render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Timer timer);
 };
 
 #endif
