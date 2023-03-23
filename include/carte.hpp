@@ -7,6 +7,7 @@
 #include <tuple>
 #include <iostream>
 #include <algorithm>
+#include <string>
 
 
 enum class Joueur{

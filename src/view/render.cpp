@@ -111,6 +111,14 @@ void GameView::renderRetournees(int gauche, int haut, int droite) {
 	}
 }
 
+void 	GameView::render_nombre(int nombre, int x, int y, int taille) {
+	std::string nbr = std::to_string(nombre);
+	for (int i=0; i<nbr.size(); i++) {
+		SDL_Rect rect = {x+i*(3*taille/4), y, taille, taille};
+		SDL_RenderCopy(renderer, chiffres[(int) (nbr[i]-'0')], NULL, &rect);
+	}
+}
+
 bool GameView::isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte){
 	return (sx >= xcarte && sx < xcarte+wcarte && sy >= ycarte);
 }
@@ -147,10 +155,11 @@ std::pair<Atout, bool> GameView::pair_icone(Atout atout, int sx, int sy) {
 	return {atout, atout==atout_clicked};
 }
 
-void GameView::renderMenu(int x, int y, int sx, int sy) {
+void GameView::renderMenu(int x, int y, int sx, int sy, int annonce_temp) {
 	int wIcone = (int) (hMenu / 6.0);
 	SDL_Rect rect = {x, y, wMenu, hMenu};
 	SDL_RenderCopy(renderer, menu, NULL, &rect);
+
 	rect = {x+dec, y+dec, wIcone, wIcone};
 	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Trefle, sx, sy)], NULL, &rect);
 	rect = {x+2*dec+wIcone, y+dec, wIcone, wIcone};
@@ -165,6 +174,14 @@ void GameView::renderMenu(int x, int y, int sx, int sy) {
 	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Ta, sx, sy)], NULL, &rect);
 	rect = {x+dec/2+wIcone/2, y+3*dec+3*wIcone, dec+2*wIcone, 5*wIcone/6};
 	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Passe, sx, sy)], NULL, &rect);
+
+	bool is_moins = isInsideCarre(sx, sy, x + hCarte - 70, y+ hCarte/3, 50);
+	bool is_plus = isInsideCarre(sx, sy, x + hCarte + 140, y+ hCarte/3, 50);
+	render_nombre(annonce_temp, x + hCarte, y + hCarte/3, 50);
+	rect = {x + hCarte - 70, y+ hCarte/3, 50, 50};
+	SDL_RenderCopy(renderer, moins[is_moins], NULL, &rect);
+	rect = {x + hCarte + 140, y+ hCarte/3, 50, 50};
+	SDL_RenderCopy(renderer, plus[is_plus], NULL, &rect);
 }
 
 void	GameView::addAnimation(Animation animation) {
@@ -209,10 +226,11 @@ void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector
 	renderPaquet(mypaquet, sx, sy);
 	renderRetournees(taille_paquets[(int_you+1)%4], taille_paquets[(int_you+2)%4], taille_paquets[(int_you+3)%4]);
 	renderDealer(joueurToInt(who_deals)-int_you);
-	renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (2.1 * hCarte), sx, sy);
+	renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (2.1 * hCarte), sx, sy, 150);
 	renderAnimations();
 	SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
 	updateAnimations(timer.get_ticks());
 	timer.start();
+	render_nombre(158, 500, 500, 50);
 	SDL_RenderPresent(renderer);
 }

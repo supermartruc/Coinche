@@ -43,6 +43,10 @@ class GameView {
 	private:
 		std::map<Valeur, std::map<Couleur, SDL_Texture*>>	textures;
 		std::vector<Animation>								animations;
+		std::map<int, SDL_Texture*>							chiffres;			
+		std::map<std::pair<Atout,bool>, SDL_Texture*>		icones;
+		std::map<bool, SDL_Texture*> 						plus;
+		std::map<bool, SDL_Texture*> 						moins;
 		SDL_Window		*window;
 		SDL_Renderer	*renderer;
 		SDL_Texture* 	dos_carteV;
@@ -50,7 +54,6 @@ class GameView {
 		SDL_Texture* 	fond;
 		SDL_Texture* 	jeton;
 		SDL_Texture* 	menu;
-		std::map<std::pair<Atout,bool>, SDL_Texture*>	icones;
 		int 			wMenu;
 		int 			hMenu;
 		int 			wIcone;
@@ -69,8 +72,9 @@ class GameView {
 		void	renderDosV(int x, int y);
 		void	renderDosH(int x, int y);
 		void	renderRetournees(int gauche, int haut, int droite);
-		void	renderMenu(int x, int y, int sx, int sy);
+		void	renderMenu(int x, int y, int sx, int sy, int annonce_temp);
 		Atout	iconeToAtout(int sx, int sy);
+		void	render_nombre(int nombre, int x, int y, int taille);
 		std::pair <Atout, bool> pair_icone(Atout atout, int sx, int sy);
 		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
 		void	clear();
