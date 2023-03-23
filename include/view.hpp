@@ -54,14 +54,11 @@ class GameView {
 		SDL_Texture* 	jeton;
 		SDL_Texture* 	menu;
 		SDL_Event		event;
-		bool			mouse_pressed;
 		int 			wMenu;
 		int 			hMenu;
 		int 			wIcone;
 		int 			dec; // decalage des icones sur le menu
 		int 			elevation;
-		int 			sx;
-		int 			sy;
 
 	public:
 		SDL_Renderer	*renderer;
@@ -70,29 +67,33 @@ class GameView {
 		int				hCarte;
 		int				wWindow;
 		int				hWindow;
+		bool			mouse_pressed;
+		bool			mouse_click;
+		int 			sx;
+		int 			sy;
 		void	init();
 		void	renderCarte(Carte carte, int x, int y);
-		void	renderPaquet(Paquet paquet, int sx, int sy);
+		void	renderPaquet(Paquet paquet);
 		void	renderDealer(int dist_trigo);
 		void	renderDosV(int x, int y);
 		void	renderDosH(int x, int y);
 		void	renderRetournees(int gauche, int haut, int droite);
-		void	renderMenu(int x, int y, int sx, int sy, int annonce_temp);
-		Atout	iconeToAtout(int sx, int sy);
+		void	renderMenu(int x, int y, int &annonce_temp, int annonce_min);
+		Atout	iconeToAtout();
 		void	render_nombre(int nombre, int x, int y, int taille);
-		std::pair <Atout, bool> pair_icone(Atout atout, int sx, int sy);
+		std::pair <Atout, bool> pair_icone(Atout atout);
 		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
 		void	clear(bool refresh);
 		int		getWCarte() const;
 		int		getHCarte() const;
-		bool 	isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte);
-		bool 	isInsideCarre(int sx, int sy, int x, int y, int c);
+		bool 	isInsideRectangle( int xcarte, int ycarte, int wcarte);
+		bool 	isInsideCarre( int x, int y, int c);
 
 		void	startAnimations();
 		void	addAnimation(Animation animation);
 		void	updateAnimations(int deltaTime);
 		void	renderAnimations();
-		void 	render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Timer timer);
+		void 	render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Timer timer, int &annonce_temp, int annonce_min);
 };
 
 #endif
