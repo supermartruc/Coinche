@@ -69,6 +69,34 @@ void GetGameInfo(Joueur &who_deals, Joueur &who_speaks, Joueur &who_plays, bool 
     who_speaks = intToJoueur((InfoInt/10)%10);
     enchere_en_cours = (bool)(InfoInt%10);
 
+    std::string EnchereString;
+    sf::Packet EnchereStringPacket;
+    Joueur joueurRecup;
+    int pointsRecup;
+    Atout atoutRecup;
+    bool coincheRecup, surcoincheRecup;
+
+    for (int i=0; i<5; i++){
+        if (client_socket.receive(EnchereStringPacket) == sf::Socket::Done) {
+            EnchereStringPacket >> EnchereString;
+            if (EnchereString[3] == ' '){
+                joueurRecup = intToJoueur(std::stoi(std::string {EnchereString[0]}));
+                pointsRecup = std::stoi(std::string {EnchereString[1], EnchereString[2]});
+                atoutRecup = intToAtout(std::stoi(std::string {EnchereString[4]}));
+                coincheRecup = bool(std::stoi(std::string {EnchereString[5]}));
+                surcoincheRecup = bool(std::stoi(std::string {EnchereString[6]}));
+            }
+            else{
+                joueurRecup = intToJoueur(std::stoi(std::string {EnchereString[0]}));
+                pointsRecup = std::stoi(std::string {EnchereString[1], EnchereString[2], EnchereString[3]});
+                atoutRecup = intToAtout(std::stoi(std::string {EnchereString[5]}));
+                coincheRecup = (bool)(std::stoi(std::string {EnchereString[6]}));
+                surcoincheRecup = (bool)(std::stoi(std::string {EnchereString[7]}));
+            }
+            if (i==0){current_enchere = Enchere {joueurRecup, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};}
+            else{all_encheres[i-1] = Enchere {joueurRecup, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};}      
+        }
+    }
 }
 
 void GetEnchere(Joueur my_role, int &pointclient, Atout &atoutclient, bool &coincheclient, bool &surcoincheclient, Enchere current_enchere){
@@ -89,12 +117,14 @@ void GetEnchere(Joueur my_role, int &pointclient, Atout &atoutclient, bool &coin
                 break;
             }
         }
+        coincheclient = false;
+        surcoincheclient = false;
         std::cout << "Atout : " << std::flush;
         std::string tempatout;
         std::cin >> tempatout;
         atoutclient = stringToAtout(tempatout);
         if (atoutclient == Atout::Passe){
-            pointclient = 0;
+            pointclient = 10;
             enchere_not_valid = false;
             break;
         }
@@ -117,7 +147,7 @@ void SendEnchere(int pointclient, Atout atoutclient, bool coincheclient, bool su
     std::string EnchereString = "";
     EnchereString += std::to_string(pointclient) + " " + std::to_string(atoutToInt(atoutclient)) + std::to_string((int)(coincheclient)) + std::to_string((int)(surcoincheclient));
     EnchereStringPacket << EnchereString;
-    if (client_socket.send(EnchereStringPacket) == sf::Socket::Done){}
+    if (client_socket.send(EnchereStringPacket) == sf::Socket::Done){std::cout << "Paquet envoye enchere" << std::endl;}
     else {std::cout << "Erreur envoi enchere." << std::endl;}
 }
 
@@ -202,8 +232,9 @@ int clientmain(){
             GetEnchere(my_role, pointclient,atoutclient,coincheclient,surcoincheclient,current_enchere);
             SendEnchere(pointclient,atoutclient,coincheclient,surcoincheclient,client_socket);
         }
-    GetGameInfo(who_deals, who_speaks, who_plays, enchere_en_cours, client_socket, all_encheres, current_enchere);
+        GetGameInfo(who_deals, who_speaks, who_plays, enchere_en_cours, client_socket, all_encheres, current_enchere);
     }
+    std::cout << "ENCHERE TERMINEE" << std::endl;
 
     return 0;
 }
