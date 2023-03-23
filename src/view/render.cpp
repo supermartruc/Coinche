@@ -55,9 +55,6 @@ void	GameView::renderDealer(int dist_trigo) {
 	SDL_Rect rect = {x, y, 90, 90};
 	SDL_RenderCopy(renderer, jeton, NULL, &rect);
 }
-void	GameView::render() {
-	SDL_RenderPresent(renderer);
-}
 
 void	GameView::clear() {
 	//204021
@@ -211,8 +208,8 @@ void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector
 	renderDealer(int_you - (1+joueurToInt(who_deals)));
 	renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (2.1 * hCarte), sx, sy);
 	renderAnimations();
-	render();
 	SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
 	updateAnimations(timer.get_ticks());
 	timer.start();
+	SDL_RenderPresent(renderer);
 }
