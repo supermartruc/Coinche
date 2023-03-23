@@ -28,28 +28,6 @@ void	loop(Jeu game) {
 				switch(event.key.keysym.sym){
 					case SDLK_ESCAPE:
 						quit = true;
-						break;
-					case SDLK_p:
-						key_pressed = 'p';
-						break;
-					case SDLK_c:
-						key_pressed = 'c';
-						break;
-					case SDLK_k:
-						key_pressed = 'k';
-						break;
-					case SDLK_t:
-						key_pressed = 't';
-						break;
-					case SDLK_s:
-						key_pressed = 's';
-						break;
-					case SDLK_a:
-						key_pressed = 'a';
-						break;
-					case SDLK_SPACE:
-						key_pressed = ' ';
-						break;
 				}
 			}
 
@@ -65,8 +43,15 @@ void	loop(Jeu game) {
 		}
 		int you = joueurToInt(game.you);
 		int deal = (1+joueurToInt(game.who_cuts))%4;
+		//Atout annonce;
 		
 		view.render(game.you, intToJoueur(deal), game.allPaquets[you], {8, 8, 8, 8}, sx, sy, timer);
+
+		/* if (mouse_pressed) {
+			annonce = iconeToAtout(sx, sy)
+		}*/
+
+		}
 
 		switch (sotg)
 		{
@@ -104,7 +89,6 @@ void	loop(Jeu game) {
 
 		default:
 			break;
-		}
 	}
 	SDL_Quit();
 }

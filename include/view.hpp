@@ -73,7 +73,6 @@ class GameView {
 		Atout	iconeToAtout(int sx, int sy);
 		std::pair <Atout, bool> pair_icone(Atout atout, int sx, int sy);
 		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
-		void	render();
 		void	clear();
 		int		getWCarte() const;
 		int		getHCarte() const;

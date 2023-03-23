@@ -208,7 +208,6 @@ void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector
 	clear();
 	renderPaquet(mypaquet, sx, sy);
 	renderRetournees(taille_paquets[(int_you+1)%4], taille_paquets[(int_you+2)%4], taille_paquets[(int_you+3)%4]);
-
 	renderDealer(int_you - (1+joueurToInt(who_deals)));
 	renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (2.1 * hCarte), sx, sy);
 	renderAnimations();
