@@ -82,7 +82,7 @@ class GameView {
 		void	render_nombre(int nombre, int x, int y, int taille);
 		std::pair <Atout, bool> pair_icone(Atout atout, int sx, int sy);
 		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
-		void	clear();
+		void	clear(bool refresh);
 		int		getWCarte() const;
 		int		getHCarte() const;
 		bool 	isInsideRectangle(int sx, int sy, int xcarte, int ycarte, int wcarte);

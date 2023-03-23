@@ -56,7 +56,7 @@ void	GameView::renderDealer(int dist_trigo) {
 	SDL_RenderCopy(renderer, jeton, NULL, &rect);
 }
 
-void	GameView::clear() {
+void	GameView::clear(bool refresh) {
 	//204021
 	while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
@@ -86,7 +86,9 @@ void	GameView::clear() {
 	SDL_RenderClear(renderer);
 	SDL_Rect rect = {0, 0, wWindow, hWindow};
 	SDL_RenderCopy(renderer, fond, NULL, &rect);
-    SDL_RenderPresent(renderer);
+	if (refresh) {
+    	SDL_RenderPresent(renderer);
+	}
 }
 
 void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
@@ -247,7 +249,7 @@ void GameView::renderTexte(std::string text, int x, int y, int taille, SDL_Color
 
 void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Timer timer) {
 	int int_you = joueurToInt(you);
-	clear();
+	clear(false);
 	renderPaquet(mypaquet, sx, sy);
 	renderRetournees(taille_paquets[(int_you+1)%4], taille_paquets[(int_you+2)%4], taille_paquets[(int_you+3)%4]);
 	renderDealer(joueurToInt(who_deals)-int_you);

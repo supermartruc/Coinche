@@ -33,9 +33,9 @@ void getPseudoRole(std::vector<std::pair<std::string,Joueur>> &assoc_pseudo_role
     client_socket.setBlocking(false);
 
     for (int i = 0; i<nb_joueurs; i++){
-        while (client_socket.receive(PseudoReceivePacket) != sf::Socket::Done){view.clear();}
+        while (client_socket.receive(PseudoReceivePacket) != sf::Socket::Done){view.clear(false);}
         PseudoReceivePacket >> pseudoReceive;
-        while (client_socket.receive(RoleReceivePacket) != sf::Socket::Done){view.clear();}
+        while (client_socket.receive(RoleReceivePacket) != sf::Socket::Done){view.clear(false);}
         RoleReceivePacket >> roleIntReceive;
         roleReceive = intToJoueur(roleIntReceive);
         if (pseudoReceive == my_pseudo){
@@ -196,8 +196,8 @@ int clientmain(){
     Paquet mesCartes = {};
 
     InitView(view, timer);
-    //view.render(Joueur::Nord, Joueur::Sud, Paquet{Carte{Valeur::As,Couleur::Pique}},{1,8,8,8},timer );
-    view.clear();
+    view.render(Joueur::Nord, Joueur::Sud, Paquet{Carte{Valeur::As,Couleur::Pique}},{1,8,8,8},timer );
+    view.clear(true);
 
     if (ConnexionServer(client_socket,ipaddress,port,my_pseudo)){
         return 1;
