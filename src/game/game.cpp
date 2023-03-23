@@ -105,14 +105,17 @@ std::ostream &operator<<(std::ostream &os, Atout a){
 		case Atout::Passe:
 			os << "Passe";
 			break;
+        case Atout::Rien:
+            os << "Rien";
 	}
 	return os;
 }
 
 std::ostream &operator<<(std::ostream &os, Enchere e){
 	auto [j,p,a,c,sc] = e;
+    if (a==Atout::Rien || a == Atout::Passe){os << j << " : " << a; return os;}
     os << j << " : " << p << " " << a;
-    if (sc) {os << "sur";} else {if (c) {os << "coinché";}}
+    if (sc) {os << " surcoinché";} else {if (c) {os << "coinché";}}
 	return os;
 }
 

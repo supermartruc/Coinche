@@ -46,11 +46,11 @@ void RoleDistribution(sockvec NetJoueurs, std::vector<Joueur> Roles, std::vector
     }
 }
 
-int AskCuts(Jeu game, sockvec NetJoueurs){
-    return 0;
+int AskCuts(Jeu &game, sockvec NetJoueurs){
+    return 16;
 }
 
-int CreeEnvoiePaquet(Jeu game, sockvec NetJoueurs){
+int CreeEnvoiePaquet(Jeu &game, sockvec NetJoueurs){
     game.createRandomPaquet();
     game.distributionPaquet(Joueur::Sud, 1);
     for (int i=0; i < game.allPaquets.size(); i++){
@@ -73,63 +73,96 @@ int CreeEnvoiePaquet(Jeu game, sockvec NetJoueurs){
     return 0;
 }
 
-void SendGameInfo(Jeu game, sockvec NetJoueurs){
+void SendGameInfo(Jeu &game, sockvec NetJoueurs){
     int InfoInt = (int)(game.enchere_en_cours) + 10*joueurToInt(game.who_speaks) + 100*joueurToInt(game.who_plays) + 1000*((joueurToInt(game.who_cuts)+1)%4);
     sf::Packet InfoIntPacket;
     InfoIntPacket << InfoInt;
     for (int i=0; i<NetJoueurs.size();i++){
         sf::TcpSocket *client_socket = NetJoueurs[i];
-        if (client_socket->send(InfoIntPacket) == sf::Socket::Done){
+        if (client_socket->send(InfoIntPacket) == sf::Socket::Done){}
+        else{std::cout << "Envoi échoué" << std::endl;}
+    }
+
+    std::string EnchereString;
+    sf::Packet EnchereStringPacket;
+    Joueur joueurEnchere;
+    int pointEnchere;
+    Atout atoutEnchere;
+    bool coincheEnchere;
+    bool surcoincheEnchere;
+    for (int i=0; i<5; i++){
+        if (i==0){
+            joueurEnchere = std::get<0>(game.current_enchere);
+            pointEnchere = std::get<1>(game.current_enchere);
+            atoutEnchere = std::get<2>(game.current_enchere);
+            coincheEnchere = std::get<3>(game.current_enchere);
+            surcoincheEnchere = std::get<4>(game.current_enchere);
         }
         else{
-            std::cout << "Envoi échoué" << std::endl;
+            joueurEnchere = std::get<0>(game.all_enchere[i-1]);
+            pointEnchere = std::get<1>(game.all_enchere[i-1]);
+            atoutEnchere = std::get<2>(game.all_enchere[i-1]);
+            coincheEnchere = std::get<3>(game.all_enchere[i-1]);
+            surcoincheEnchere = std::get<4>(game.all_enchere[i-1]);
         }
+        EnchereString = "";
+        EnchereStringPacket.clear();
+        EnchereString += std::to_string(joueurToInt(joueurEnchere)) +
+                         std::to_string(pointEnchere) + " " + 
+                         std::to_string(atoutToInt(atoutEnchere)) + 
+                         std::to_string((int)(coincheEnchere)) + 
+                         std::to_string((int)(surcoincheEnchere));
+        EnchereStringPacket << EnchereString;
+        for (int j=0; j < 4; j++){
+            sf::TcpSocket *client_socket = NetJoueurs[j];
+            if (client_socket->send(EnchereStringPacket) == sf::Socket::Done){}
+            else{std::cout << "Envoi échoué enchere" << std::endl;}
+
+        }
+        
     }
+    
 }
 
 
-void PhaseEncheres(Jeu game, sockvec NetJoueurs, sf::SocketSelector &selector){
-    if (game.who_speaks == std::get<0>(game.current_enchere) && std::get<2>(game.current_enchere) == Atout::Passe){
-        game.enchere_en_cours = false;
+void PhaseEncheres(Jeu &game, sockvec NetJoueurs, sf::SocketSelector &selector){
+    sf::TcpSocket *client_socket = NetJoueurs[joueurToInt(game.who_speaks)];
+    while(selector.wait()){
+        if (selector.isReady(*client_socket)){
+            break;
+        }
     }
-    else{
-        sf::TcpSocket *client_socket = NetJoueurs[joueurToInt(game.who_speaks)];
-        while(selector.wait()){
-            if (selector.isReady(*client_socket)){
-                break;
-            }
+    sf::Packet EnchereStringPacket;
+    std::string EnchereString = "";
+    int pointsRecup;
+    Atout atoutRecup;
+    bool coincheRecup, surcoincheRecup;
+    if (client_socket->receive(EnchereStringPacket) == sf::Socket::Done) {
+        EnchereStringPacket >> EnchereString;
+        if (EnchereString[2] == ' '){
+            pointsRecup = std::stoi(std::string {EnchereString[0], EnchereString[1]});
+            atoutRecup = intToAtout(std::stoi(std::string {EnchereString[3]}));
+            coincheRecup = bool(std::stoi(std::string {EnchereString[4]}));
+            surcoincheRecup = bool(std::stoi(std::string {EnchereString[5]}));
         }
-        sf::Packet EnchereStringPacket;
-        std::string EnchereString = "";
-        int pointsRecup;
-        Atout atoutRecup;
-        bool coincheRecup, surcoincheRecup;
-        if (client_socket->receive(EnchereStringPacket) == sf::Socket::Done) {
-            EnchereStringPacket >> EnchereString;
-            if (EnchereString[3] == ' '){
-                int pointsRecup = std::stoi(std::string {EnchereString[0], EnchereString[1]});
-                Atout atoutRecup = intToAtout(std::stoi(std::string {EnchereString[4]}));
-                bool coincheRecup = bool(std::stoi(std::string {EnchereString[5]}));
-                bool surcoincheRecup = bool(std::stoi(std::string {EnchereString[6]}));
-            }
-            else{
-                int pointsRecup = std::stoi(std::string {EnchereString[0], EnchereString[1], EnchereString[2]});
-                Atout atoutRecup = intToAtout(std::stoi(std::string {EnchereString[5]}));
-                bool coincheRecup = bool(std::stoi(std::string {EnchereString[6]}));
-                bool surcoincheRecup = bool(std::stoi(std::string {EnchereString[7]}));
-            }
-            if (std::get<2>(game.current_enchere) == Atout::Rien || atoutRecup != Atout::Passe){
-                game.current_enchere = Enchere {game.who_speaks, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};
-            }
-            game.all_enchere[joueurToInt(game.who_speaks)] = Enchere {game.who_speaks, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};
+        else{
+            std::cout << "case not blank" << std::endl;
+            pointsRecup = std::stoi(std::string {EnchereString[0], EnchereString[1], EnchereString[2]});
+            atoutRecup = intToAtout(std::stoi(std::string {EnchereString[4]}));
+            coincheRecup = (bool)(std::stoi(std::string {EnchereString[5]}));
+            surcoincheRecup = (bool)(std::stoi(std::string {EnchereString[6]}));
         }
-        else {
-            std::cout << "Echec de la reception de l'enchere." << std::endl;
+        std::cout << "Enchere recuperee : " << Enchere {game.who_speaks, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup} << std::endl;
+        if (std::get<2>(game.current_enchere) == Atout::Rien || std::get<2>(game.current_enchere) == Atout::Passe || atoutRecup != Atout::Passe){
+            game.current_enchere = Enchere {game.who_speaks, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};
         }
-
-        game.who_speaks = intToJoueur((1+joueurToInt(game.who_speaks))%4);
+        game.all_enchere[joueurToInt(game.who_speaks)] = Enchere {game.who_speaks, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};
     }
-
+    else {
+        std::cout << "Echec de la reception de l'enchere." << std::endl;
+    }
+    game.who_speaks = intToJoueur((1+joueurToInt(game.who_speaks))%4);
+    
 }
 
 
@@ -179,9 +212,18 @@ int servermain(){
     SendGameInfo(game, NetJoueurs);
 
     while (game.enchere_en_cours){
+        std::cout << "current enchere : " << game.current_enchere << std::endl;
+        for (int i=0; i<4; i++){
+            std::cout << game.all_enchere[i] << std::endl;
+        }
         PhaseEncheres(game, NetJoueurs, selector);
+        if (game.who_speaks == std::get<0>(game.current_enchere) && std::get<2>(game.all_enchere[(joueurToInt(game.who_speaks)+3)%4]) == Atout::Passe){
+            game.enchere_en_cours = false;
+        }
         SendGameInfo(game, NetJoueurs);
+
     }
+    std::cout << "ENCHERE TERMINEE" << std::endl;
     selector.clear();
     NetJoueurs.clear();
 
