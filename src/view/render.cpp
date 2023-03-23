@@ -27,15 +27,15 @@ void 	GameView::renderDosH(int x, int y) {
 void	GameView::renderDealer(int dist_trigo) {
 	int x=0;
 	int y=0;
-	switch ((8+dist_trigo)%4) {
+	switch ((4+dist_trigo)%4) {
 	case 0:
-		x = 1000; y = 500; break;
+		x = 3*wWindow/4; y = hWindow-21*hCarte/20-90; break;
 	case 1:
-		x = 400; y = 500; break;
+		x = 21*hCarte/20; y = 5*hWindow/6; break;
 	case 2:
-		x = 600; y = 500; break;
+		x = wWindow/4; y = 21*hCarte/20; break;
 	case 3:
-		x = 800; y = 500; break;
+		x = wWindow-21*hCarte/20-90; y = hWindow/6; break;
 	default: 
 		break;
 	}
@@ -88,10 +88,13 @@ void	GameView::renderPaquet(Paquet paquet, int sx, int sy) {
 void GameView::renderRetournees(int gauche, int haut, int droite) {
 	float temp = 4/5.0 * hWindow / ( (float) ((haut+1)*wCarte) );
 	float chev = (float) std::min((float) 4/5, (float) temp );
+	float tempV = hWindow / ( (float) ((haut+0.5)*wCarte) );
+	float chevV = (float) std::min((float) 1, (float) (tempV * 4/5.0) );
+	int wStartV = (wWindow - (chevV*wCarte * haut)) / 2;
 	int i = 0;
 	int wStart = (wWindow - (chev*wCarte * haut)) / 2;
 	while (haut--) {
-		renderDosV(wStart + i*chev*wCarte, 0);
+		renderDosV(wStartV + i*chevV*wCarte, 0);
 		i++;
 	}
 	i = 0;
@@ -205,7 +208,7 @@ void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector
 	clear();
 	renderPaquet(mypaquet, sx, sy);
 	renderRetournees(taille_paquets[(int_you+1)%4], taille_paquets[(int_you+2)%4], taille_paquets[(int_you+3)%4]);
-	renderDealer(int_you - (1+joueurToInt(who_deals)));
+	renderDealer(joueurToInt(who_deals)-int_you);
 	renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (2.1 * hCarte), sx, sy);
 	renderAnimations();
 	SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
