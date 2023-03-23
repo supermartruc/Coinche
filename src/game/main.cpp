@@ -121,7 +121,7 @@ void	loop(Jeu game) {
 }
 
 int main() {
-	/*
+	
 	std::cout << "Serveur ou client ? (s/c)" << std::endl;
 
 	std::string instance_role;
@@ -141,7 +141,7 @@ int main() {
 		std::cout << "Role invalide ! " << std::endl;
 		exit(0);
 	}
-	*/
+	
 	Jeu game;
 	game.createRandomPaquet();
 	game.distributionPaquet(Joueur::Sud, 16);
