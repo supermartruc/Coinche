@@ -52,6 +52,9 @@ class GameView {
 		void	renderDosH(int x, int y);
 		void	renderRetournees(int gauche, int haut, int droite);
 		void	renderMenu(int x, int y, int &annonce_temp, int annonce_min);
+		void 	render_dots(int x, int y);
+		void	render_une_annonce(int x, int y, int pointEnchere, Atout atoutEnchere);
+		void	renderAnnonces(Joueur you, Joueur who_speaks, std::vector<Enchere> all_encheres);
 		Atout	iconeToAtout();
 		void	render_nombre(int nombre, int x, int y, int taille);
 		std::pair <Atout, bool> pair_icone(Atout atout);

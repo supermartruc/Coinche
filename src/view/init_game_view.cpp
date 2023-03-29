@@ -38,11 +38,11 @@ void GameView::init() {
     renderer = create_renderer(window);
     wCarte = 150;
     hCarte = 240;
-    wMenu = 2*hCarte;
-    hMenu = (int) (1.5 * wCarte);
+    wMenu = 480;
+    hMenu = 225;
     elevation = 0.1 * hCarte;
-    wIcone = (int) (hMenu / 4.0);
-	dec = (int) (wMenu / 20.0);
+    wIcone = (int) (hMenu / 5.5);
+	dec = (int) ((hMenu-4*wIcone)/5);
     for (auto& atout : atouts) {
         std::stringstream ss;
         ss << "ressources/Autres/" << "icone_" << atout << ".png";

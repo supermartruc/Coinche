@@ -143,21 +143,21 @@ bool GameView::isInsideCarre(int x, int y, int c) {
 }
 
 Atout GameView::iconeToAtout() { //0, P, C, T, Coeur, TA, SA, Passe
-	int x = (int) (3 / 8.0 * wWindow);
-	int y = hWindow - (int) (2.1 * hCarte);
-	if (isInsideCarre( x+dec, y+dec, 3*wIcone/4)) {
-		return Atout::Trefle;
-	} else if (isInsideCarre( x+dec+wIcone, y+dec+wIcone, 3*wIcone/4)) {
-		return Atout::Pique;
-	} else if (isInsideCarre( x+dec+wIcone, y+dec, 3*wIcone/4)) {
-		return Atout::Coeur;
-	} else if (isInsideCarre( x+dec, y+dec+wIcone, 3*wIcone/4)) {
-		return Atout::Carreau;
-	} else if (isInsideCarre( x+dec+wIcone, y+dec/2+2*wIcone, 3*wIcone/4)) {
+	int x = dec + (int) (3 / 8.0 * wWindow);
+	int y = dec + hWindow - (int) (2.1 * hCarte);
+	if (isInsideCarre( x+dec, y+dec, wIcone)) {
 		return Atout::Sa;
-	} else if (isInsideCarre( x+dec, y+dec/2+2*wIcone, 3*wIcone/4)) {
+	} else if (isInsideCarre( x+3*dec+wIcone, y+dec, wIcone)) {
 		return Atout::Ta;
-	} else if (isInsideCarre( x+dec/2+wIcone/2, y+dec/2+3*wIcone, 3*wIcone/4) || isInsideCarre( x+dec/2+5*wIcone/4, y+dec/2+3*wIcone, 3*wIcone/4)) {
+	} else if (isInsideCarre( x+dec, y+2*dec+wIcone, wIcone)) {
+		return Atout::Carreau;
+	} else if (isInsideCarre( x+3*dec+wIcone, y+2*dec+wIcone, wIcone)) {
+		return Atout::Pique;
+	} else if (isInsideCarre( x+3*dec+wIcone, y+3*dec+2*wIcone, wIcone)) {
+		return Atout::Coeur;
+	} else if (isInsideCarre( x+dec, y+3*dec+2*wIcone, wIcone)) {
+		return Atout::Trefle;
+	} else if (isInsideCarre( x+dec, y+4*dec+3*wIcone, wIcone) || isInsideCarre( x+dec+wIcone, y+4*dec+3*wIcone, wIcone)) {
 		return Atout::Passe;
 
 	} else {
@@ -171,23 +171,23 @@ std::pair<Atout, bool> GameView::pair_icone(Atout atout) {
 }
 
 void GameView::renderMenu(int x, int y, int &annonce_temp, int annonce_min) {
-	int wIcone = (int) (hMenu / 6.0);
 	SDL_Rect rect = {x, y, wMenu, hMenu};
 	SDL_RenderCopy(renderer, menu, NULL, &rect);
 
+	x = x + dec;
 	rect = {x+dec, y+dec, wIcone, wIcone};
-	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Trefle)], NULL, &rect);
-	rect = {x+2*dec+wIcone, y+dec, wIcone, wIcone};
-	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Coeur)], NULL, &rect);
+	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Sa)], NULL, &rect);
+	rect = {x+3*dec+wIcone, y+dec, wIcone, wIcone};
+	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Ta)], NULL, &rect);
 	rect = {x+dec, y+2*dec+wIcone, wIcone, wIcone};
 	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Carreau)], NULL, &rect);
-	rect = {x+2*dec+wIcone, y+2*dec+wIcone, wIcone, wIcone};
+	rect = {x+3*dec+wIcone, y+2*dec+wIcone, wIcone, wIcone};
 	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Pique)], NULL, &rect);
-	rect = {x+2*dec+wIcone, y+5*dec/2+2*wIcone, wIcone, wIcone};
-	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Sa)], NULL, &rect);
-	rect = {x+dec, y+5*dec/2+2*wIcone, wIcone, wIcone};
-	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Ta)], NULL, &rect);
-	rect = {x+dec/2+wIcone/2, y+3*dec+3*wIcone, dec+2*wIcone, 5*wIcone/6};
+	rect = {x+3*dec+wIcone, y+3*dec+2*wIcone, wIcone, wIcone};
+	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Coeur)], NULL, &rect);
+	rect = {x+dec, y+3*dec+2*wIcone, wIcone, wIcone};
+	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Trefle)], NULL, &rect);
+	rect = {x+2*dec, y+4*dec+3*wIcone, 2*wIcone, wIcone};
 	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Passe)], NULL, &rect);
 
 	bool is_moins = isInsideCarre( x + hCarte - 70, y+ hCarte/3, 50);
@@ -205,14 +205,55 @@ void GameView::renderMenu(int x, int y, int &annonce_temp, int annonce_min) {
 	}
 }
 
+void GameView::render_dots(int x, int y) {
+	render_nombre(0, x, y+5, 40);
+	render_nombre(0, x+30, y+5, 40);
+	render_nombre(0, x+60, y+5, 40);
+}
+
+void GameView::render_une_annonce(int x, int y, int pointEnchere, Atout atoutEnchere) {
+	SDL_Rect rect;
+	if (atoutEnchere != Atout::Passe && atoutEnchere != Atout::Rien) {
+		rect = {x, y, wCarte, 50};
+		//SDL_RenderCopy(renderer, menu, NULL, &rect);
+		render_nombre(pointEnchere, x+5, y+5, 40);
+	}
+	int ch2 = (pointEnchere < 100) ? 30 : 0;
+	rect = {x+wCarte-40-ch2, y+5, 40, 40};
+	SDL_RenderCopy(renderer, icones[{atoutEnchere,false}], NULL, &rect);
+}
+
+void GameView::renderAnnonces(Joueur you, Joueur who_speaks, std::vector<Enchere> all_encheres) {
+	int x, y;
+	for (auto &t : all_encheres) {
+		if (you!=std::get<0>(t)) {
+			if ((joueurToInt(std::get<0>(t))-joueurToInt(you)+4)%4 == 2) {
+				x = wWindow/2 - wCarte/2;
+				y = hCarte + elevation;
+			} else {
+				x = (joueurToInt(std::get<0>(t))-joueurToInt(you)+4)%4 == 1 ? hCarte + elevation : wWindow - (hCarte + elevation + wCarte);
+				y = hWindow/2;
+			}
+		} else {
+			continue;
+		}
+		if (std::get<0>(t) == who_speaks) { 
+			render_dots(x, y);
+		} else {
+			render_une_annonce(x, y, std::get<1>(t), std::get<2>(t));
+		}
+	}
+}
+
 void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, int annonce_min, int& annonce_temp, Joueur who_speaks, std::vector<Enchere> all_encheres) {
 	int int_you = joueurToInt(you);
 	clear();
 	renderPaquet(mypaquet);
 	renderRetournees(taille_paquets[(int_you+1)%4], taille_paquets[(int_you+2)%4], taille_paquets[(int_you+3)%4]);
 	renderDealer(joueurToInt(who_deals)-int_you);
+	renderAnnonces(you, who_speaks, all_encheres);
 	if (you == who_speaks) {
-		renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (2.1 * hCarte), annonce_temp, annonce_min);
+		renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (elevation+hCarte+hMenu), annonce_temp, annonce_min);
 	}
 	SDL_RenderPresent(renderer);
 }
