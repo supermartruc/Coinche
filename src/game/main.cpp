@@ -1,11 +1,9 @@
-#include"game.hpp"
-#include"timer.hpp"
-#include"server.hpp"
-#include"client.hpp"
+#include "view.hpp"
+#include "server.hpp"
+#include "client.hpp"
+#include <algorithm>
 
-
-int main() {
-	
+int		main(void) {
 	std::cout << "Serveur ou client ? (s/c)" << std::endl;
 
 	std::string instance_role;
@@ -25,6 +23,6 @@ int main() {
 		std::cout << "Role invalide ! " << std::endl;
 		exit(0);
 	}
-	
+
 	return 0;
 }

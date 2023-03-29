@@ -14,35 +14,9 @@
 SDL_Window		*create_window();
 SDL_Renderer	*create_renderer(SDL_Window *window);
 
-class Animation {
-	public:
-		Animation() = default;
-		Animation(SDL_Texture *texture, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd, Carte carte_anim) : texture(texture), xStart(xStart), yStart(yStart), xEnd(xEnd), yEnd(yEnd), timeStart(timeStart), timeEnd(timeEnd), time(0), started(false), ended(false) {};
-		~Animation() = default;
-		void	init(SDL_Renderer *renderer, std::string path, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd);
-		void	init(SDL_Texture *texture, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd, Carte carte_anim);
-		void	start();
-		void	render(SDL_Renderer *renderer);
-		void	update(int deltaTime);
-		bool	isEnded() const;
-
-		SDL_Texture	*texture;
-		int			xStart;
-		int			yStart;
-		int			xEnd;
-		int			yEnd;
-		int			timeStart;
-		int			timeEnd;
-		int			time;
-		bool		started;
-		bool		ended;
-		Carte		carte_anim;
-};
-
 class GameView {
 	private:
 		std::map<Valeur, std::map<Couleur, SDL_Texture*>>	textures;
-		std::vector<Animation>								animations;
 		std::map<int, SDL_Texture*>							chiffres;			
 		std::map<std::pair<Atout,bool>, SDL_Texture*>		icones;
 		std::map<bool, SDL_Texture*> 						plus;
@@ -62,7 +36,6 @@ class GameView {
 
 	public:
 		SDL_Renderer	*renderer;
-		bool			quit=0;
 		int				wCarte;
 		int				hCarte;
 		int				wWindow;
@@ -83,17 +56,13 @@ class GameView {
 		void	render_nombre(int nombre, int x, int y, int taille);
 		std::pair <Atout, bool> pair_icone(Atout atout);
 		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
-		void	clear(bool refresh);
+		void	clear(bool renderPresent = false);
+		bool	handleEvents();
 		int		getWCarte() const;
 		int		getHCarte() const;
 		bool 	isInsideRectangle( int xcarte, int ycarte, int wcarte);
 		bool 	isInsideCarre( int x, int y, int c);
-
-		void	startAnimations();
-		void	addAnimation(Animation animation);
-		void	updateAnimations(int deltaTime);
-		void	renderAnimations();
-		void 	render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Timer timer, int &annonce_temp, int annonce_min);
+		void 	render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, int annonce_min, int& annonce_temp, Joueur who_speaks, std::vector<Enchere> all_encheres);
 };
 
 #endif

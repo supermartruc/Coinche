@@ -6,12 +6,6 @@ void	GameView::renderCarte(Carte carte, int x, int y) {
 	auto [valeur, couleur] = carte;
 	SDL_Rect rect = {x, y, wCarte, hCarte};
 	SDL_RenderCopy(renderer, textures[valeur][couleur], NULL, &rect); 
-	/*
-	rect = {x - 1, y - 1, wCarte + 2, hCarte + 2};
-	SDL_RenderDrawRect(renderer, &rect);
-	rect = {x - 2, y - 2, wCarte + 4, hCarte + 4};
-	SDL_RenderDrawRect(renderer, &rect);
-	*/	
 }
 
 void 	GameView::renderDosV(int x, int y) {
@@ -39,62 +33,50 @@ void	GameView::renderDealer(int dist_trigo) {
 	default: 
 		break;
 	}
-	/*
-	switch ((8+dist_trigo)%4) {
-	case 0:
-		x = wWindow-100; y = hWindow-hCarte-10; break;
-	case 1:
-		x = hCarte+10; y = hWindow-100; break;
-	case 2:
-		x = wWindow-100; y = hCarte+10; break;
-	case 3:
-		x = wWindow-hCarte-10; y = 100; break;
-	default: 
-		break;
-	}*/
 	SDL_Rect rect = {x, y, 90, 90};
 	SDL_RenderCopy(renderer, jeton, NULL, &rect);
 }
 
-void	GameView::clear(bool refresh) {
-	//204021
-	while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_QUIT) {
-				quit = true;
-			}
-			if (event.type == SDL_KEYDOWN) {
-				switch(event.key.keysym.sym){
-					case SDLK_ESCAPE:
-						quit = true;
-				}
-			}
-			if (event.type == SDL_MOUSEMOTION) {
-				SDL_GetMouseState(&sx, &sy);
-        	}
-			if (event.type == SDL_MOUSEBUTTONDOWN) {
-				mouse_pressed = true;
-				mouse_click = false;
-        	}
-			if (event.type == SDL_MOUSEBUTTONUP) {
-				if (mouse_pressed) {
-					mouse_click = true;
-				} else {
-					mouse_click = false;
-				}
-				mouse_pressed = false;
-        	}
-		}
-	if (quit){
-		SDL_Quit();
-		exit(0);
-	}
+void	GameView::clear(bool renderPresent) {
 	SDL_SetRenderDrawColor(renderer, 0x20, 0x40, 0x33, 0xFF);
 	SDL_RenderClear(renderer);
 	SDL_Rect rect = {0, 0, wWindow, hWindow};
 	SDL_RenderCopy(renderer, fond, NULL, &rect);
-	if (refresh) {
-    	SDL_RenderPresent(renderer);
+	if (renderPresent) {
+		SDL_RenderPresent(renderer);
 	}
+}
+
+
+bool	GameView::handleEvents() {
+	mouse_click = false;
+	while (SDL_PollEvent(&event)) {
+		if (event.type == SDL_QUIT) {
+			return false;
+		}
+		if (event.type == SDL_KEYDOWN) {
+			switch(event.key.keysym.sym){
+				case SDLK_ESCAPE:
+					return false;
+			}
+		}
+		if (event.type == SDL_MOUSEMOTION) {
+			SDL_GetMouseState(&sx, &sy);
+		}
+		if (event.type == SDL_MOUSEBUTTONDOWN) {
+			mouse_pressed = true;
+			mouse_click = false;
+		}
+		if (event.type == SDL_MOUSEBUTTONUP) {
+			if (mouse_pressed) {
+				mouse_click = true;
+			} else {
+				mouse_click = false;
+			}
+			mouse_pressed = false;
+		}
+	}
+	return true;
 }
 
 void	GameView::renderPaquet(Paquet paquet) {
@@ -223,54 +205,14 @@ void GameView::renderMenu(int x, int y, int &annonce_temp, int annonce_min) {
 	}
 }
 
-void	GameView::addAnimation(Animation animation) {
-	animations.push_back(animation);
-}
-
-void	GameView::updateAnimations(int deltaTime) {
-	for (auto &animation : animations) {
-		animation.update(deltaTime);
-	}
-	animations.erase(std::remove_if(animations.begin(), animations.end(), [](Animation &animation) { return animation.isEnded(); }), animations.end());
-}
-
-void	GameView::renderAnimations() {
-	for (auto &animation : animations) {
-		animation.render(renderer);
-	}
-}
-
-void	GameView::startAnimations() {
-	for (auto &animation : animations) {
-		animation.start();
-	}
-}
-/*
-void GameView::renderTexte(std::string text, int x, int y, int taille, SDL_Color color) {
-	TTF_Init();
-	TTF_Font* font = TTF_OpenFont("ressources/Autres/the_nature.ttf", taille);
-	SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, text, color);
-	SDL_Texture* message = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-	SDL_Rect position = { 0, 0, surfaceMessage->w, surfaceMessage->h };
-	SDL_RenderCopy(renderer, message, NULL, &position);
-	SDL_FreeSurface(surfaceMessage);
-	SDL_DestroyTexture(message);
-	TTF_CloseFont(font);
-	TTF_Quit();
-}*/
-
-void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Timer timer, int &annonce_temp, int annonce_min) {
+void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, int annonce_min, int& annonce_temp, Joueur who_speaks, std::vector<Enchere> all_encheres) {
 	int int_you = joueurToInt(you);
-	clear(false);
+	clear();
 	renderPaquet(mypaquet);
 	renderRetournees(taille_paquets[(int_you+1)%4], taille_paquets[(int_you+2)%4], taille_paquets[(int_you+3)%4]);
 	renderDealer(joueurToInt(who_deals)-int_you);
-	if (annonce_min != -1) {
+	if (you == who_speaks) {
 		renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (2.1 * hCarte), annonce_temp, annonce_min);
 	}
-	renderAnimations();
-	SDL_Delay(std::max(0, 1000/60 - timer.get_ticks()));
-	updateAnimations(timer.get_ticks());
-	timer.start();
 	SDL_RenderPresent(renderer);
 }

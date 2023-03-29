@@ -8,9 +8,34 @@
 #include <iostream>
 #include <algorithm>
 #include <string>
+#include <SFML/Network.hpp>
+#include <SFML/System.hpp>
 
 #include "carte.hpp"
 #include "view.hpp"
+
+struct MyPlayerInfo {
+	Paquet		mesCartes;
+	Joueur		myRole;
+	std::string	myPseudo;
+};
+
+struct GameInfo {
+	GameView									view;
+	Joueur										who_deals;
+	Joueur										who_speaks;
+	Joueur										who_plays;
+	bool										ice_speak;
+	int											annonce_min;
+	int											annonce_temp;
+	bool										enchere_en_cours;
+	std::vector<Enchere>						all_encheres;
+	Enchere										current_enchere;
+	std::vector<std::pair<std::string,Joueur>>	assoc_pseudo_role;
+	std::vector<int>							taille_paquets;
+	sf::TcpSocket 								client_socket;
+	MyPlayerInfo								myPlayer;
+};
 
 class Jeu{
 	public:

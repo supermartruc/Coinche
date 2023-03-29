@@ -1,4 +1,4 @@
-#include "view.hpp"
+/*#include "view.hpp"
 
 void	Animation::init(SDL_Renderer *renderer, std::string path, int xStart, int yStart, int xEnd, int yEnd, int timeStart, int timeEnd) {
 	SDL_Surface	*tmp = IMG_Load(path.c_str());
@@ -59,3 +59,4 @@ void	Animation::update(int deltaTime) {
 bool	Animation::isEnded() const {
 	return this->ended;
 }
+*/
