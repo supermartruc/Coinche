@@ -235,13 +235,15 @@ void GameView::render_une_annonce(int x, int y, int pointEnchere, Atout atoutEnc
 
 void GameView::renderAnnonces(Joueur you, Joueur who_speaks, std::vector<Enchere> all_encheres) {
 	int x, y;
+	int player;
 	for (auto &t : all_encheres) {
 		if (you!=std::get<0>(t)) {
-			if ((joueurToInt(std::get<0>(t))-joueurToInt(you)+4)%4 == 2) {
-				x = wWindow/2 - wCarte/2;
-				y = hCarte + elevation;
+			player = joueurToInt(std::get<0>(t))-joueurToInt(you)+4;
+			if (player%2 == 0) {
+				x = wWindow/2 + (player%4==0)*wCarte - (player%4)*wCarte - wCarte/2;
+				y = hCarte + elevation/2;
 			} else {
-				x = (joueurToInt(std::get<0>(t))-joueurToInt(you)+4)%4 == 1 ? hCarte + elevation : wWindow - (hCarte + elevation + wCarte);
+				x = player%4 == 1 ? hCarte + elevation/2 : wWindow - (hCarte + elevation + wCarte);
 				y = hWindow/2;
 			}
 		} else {
@@ -255,10 +257,14 @@ void GameView::renderAnnonces(Joueur you, Joueur who_speaks, std::vector<Enchere
 	}
 }
 
-void renderCartesPli(Joueur who_starts, Paquet pli_en_cours) {
-	
+void GameView::renderCartesPli(Joueur you, Joueur who_starts, Paquet pli_en_cours) {
+	int esp = 5; // expacement entre le cente et une carte placée
+	int p = (joueurToInt(who_starts)-joueurToInt(you)+4)%4;
+	for (auto& carte : pli_en_cours) {
+		renderCarte(carte, wWindow/2-wCarte/2 + (p==3)*(wCarte+esp) - (p==1)*(wCarte+esp), hWindow/2-hCarte/2 + (p==0 ? 1 : 0 )*(hCarte/2+esp) - (p==2 ? 1 : 0)*(hCarte/2+esp));
+		p = (1+p)%4;
+	}
 }
-
 
 void GameView::renderEnchere(Joueur you, Joueur who_deals, Paquet mypaquet, int& annonce_temp, int annonce_min, Joueur who_speaks, std::vector<Enchere> all_encheres) {
 	clear();
@@ -279,6 +285,6 @@ void GameView::renderManche(Joueur you, Joueur who_deals, Paquet mypaquet, std::
 	renderRetournees(taille_paquets[(int_you+1)%4], taille_paquets[(int_you+2)%4], taille_paquets[(int_you+3)%4]);
 	renderDealer(joueurToInt(who_deals)-int_you);
 	renderAnnonces(you, intToJoueur(1 + joueurToInt(std::get<0>(current_enchere))%4), {current_enchere});
-
+	renderCartesPli(you, who_starts, pli_en_cours);
 	SDL_RenderPresent(renderer);
 }

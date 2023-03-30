@@ -3,9 +3,10 @@
 #include "client.hpp"
 #include <algorithm>
 
-void loop_testrender() {
+void loop_testrender(bool benchere) {
 	GameView view;
 	Paquet mypaquet = {{Valeur::Valet, Couleur::Trefle}, {Valeur::Valet, Couleur::Carreau}, {Valeur::Valet, Couleur::Pique}, {Valeur::Valet, Couleur::Coeur}, {Valeur::Dix, Couleur::Coeur}, {Valeur::As, Couleur::Trefle}, {Valeur::Roi, Couleur::Trefle}, {Valeur::Dame, Couleur::Trefle}};
+	Paquet pli_en_cours = {{Valeur::Valet, Couleur::Trefle}, {Valeur::Valet, Couleur::Carreau}, {Valeur::Valet, Couleur::Pique}, {Valeur::Sept, Couleur::Coeur}};
 	std::vector<Enchere> encheres; 
 	encheres.push_back({Joueur::Nord,100,Atout::Coeur,false,false});
 	encheres.push_back({Joueur::Est,90,Atout::Coeur,false,false});
@@ -16,14 +17,18 @@ void loop_testrender() {
 	view.init();
 	while (!quit) {
 		quit = !view.handleEvents();
-		view.renderEnchere(Joueur::Sud, Joueur::Est, mypaquet, annonce_temp, 80, Joueur::Sud, encheres);
+		if (benchere) {
+			view.renderEnchere(Joueur::Sud, Joueur::Est, mypaquet, annonce_temp, 80, Joueur::Sud, encheres);
+		} else {
+			view.renderManche(Joueur::Sud, Joueur::Est, mypaquet, {7,7,7,7}, {Joueur::Nord,100,Atout::Coeur,false,false}, Joueur::Sud, pli_en_cours);
+		}
 		SDL_Delay(1000/60);
 	}
 }
 
 int		main(void) {
 
-	// loop_testrender(); exit(0);
+	// loop_testrender(false); exit(0);
 
 	std::cout << "Serveur ou client ? (s/c)" << std::endl;
 
