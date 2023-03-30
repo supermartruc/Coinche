@@ -255,15 +255,30 @@ void GameView::renderAnnonces(Joueur you, Joueur who_speaks, std::vector<Enchere
 	}
 }
 
-void GameView::render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, int& annonce_temp, int annonce_min, Joueur who_speaks, std::vector<Enchere> all_encheres) {
+void renderCartesPli(Joueur who_starts, Paquet pli_en_cours) {
+	
+}
+
+
+void GameView::renderEnchere(Joueur you, Joueur who_deals, Paquet mypaquet, int& annonce_temp, int annonce_min, Joueur who_speaks, std::vector<Enchere> all_encheres) {
+	clear();
+	renderPaquet(mypaquet);
+	renderRetournees(8, 8, 8);
+	renderDealer(joueurToInt(who_deals)-joueurToInt(you));
+	renderAnnonces(you, who_speaks, all_encheres);
+	if (you == who_speaks) {
+		renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (elevation+hCarte+hMenu), annonce_temp, annonce_min);
+	}
+	SDL_RenderPresent(renderer);
+}
+
+void GameView::renderManche(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Enchere current_enchere, Joueur who_starts, Paquet pli_en_cours) {
 	int int_you = joueurToInt(you);
 	clear();
 	renderPaquet(mypaquet);
 	renderRetournees(taille_paquets[(int_you+1)%4], taille_paquets[(int_you+2)%4], taille_paquets[(int_you+3)%4]);
 	renderDealer(joueurToInt(who_deals)-int_you);
-	renderAnnonces(you, who_speaks, all_encheres);
-	if (you == who_speaks) {
-		renderMenu((int) (3 / 8.0 * wWindow), hWindow - (int) (elevation+hCarte+hMenu), annonce_temp, annonce_min);
-	}
+	renderAnnonces(you, intToJoueur(1 + joueurToInt(std::get<0>(current_enchere))%4), {current_enchere});
+
 	SDL_RenderPresent(renderer);
 }
