@@ -156,7 +156,7 @@ void PhaseEncheres(Jeu &game, sockvec NetJoueurs, sf::SocketSelector &selector){
 			surcoincheRecup = (bool)(std::stoi(std::string {EnchereString[6]}));
 		}
 		std::cout << "Enchere recuperee : " << Enchere {game.who_speaks, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup} << std::endl;
-		if (std::get<2>(game.current_enchere) == Atout::Rien || std::get<2>(game.current_enchere) == Atout::Passe || atoutRecup != Atout::Passe){
+		if (std::get<2>(game.current_enchere) == Atout::Rien || atoutRecup != Atout::Passe){
 			game.current_enchere = Enchere {game.who_speaks, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};
 		}
 		game.all_enchere[joueurToInt(game.who_speaks)] = Enchere {game.who_speaks, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};

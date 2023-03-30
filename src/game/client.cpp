@@ -64,6 +64,7 @@ int GetGameInfo(GameInfo &gameInfo){
 			gameInfo.current_enchere = Enchere {joueurRecup, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};
 			gameInfo.annonce_min = std::max(10 + pointsRecup, 80);
 			gameInfo.annonce_temp = gameInfo.annonce_min;
+			std::cout << "Lannonce : " << gameInfo.annonce_min << std::endl;
 		}
 		else{gameInfo.all_encheres[i-1] = Enchere {joueurRecup, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};}      
 	}
@@ -78,11 +79,14 @@ void	enchereLoop(GameInfo& gameInfo) {
 
 	while (!quit) {
 		quit = !gameInfo.view.handleEvents();
-		gameInfo.view.render(gameInfo.myPlayer.myRole, gameInfo.who_deals, gameInfo.myPlayer.mesCartes, {8,8,8,8}, gameInfo.annonce_min, gameInfo.annonce_temp, gameInfo.who_speaks, gameInfo.all_encheres);
+		gameInfo.view.render(gameInfo.myPlayer.myRole, gameInfo.who_deals, gameInfo.myPlayer.mesCartes, {8,8,8,8}, gameInfo.annonce_temp, gameInfo.annonce_min, gameInfo.who_speaks, gameInfo.all_encheres);
 		SDL_Delay(1000/60);
 		GetGameInfo(gameInfo);
 		if (gameInfo.ice_speak && gameInfo.view.iconeToAtout() != Atout::Rien && gameInfo.view.mouse_click){
-			InfoString = std::to_string(gameInfo.annonce_temp) + " " + std::to_string(atoutToInt(gameInfo.view.iconeToAtout())) + "00";
+			std::string pointenvoi;
+			if (gameInfo.view.iconeToAtout() == Atout::Passe){pointenvoi = "10";}
+			else{pointenvoi = std::to_string(gameInfo.annonce_temp);}
+			InfoString = pointenvoi + " " + std::to_string(atoutToInt(gameInfo.view.iconeToAtout())) + "00";
 			InfoStringPacket.clear();
 			InfoStringPacket << InfoString;
 			gameInfo.client_socket.setBlocking(true);
