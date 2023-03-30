@@ -16,7 +16,7 @@ void loop_testrender() {
 	view.init();
 	while (!quit) {
 		quit = !view.handleEvents();
-		view.render(Joueur::Sud, Joueur::Est, mypaquet, {8,8,8,8}, 80, annonce_temp, Joueur::Sud, encheres);
+		view.render(Joueur::Sud, Joueur::Est, mypaquet, {8,8,8,8}, annonce_temp, 80, Joueur::Sud, encheres);
 		SDL_Delay(1000/60);
 	}
 }
