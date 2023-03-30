@@ -222,7 +222,7 @@ int servermain(){
 			std::cout << game.all_enchere[i] << std::endl;
 		}
 		PhaseEncheres(game, NetJoueurs, selector);
-		if (game.who_speaks == std::get<0>(game.current_enchere) && std::get<2>(game.all_enchere[(joueurToInt(game.who_speaks)+3)%4]) == Atout::Passe){
+		if(std::get<1>(game.current_enchere) == 252 || (game.who_speaks == std::get<0>(game.current_enchere) && std::get<2>(game.all_enchere[(joueurToInt(game.who_speaks)+3)%4]) == Atout::Passe)){
 			game.enchere_en_cours = false;
 		}
 		SendGameInfo(game, NetJoueurs);

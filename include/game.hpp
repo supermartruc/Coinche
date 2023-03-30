@@ -25,10 +25,14 @@ struct GameInfo {
 	Joueur										who_deals;
 	Joueur										who_speaks;
 	Joueur										who_plays;
+	Joueur										who_starts;
 	bool										ice_speak;
 	int											annonce_min;
 	int											annonce_temp;
 	bool										enchere_en_cours;
+	bool										manche_terminee;
+	bool										pli_termine;
+	Paquet										pli_en_cours;
 	std::vector<Enchere>						all_encheres;
 	Enchere										current_enchere;
 	std::vector<std::pair<std::string,Joueur>>	assoc_pseudo_role;

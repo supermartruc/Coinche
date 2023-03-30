@@ -16,9 +16,29 @@ int ConnexionServer(sf::TcpSocket &client_socket, std::string ipaddress, int por
 	}
 }
 
+int GetGameInfoManche(GameInfo &gameInfo){
+	std::string InfoString="";
+
+	sf::Packet InfoStringPacket;
+    gameInfo.client_socket.setBlocking(false);
+	if (gameInfo.client_socket.receive(InfoStringPacket) == sf::Socket::Done){
+		gameInfo.client_socket.setBlocking(true);
+	}
+	else{
+		return 1;
+	}
+	InfoStringPacket >> InfoString;
+	gameInfo.who_starts = intToJoueur(std::stoi(std::string {InfoString[0]}));
+	gameInfo.who_plays = intToJoueur(std::stoi(std::string {InfoString[1]}));
+	if (gameInfo.who_starts == gameInfo.who_plays){gameInfo.pli_en_cours = {};}
+	gameInfo.pli_en_cours.push_back(intToCarte(std::stoi(std::string {InfoString[2], InfoString[3]})));
+	gameInfo.pli_termine = (bool)std::stoi(std::string {InfoString[4]});
+	gameInfo.manche_terminee = (bool)std::stoi(std::string {InfoString[5]});
+
+	return 0;
+}
 
 int GetGameInfo(GameInfo &gameInfo){
-	int junk = 0;
 	int InfoInt=0;
 
     sf::Packet InfoIntPacket;
@@ -62,9 +82,13 @@ int GetGameInfo(GameInfo &gameInfo){
 		}
 		if (i==0){
 			gameInfo.current_enchere = Enchere {joueurRecup, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};
-			gameInfo.annonce_min = std::max(10 + pointsRecup, 80);
+			if (pointsRecup >= 180){
+			gameInfo.annonce_min = 252;
+			}
+			else{
+				gameInfo.annonce_min = std::max(10 + pointsRecup, 80);
+			}
 			gameInfo.annonce_temp = gameInfo.annonce_min;
-			std::cout << "Lannonce : " << gameInfo.annonce_min << std::endl;
 		}
 		else{gameInfo.all_encheres[i-1] = Enchere {joueurRecup, pointsRecup, atoutRecup, coincheRecup, surcoincheRecup};}      
 	}
@@ -79,7 +103,7 @@ void	enchereLoop(GameInfo& gameInfo) {
 
 	while (!quit) {
 		quit = !gameInfo.view.handleEvents();
-		gameInfo.view.render(gameInfo.myPlayer.myRole, gameInfo.who_deals, gameInfo.myPlayer.mesCartes, {8,8,8,8}, gameInfo.annonce_temp, gameInfo.annonce_min, gameInfo.who_speaks, gameInfo.all_encheres);
+		gameInfo.view.renderEnchere(gameInfo.myPlayer.myRole, gameInfo.who_deals, gameInfo.myPlayer.mesCartes, gameInfo.annonce_temp, gameInfo.annonce_min, gameInfo.who_speaks, gameInfo.all_encheres);
 		SDL_Delay(1000/60);
 		GetGameInfo(gameInfo);
 		if (gameInfo.ice_speak && gameInfo.view.iconeToAtout() != Atout::Rien && gameInfo.view.mouse_click){
@@ -171,6 +195,10 @@ void	loopLobby(GameInfo& gameInfo) {
 
 }
 
+void	mancheLoop(GameInfo& gameInfo){
+	gameInfo.pli_termine = false;
+	gameInfo.manche_terminee = false;
+}
 
 int clientmain(){
 	GameInfo	gameInfo;
@@ -206,6 +234,8 @@ int clientmain(){
 	loopLobby(gameInfo);
 
 	enchereLoop(gameInfo);
+
+	mancheLoop(gameInfo);
 
 	SDL_Quit(); 
 

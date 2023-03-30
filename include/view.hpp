@@ -65,7 +65,8 @@ class GameView {
 		int		getHCarte() const;
 		bool 	isInsideRectangle( int xcarte, int ycarte, int wcarte);
 		bool 	isInsideCarre( int x, int y, int c);
-		void 	render(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, int &annonce_temp, int annonce_min, Joueur who_speaks, std::vector<Enchere> all_encheres);
+		void 	renderEnchere(Joueur you, Joueur who_deals, Paquet mypaquet, int& annonce_temp, int annonce_min, Joueur who_speaks, std::vector<Enchere> all_encheres);
+		void 	renderManche(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Enchere current_enchere, Joueur who_starts, Paquet pli_en_cours);
 };
 
 #endif

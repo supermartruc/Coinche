@@ -1,13 +1,13 @@
 #!/bin/bash
 
 generateTest(){
-    printf "c\n140.77.177.20\n$2\nmartinbot" > generate.txt
+    printf "c\n140.77.182.127\n$2\nmartinbot" > generate.txt
     printf $1 >> generate.txt
     printf "\n" >> generate.txt
 }
 export -f generateTest
 
-# Define a function
+
 clientProcess() {
     generateTest $1 $2
     cat generate.txt - | ./bin/coinche

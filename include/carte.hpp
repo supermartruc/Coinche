@@ -26,6 +26,7 @@ enum class Valeur{
 	Neuf,
 	Huit,
 	Sept,
+	Rien,
 };
 
 enum class Couleur{
@@ -33,6 +34,7 @@ enum class Couleur{
 	Carreau,
 	Coeur,
 	Trefle,
+	Rien,
 };
 
 enum class Atout{
