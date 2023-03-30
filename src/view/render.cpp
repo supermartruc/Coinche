@@ -167,20 +167,20 @@ Atout GameView::iconeToAtout() { //0, P, C, T, Coeur, TA, SA, Passe
 	}
 }
 
-Atout GameView::clicToCarte(Paquet mypaquet_trie) {
-	Carte select = {Valeur::Rien, Couelur::Pique};
+Carte GameView::clicToCarte(Paquet mypaquet_trie) { // il faudrait que les paquets soient initialisés triés
+	Carte select= {Valeur::Rien, Couleur::Pique};
 	if (!mouse_click) {return select;}
 	int i = 0;
-	float temp = hWindow / ( (float) ((paquet.size()+0.5)*wCarte) );
+	float temp = hWindow / ( (float) ((mypaquet_trie.size()+0.5)*wCarte) );
 	float chev = (float) std::min((float) 1, (float) (temp * 4/5.0) );
-	int wStart = (wWindow - (chev*wCarte * paquet.size())) / 2;
-	// Paquet copy_paquet = tri_paquet_affichage(paquet, Atout::Sa);
+	int wStart = (wWindow - (chev*wCarte * mypaquet_trie.size())) / 2;
+	mypaquet_trie = tri_paquet_affichage(mypaquet_trie, Atout::Sa); // temporaire
 	Carte carte;
-	for (int j=0; j < mypaquet.size(); j++) {
-		carte = mypaquet[j];
+	for (int j=0; j < mypaquet_trie.size(); j++) {
+		carte = mypaquet_trie[j];
 		int l = wStart + (i * chev * wCarte);
 		int h = hWindow-hCarte;
-		if (isInsideRectangle( l, h, std::max(chev*wCarte,(float)wCarte*(j==mypaquet.size()-1)))) {
+		if (isInsideRectangle( l, h, std::max(chev*wCarte,(float)wCarte*(j==mypaquet_trie.size()-1)))) {
 			return carte;
 		}
 		else{
@@ -188,6 +188,7 @@ Atout GameView::clicToCarte(Paquet mypaquet_trie) {
 		}
 		i++;
 	}
+	return select;
 }
 
 std::pair<Atout, bool> GameView::pair_icone(Atout atout) {
@@ -239,20 +240,22 @@ void GameView::renderMenu(int x, int y, int &annonce_temp, int annonce_min) {
 }
 
 void GameView::render_dots(int x, int y) {
-	render_nombre(0, x, y+5, 40);
-	render_nombre(0, x+30, y+5, 40);
-	render_nombre(0, x+60, y+5, 40);
+	SDL_Rect rect = {x+12, y+6, 130, 37};
+	SDL_RenderCopy(renderer, dots, NULL, &rect);
+	rect = {x, y-5, wCarte+5, 60};
+	SDL_RenderCopy(renderer, encadrement, NULL, &rect);
 }
 
 void GameView::render_une_annonce(int x, int y, int pointEnchere, Atout atoutEnchere) {
+	if (pointEnchere<80) return;
 	SDL_Rect rect;
 	if (atoutEnchere != Atout::Passe && atoutEnchere != Atout::Rien) {
-		rect = {x, y, wCarte, 50};
-		//SDL_RenderCopy(renderer, menu, NULL, &rect);
-		render_nombre(pointEnchere, x+5, y+5, 40);
+		rect = {x, y-5, wCarte+5, 60};
+		SDL_RenderCopy(renderer, encadrement, NULL, &rect);
+		render_nombre(pointEnchere, x+10, y+5, 40);
 	}
-	int ch2 = (pointEnchere < 100) ? 30 : 0;
-	rect = {x+wCarte-40-ch2, y+5, 40, 40};
+	int ch2 = (pointEnchere < 100) ? 10 : 0;
+	rect = {x+wCarte-50-ch2, y+5, 40, 40};
 	SDL_RenderCopy(renderer, icones[{atoutEnchere,false}], NULL, &rect);
 }
 

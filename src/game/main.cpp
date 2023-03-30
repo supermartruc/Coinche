@@ -18,9 +18,9 @@ void loop_testrender(bool benchere) {
 	while (!quit) {
 		quit = !view.handleEvents();
 		if (benchere) {
-			view.renderEnchere(Joueur::Sud, Joueur::Est, mypaquet, annonce_temp, 80, Joueur::Sud, encheres);
+			view.renderEnchere(Joueur::Sud, Joueur::Est, mypaquet, annonce_temp, 80, Joueur::Nord, encheres);
 		} else {
-			view.renderManche(Joueur::Sud, Joueur::Est, mypaquet, {7,7,7,7}, {Joueur::Nord,100,Atout::Coeur,false,false}, Joueur::Sud, pli_en_cours);
+			view.renderManche(Joueur::Sud, Joueur::Est, mypaquet, {7,7,7,7}, {Joueur::Nord,130,Atout::Trefle,false,false}, Joueur::Sud, pli_en_cours);
 		}
 		SDL_Delay(1000/60);
 	}

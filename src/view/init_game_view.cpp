@@ -133,13 +133,14 @@ void loadTexture(std::string ss, SDL_Renderer* renderer, SDL_Texture*& texture) 
     SDL_FreeSurface(surface);
 }
 
-void loadTexture_dim(std::string ss, SDL_Renderer* renderer, SDL_Texture*& texture, int width, int height, bool transp, bool blur) {
+void loadTexture_dim(std::string ss, SDL_Renderer* renderer, SDL_Texture*& texture, int width, int height, bool transp, int blur = 0) {
     SDL_Surface* surface = IMG_Load(ss.c_str());
     if (surface == nullptr) {
         std::cerr << "Error: " << SDL_GetError() << std::endl;
         exit(1);
     }
-    SDL_Surface* image_surface = SDL_CreateRGBSurface(0, width, height, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask);    if (image_surface == nullptr) {
+    SDL_Surface* image_surface = SDL_CreateRGBSurface(0, width, height, surface->format->BitsPerPixel, surface->format->Rmask, surface->format->Gmask, surface->format->Bmask, surface->format->Amask);    
+    if (image_surface == nullptr) {
         std::cerr << "Error: " << SDL_GetError() << std::endl;
         exit(1);
     }
@@ -149,8 +150,8 @@ void loadTexture_dim(std::string ss, SDL_Renderer* renderer, SDL_Texture*& textu
     SDL_SetSurfaceAlphaMod(surface, transp ? 255 : 150);
     SDL_Rect dest_rect = { 0, 0, width, height };
     SDL_BlitScaled(surface, NULL, image_surface, &dest_rect);
-    if (blur) {
-        gaussian_blur(image_surface, 0);
+    if (blur>0) {
+        gaussian_blur(image_surface, blur);
     }
     texture = SDL_CreateTextureFromSurface(renderer, image_surface);
     SDL_FreeSurface(image_surface);
@@ -170,14 +171,14 @@ void GameView::init() {
     for (auto& atout : atouts) {
         std::stringstream ss;
         ss << "ressources/Autres/" << "icone_" << atout << ".png";
-        loadTexture_dim(ss.str(), renderer, icones[{atout,true}], 200, 200, true, false);
-        loadTexture_dim(ss.str(), renderer, icones[{atout,false}], 200, 200, false, false);
+        loadTexture_dim(ss.str(), renderer, icones[{atout,true}], 200, 200, true);
+        loadTexture_dim(ss.str(), renderer, icones[{atout,false}], 200, 200, false);
     }
     for (auto& couleur : couleurs) {
         for (auto& valeur : valeurs) {
             std::stringstream ss;
 			ss << "ressources/" << couleur << "/" << valeur << ".png";
-            loadTexture_dim(ss.str(), renderer, textures[valeur][couleur], 3*wCarte, 3*hCarte, true, true);
+            loadTexture_dim(ss.str(), renderer, textures[valeur][couleur], 3*wCarte, 3*hCarte, true);
         }
     }
     for (int i=0; i<10; i++) {
@@ -185,19 +186,16 @@ void GameView::init() {
 		ss << "ressources/Chiffres/" << (char) (i+'0') << ".png";
         loadTexture(ss.str(), renderer, chiffres[i]);
     }
-	std::string cV = "ressources/Autres/carte_dosV.png";
-	std::string cH = "ressources/Autres/carte_dosH.png";
-    std::string tapis = "ressources/Autres/tapis_vert.png";
-    std::string jeton_str = "ressources/Autres/jeton1.png";
-    loadTexture_dim("ressources/Autres/menu.png", renderer, menu, wMenu, hMenu, true, false);
-    loadTexture_dim("ressources/Chiffres/plus.png", renderer, plus[false], 60, 60, false, false);
-    loadTexture_dim("ressources/Chiffres/moins.png", renderer, moins[false], 60, 60, false, false);
-    loadTexture_dim("ressources/Chiffres/plus.png", renderer, plus[true], 60, 60, true, false);
-    loadTexture_dim("ressources/Chiffres/moins.png", renderer, moins[true], 60, 60, true, false);
-    loadTexture(cV, renderer, dos_carteV);
-    loadTexture(cH, renderer, dos_carteH);
-    loadTexture(tapis, renderer, fond);
-    loadTexture_dim(jeton_str, renderer, jeton, 200, 200, true, false);
-    // SDL_QueryTexture(textures[Valeur::As][Couleur::Coeur], nullptr, nullptr, &wCarte, &hCarte);
+    loadTexture_dim("ressources/Autres/menu.png", renderer, menu, wMenu, hMenu, true);
+    loadTexture_dim("ressources/Chiffres/plus.png", renderer, plus[false], 60, 60, false);
+    loadTexture_dim("ressources/Chiffres/moins.png", renderer, moins[false], 60, 60, false);
+    loadTexture_dim("ressources/Chiffres/plus.png", renderer, plus[true], 60, 60, true);
+    loadTexture_dim("ressources/Chiffres/moins.png", renderer, moins[true], 60, 60, true);
+    loadTexture("ressources/Autres/encadrement.png", renderer, encadrement);
+    loadTexture("ressources/Autres/dots.png", renderer, dots);
+    loadTexture("ressources/Autres/carte_dosV.png", renderer, dos_carteV);
+    loadTexture("ressources/Autres/carte_dosH.png", renderer, dos_carteH);
+    loadTexture("ressources/Autres/tapis_vert.png", renderer, fond);
+    loadTexture_dim("ressources/Autres/jeton1.png", renderer, jeton, 200, 200, true, 3);
     SDL_GetWindowSize(window, &wWindow, &hWindow);
 }

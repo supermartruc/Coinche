@@ -27,6 +27,8 @@ class GameView {
 		SDL_Texture* 	fond;
 		SDL_Texture* 	jeton;
 		SDL_Texture* 	menu;
+		SDL_Texture* 	encadrement;
+		SDL_Texture* 	dots;
 		SDL_Event		event;
 		int 			wMenu;
 		int 			hMenu;
@@ -56,6 +58,7 @@ class GameView {
 		void	render_une_annonce(int x, int y, int pointEnchere, Atout atoutEnchere);
 		void	renderAnnonces(Joueur you, Joueur who_speaks, std::vector<Enchere> all_encheres);
 		Atout	iconeToAtout();
+		Carte 	clicToCarte(Paquet mypaquet_trie);
 		void	render_nombre(int nombre, int x, int y, int taille);
 		std::pair <Atout, bool> pair_icone(Atout atout);
 		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
