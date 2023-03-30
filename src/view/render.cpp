@@ -167,6 +167,29 @@ Atout GameView::iconeToAtout() { //0, P, C, T, Coeur, TA, SA, Passe
 	}
 }
 
+Atout GameView::clicToCarte(Paquet mypaquet_trie) {
+	Carte select = {Valeur::Rien, Couelur::Pique};
+	if (!mouse_click) {return select;}
+	int i = 0;
+	float temp = hWindow / ( (float) ((paquet.size()+0.5)*wCarte) );
+	float chev = (float) std::min((float) 1, (float) (temp * 4/5.0) );
+	int wStart = (wWindow - (chev*wCarte * paquet.size())) / 2;
+	// Paquet copy_paquet = tri_paquet_affichage(paquet, Atout::Sa);
+	Carte carte;
+	for (int j=0; j < mypaquet.size(); j++) {
+		carte = mypaquet[j];
+		int l = wStart + (i * chev * wCarte);
+		int h = hWindow-hCarte;
+		if (isInsideRectangle( l, h, std::max(chev*wCarte,(float)wCarte*(j==mypaquet.size()-1)))) {
+			return carte;
+		}
+		else{
+			renderCarte(carte, l, h);
+		}
+		i++;
+	}
+}
+
 std::pair<Atout, bool> GameView::pair_icone(Atout atout) {
 	Atout atout_clicked = GameView::iconeToAtout();
 	return {atout, atout==atout_clicked};
