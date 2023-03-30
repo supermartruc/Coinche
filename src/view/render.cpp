@@ -208,7 +208,7 @@ void GameView::renderMenu(int x, int y, int &annonce_temp, int annonce_min) {
 	}
 	if (is_moins && mouse_click) {
 		if (annonce_temp == 252) {
-			annonce_temp = 180;
+			annonce_temp = std::max(180, annonce_min);
 		} else {
 			annonce_temp = std::max(annonce_min, annonce_temp-10);
 		}
