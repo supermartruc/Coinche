@@ -128,8 +128,10 @@ void GameView::renderRetournees(int gauche, int haut, int droite) {
 
 void 	GameView::render_nombre(int nombre, int x, int y, int taille) {
 	std::string nbr = std::to_string(nombre);
+	int shift = nbr.size() < 3 ? 10 : -10;
+	SDL_Rect rect;
 	for (int i=0; i<nbr.size(); i++) {
-		SDL_Rect rect = {x+i*(3*taille/4), y, taille, taille};
+		rect = {x+shift+i*(3*taille/4), y, taille, taille};
 		SDL_RenderCopy(renderer, chiffres[(int) (nbr[i]-'0')], NULL, &rect);
 	}
 }
@@ -198,10 +200,18 @@ void GameView::renderMenu(int x, int y, int &annonce_temp, int annonce_min) {
 	rect = {x + hCarte + 140, y+ hCarte/3, 50, 50};
 	SDL_RenderCopy(renderer, plus[is_plus], NULL, &rect);
 	if (is_plus && mouse_click) {
-		annonce_temp = std::min(160, annonce_temp+10);
+		if (annonce_temp >= 180) {
+			annonce_temp = 252;
+		} else {
+			annonce_temp = std::min(180, annonce_temp+10);
+		}
 	}
 	if (is_moins && mouse_click) {
-		annonce_temp = std::max(annonce_min, annonce_temp-10);
+		if (annonce_temp == 252) {
+			annonce_temp = 180;
+		} else {
+			annonce_temp = std::max(annonce_min, annonce_temp-10);
+		}
 	}
 }
 
