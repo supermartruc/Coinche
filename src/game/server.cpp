@@ -116,7 +116,7 @@ void SendGameInfo(Jeu &game, sockvec NetJoueurs){
 		for (int j=0; j < 4; j++){
 			sf::TcpSocket *client_socket = NetJoueurs[j];
 			if (client_socket->send(EnchereStringPacket) == sf::Socket::Done){}
-			else{std::cout << "Envoi échoué enchere" << std::endl;}
+			else{std::cout << "Envoi échoué enchere" << std::endl; exit(0);}
 
 		}
 		
@@ -289,6 +289,7 @@ int servermain(){
 				}
 				game.dernier_pli = game.pli_actuel;
 				game.pli_actuel = {};
+				game.who_plays = game.who_starts;
 				SendGameInfoPli(game, NetJoueurs, false, false, false);
 
 			}

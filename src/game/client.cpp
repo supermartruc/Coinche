@@ -219,7 +219,7 @@ void	mancheLoop(GameInfo& gameInfo){
 		}
 		gameInfo.view.renderManche(gameInfo.myPlayer.myRole, gameInfo.who_deals, gameInfo.myPlayer.mesCartes, gameInfo.taille_paquets, gameInfo.current_enchere, gameInfo.who_starts, gameInfo.pli_en_cours);
 		SDL_Delay(1000/60);
-		std::cout << gameInfo.pli_termine << " " << (gameInfo.who_plays == gameInfo.myPlayer.myRole) << " " << gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes) << est_valide_carte(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes), gameInfo.myPlayer.mesCartes, gameInfo.couleur_demandee, gameInfo.atout_actuel, gameInfo.pli_en_cours, gameInfo.myPlayer.myRole, gameInfo.who_starts) << std::endl;
+		std::cout << gameInfo.pli_termine << " " << gameInfo.who_plays << " " << gameInfo.myPlayer.myRole << " " << gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes) << est_valide_carte(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes), gameInfo.myPlayer.mesCartes, gameInfo.couleur_demandee, gameInfo.atout_actuel, gameInfo.pli_en_cours, gameInfo.myPlayer.myRole, gameInfo.who_starts) << std::endl;
 		if (!gameInfo.pli_termine && gameInfo.who_plays == gameInfo.myPlayer.myRole && std::get<0>(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes)) != Valeur::Rien && gameInfo.view.mouse_click){
 			if (!est_valide_carte(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes), gameInfo.myPlayer.mesCartes, gameInfo.couleur_demandee, gameInfo.atout_actuel, gameInfo.pli_en_cours, gameInfo.myPlayer.myRole, gameInfo.who_starts)){
 				std::cout << "Carte invalide : " << gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes);
