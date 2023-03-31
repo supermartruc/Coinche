@@ -161,13 +161,6 @@ void loadTexture_dim(std::string ss, SDL_Renderer* renderer, SDL_Texture*& textu
 void GameView::init() {
     window = create_window();
     renderer = create_renderer(window);
-    wCarte = 150;
-    hCarte = 240;
-    wMenu = 480;
-    hMenu = 225;
-    elevation = 0.1 * hCarte;
-    wIcone = (int) (hMenu / 5.5);
-	dec = (int) ((hMenu-4*wIcone)/5);
     for (auto& atout : atouts) {
         std::stringstream ss;
         ss << "ressources/Autres/" << "icone_" << atout << ".png";
@@ -200,4 +193,11 @@ void GameView::init() {
     loadTexture("ressources/Autres/Hline.png", renderer, Hline);
     loadTexture_dim("ressources/Autres/jeton1.png", renderer, jeton, 200, 200, true, 3);
     SDL_GetWindowSize(window, &wWindow, &hWindow);
+    wCarte = wWindow < 1700 ? 120 : 150;
+    hCarte = wWindow < 1700 ? 200 : 240;
+    wMenu = 480;
+    hMenu = 225;
+    elevation = 0.1 * hCarte;
+    wIcone = (int) (hMenu / 5.5);
+	dec = (int) ((hMenu-4*wIcone)/5);
 }
