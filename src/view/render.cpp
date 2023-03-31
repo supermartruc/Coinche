@@ -297,10 +297,10 @@ void GameView::renderCartesPli(Joueur you, Joueur who_starts, Paquet pli_en_cour
 	}
 }
 
-void GameView::renderGlobalPoints(int old_nous, int old_eux, int nous_manche, int eux_manche) {
+void GameView::renderGlobalPoints(int old_nous=0, int old_eux=0, int nous_manche=0, int eux_manche=0) {
 	SDL_Rect rect = {wWindow/2, hWindow/4, 10, hWindow/2};
 	SDL_RenderCopy(renderer, Vline, NULL, &rect);
-	rect = {3*wWindow/8, 5*hWindow/8, wWindow/4, 10};	
+	rect = {3*wWindow/8, 3*hWindow/8, wWindow/4, 10};	
 	SDL_RenderCopy(renderer, Hline, NULL, &rect);
 }
 
