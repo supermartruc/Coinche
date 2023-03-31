@@ -84,7 +84,7 @@ void	GameView::renderPaquet(Paquet paquet) {
 	float temp = hWindow / ( (float) ((paquet.size()+0.5)*wCarte) );
 	float chev = (float) std::min((float) 1, (float) (temp * 4/5.0) );
 	int wStart = (wWindow - (chev*wCarte * paquet.size())) / 2;
-	Paquet copy_paquet = tri_paquet_affichage(paquet, Atout::Sa);
+	Paquet copy_paquet = {}; for (Carte carte : paquet){copy_paquet.push_back(carte);}
 	Carte carte;
 	for (int j=0; j < copy_paquet.size(); j++) {
 		carte = copy_paquet[j];

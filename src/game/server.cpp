@@ -124,13 +124,10 @@ void SendGameInfo(Jeu &game, sockvec NetJoueurs){
 	
 }
 
-
 void PhaseEncheres(Jeu &game, sockvec NetJoueurs, sf::SocketSelector &selector){
 	sf::TcpSocket *client_socket = NetJoueurs[joueurToInt(game.who_speaks)];
 	std::cout << "En attente de l'enchere de " << game.who_speaks << std::endl;
-	//while(!selector.isReady(*client_socket)){
 
-	//}
 	std::cout << "On va receptionner l'enchere de " << game.who_speaks << std::endl;
 	sf::Packet EnchereStringPacket;
 	EnchereStringPacket.clear();
@@ -168,7 +165,35 @@ void PhaseEncheres(Jeu &game, sockvec NetJoueurs, sf::SocketSelector &selector){
 	
 }
 
+void SendGameInfoPli(Jeu &game, sockvec NetJoueurs, bool ajoutcarte, bool finmanche){
+	std::string InfoString;
+	sf::Packet 	InfoStringPacket;
 
+	std::string carteEnvoi = "";
+	if (!ajoutcarte){carteEnvoi = "40";}
+	else{
+		if (carteToInt(game.pli_actuel[game.pli_actuel.size()-1]) <= 9){
+			carteEnvoi = "0" + std::to_string (carteToInt(game.pli_actuel[game.pli_actuel.size()-1]));
+		}
+		else{
+			carteEnvoi = std::to_string (carteToInt(game.pli_actuel[game.pli_actuel.size()-1]));
+		}
+	}
+
+	InfoString = std::to_string(joueurToInt(game.who_starts)) 
+				+ std::to_string(joueurToInt(game.who_plays))
+				+ carteEnvoi
+				+ std::to_string (!game.pli_en_cours)
+				+ std::to_string(finmanche);
+	InfoStringPacket.clear();
+	InfoStringPacket << InfoString;
+	for (int i=0; i<NetJoueurs.size();i++){
+		sf::TcpSocket *client_socket = NetJoueurs[i];
+		if (client_socket->send(InfoStringPacket) == sf::Socket::Done){}
+		else{std::cout << "Envoi échoué" << std::endl;}
+	}
+
+}
 
 int servermain(){
 
@@ -229,6 +254,18 @@ int servermain(){
 
 	}
 	std::cout << "ENCHERE TERMINEE" << std::endl;
+
+	std::cout << "Enchere gagnante : " << game.current_enchere << std::endl;
+
+	game.who_starts = game.who_speaks;
+
+	for (int i=0; i<8; i++){
+		game.who_plays = game.who_starts;
+		SendGameInfoPli(game, NetJoueurs, false, false);
+
+	}
+
+
 	selector.clear();
 	NetJoueurs.clear();
 

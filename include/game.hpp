@@ -33,6 +33,8 @@ struct GameInfo {
 	bool										manche_terminee;
 	bool										pli_termine;
 	Paquet										pli_en_cours;
+	Couleur										couleur_demandee;
+	Atout										atout_actuel;
 	std::vector<Enchere>						all_encheres;
 	Enchere										current_enchere;
 	std::vector<std::pair<std::string,Joueur>>	assoc_pseudo_role;
@@ -65,9 +67,10 @@ class Jeu{
 		int tot_points_NS=0, tot_points_OE=0, points_NS=0, points_OE=0;
 		Enchere current_enchere = {Joueur::Nord,10,Atout::Rien,false,false};
 		std::vector<Enchere> all_enchere = {{Joueur::Nord,10,Atout::Rien,false,false},{Joueur::Est,10,Atout::Rien,false,false},{Joueur::Sud,10,Atout::Rien,false,false},{Joueur::Ouest,10,Atout::Rien,false,false}};
-		Joueur who_cuts = Joueur::Sud, who_speaks = Joueur::Nord, who_plays = Joueur::Nord, dix_de_der_winner = Joueur::Nord;
+		Joueur who_cuts = Joueur::Sud, who_speaks = Joueur::Nord, who_plays = Joueur::Nord, who_starts = Joueur::Nord, dix_de_der_winner = Joueur::Nord;
 		Joueur you = Joueur::Nord;
 		bool enchere_en_cours = false;
+		bool pli_en_cours = false;
 
 	private:
 		std::vector<Couleur> couleurs {Couleur::Pique, Couleur::Carreau, Couleur::Trefle, Couleur::Coeur};
