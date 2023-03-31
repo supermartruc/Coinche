@@ -83,7 +83,7 @@ void	GameView::renderPaquet(Paquet paquet) {
 	float temp = hWindow / ( (float) ((paquet.size()+0.5)*wCarte) );
 	float chev = (float) std::min((float) 1, (float) (temp * 4/5.0) );
 	int wStart = (wWindow - (chev*wCarte * paquet.size())) / 2;
-	Paquet copy_paquet = tri_paquet_affichage(paquet, Atout::Sa);
+	Paquet copy_paquet = {}; for (Carte carte : paquet){copy_paquet.push_back(carte);}
 	Carte carte;
 	for (int j=0; j < copy_paquet.size(); j++) {
 		carte = copy_paquet[j];
@@ -168,12 +168,10 @@ Atout GameView::iconeToAtout() { //0, P, C, T, Coeur, TA, SA, Passe
 
 Carte GameView::clicToCarte(Paquet mypaquet_trie) { // il faudrait que les paquets soient initialisés triés
 	Carte select= {Valeur::Rien, Couleur::Pique};
-	if (!mouse_click) {return select;}
 	int i = 0;
 	float temp = hWindow / ( (float) ((mypaquet_trie.size()+0.5)*wCarte) );
 	float chev = (float) std::min((float) 1, (float) (temp * 4/5.0) );
 	int wStart = (wWindow - (chev*wCarte * mypaquet_trie.size())) / 2;
-	mypaquet_trie = tri_paquet_affichage(mypaquet_trie, Atout::Sa); // temporaire
 	Carte carte;
 	for (int j=0; j < mypaquet_trie.size(); j++) {
 		carte = mypaquet_trie[j];
