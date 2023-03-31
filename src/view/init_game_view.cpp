@@ -196,6 +196,8 @@ void GameView::init() {
     loadTexture("ressources/Autres/carte_dosV.png", renderer, dos_carteV);
     loadTexture("ressources/Autres/carte_dosH.png", renderer, dos_carteH);
     loadTexture("ressources/Autres/tapis_vert.png", renderer, fond);
+    loadTexture("ressources/Autres/Vline.png", renderer, Vline);
+    loadTexture("ressources/Autres/Hline.png", renderer, Hline);
     loadTexture_dim("ressources/Autres/jeton1.png", renderer, jeton, 200, 200, true, 3);
     SDL_GetWindowSize(window, &wWindow, &hWindow);
 }
