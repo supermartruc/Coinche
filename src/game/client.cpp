@@ -38,6 +38,8 @@ int GetGameInfoManche(GameInfo &gameInfo){
 	gameInfo.manche_terminee = (bool)std::stoi(std::string {InfoString[5]});
 	if (!gameInfo.pli_en_cours.empty()) {gameInfo.couleur_demandee = std::get<1>(gameInfo.pli_en_cours[0]);} 
 
+	std::cout << "Infos traitees correctement : " << InfoString << std::endl;
+
 	return 0;
 }
 
@@ -109,6 +111,8 @@ void	enchereLoop(GameInfo& gameInfo) {
 		gameInfo.view.renderEnchere(gameInfo.myPlayer.myRole, gameInfo.who_deals, gameInfo.myPlayer.mesCartes, gameInfo.annonce_temp, gameInfo.annonce_min, gameInfo.who_speaks, gameInfo.all_encheres);
 		SDL_Delay(1000/60);
 		GetGameInfo(gameInfo);
+		gameInfo.myPlayer.mesCartes = tri_paquet_affichage(gameInfo.myPlayer.mesCartes, std::get<2>(gameInfo.current_enchere));
+
 		if (gameInfo.ice_speak && gameInfo.view.iconeToAtout() != Atout::Rien && gameInfo.view.mouse_click){
 			std::string pointenvoi;
 			if (gameInfo.view.iconeToAtout() == Atout::Passe){pointenvoi = "10";}
@@ -203,6 +207,8 @@ void	mancheLoop(GameInfo& gameInfo){
 	bool 	quit = false;
 	int carteInt;
 	sf::Packet	carteIntPacket;
+	gameInfo.pli_termine = false;
+	gameInfo.pli_en_cours = {};
 
 	while (!quit){
 		quit = !gameInfo.view.handleEvents();
@@ -213,8 +219,12 @@ void	mancheLoop(GameInfo& gameInfo){
 		}
 		gameInfo.view.renderManche(gameInfo.myPlayer.myRole, gameInfo.who_deals, gameInfo.myPlayer.mesCartes, gameInfo.taille_paquets, gameInfo.current_enchere, gameInfo.who_starts, gameInfo.pli_en_cours);
 		SDL_Delay(1000/60);
-		if (gameInfo.who_plays == gameInfo.myPlayer.myRole && std::get<0>(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes)) != Valeur::Rien && gameInfo.view.mouse_click){
-			if (!est_valide_carte(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes), gameInfo.myPlayer.mesCartes, gameInfo.couleur_demandee, gameInfo.atout_actuel, gameInfo.pli_en_cours, gameInfo.myPlayer.myRole, gameInfo.who_starts)){continue;}
+		std::cout << gameInfo.pli_termine << " " << (gameInfo.who_plays == gameInfo.myPlayer.myRole) << " " << gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes) << est_valide_carte(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes), gameInfo.myPlayer.mesCartes, gameInfo.couleur_demandee, gameInfo.atout_actuel, gameInfo.pli_en_cours, gameInfo.myPlayer.myRole, gameInfo.who_starts) << std::endl;
+		if (!gameInfo.pli_termine && gameInfo.who_plays == gameInfo.myPlayer.myRole && std::get<0>(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes)) != Valeur::Rien && gameInfo.view.mouse_click){
+			if (!est_valide_carte(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes), gameInfo.myPlayer.mesCartes, gameInfo.couleur_demandee, gameInfo.atout_actuel, gameInfo.pli_en_cours, gameInfo.myPlayer.myRole, gameInfo.who_starts)){
+				std::cout << "Carte invalide : " << gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes);
+				continue;
+			}
 			carteInt = carteToInt(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes));
 			carteIntPacket.clear();
 			carteIntPacket << carteInt;
@@ -222,6 +232,7 @@ void	mancheLoop(GameInfo& gameInfo){
 			gameInfo.client_socket.send(carteIntPacket);
 			gameInfo.client_socket.setBlocking(false);
 			gameInfo.who_plays = intToJoueur((1+joueurToInt(gameInfo.who_plays))%4);
+			std::cout << "Jai essaye d'envoyer le : " << intToCarte(carteInt) << std::endl;
 			for (int i=0;i<gameInfo.myPlayer.mesCartes.size();i++){
 				if (carteInt == carteToInt(gameInfo.myPlayer.mesCartes[i])){
 					gameInfo.myPlayer.mesCartes.erase(gameInfo.myPlayer.mesCartes.begin()+i);
@@ -264,6 +275,8 @@ int clientmain(){
 
 	// getPseudoRole(assoc_pseudo_role, client_socket, my_pseudo, my_role, nb_joueurs, view);
 	loopLobby(gameInfo);
+
+	gameInfo.myPlayer.mesCartes = tri_paquet_affichage(gameInfo.myPlayer.mesCartes, Atout::Sa);
 
 	enchereLoop(gameInfo);
 
