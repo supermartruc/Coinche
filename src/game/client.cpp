@@ -284,6 +284,10 @@ int clientmain(){
 
 	gameInfo.myPlayer.mesCartes = tri_paquet_affichage(gameInfo.myPlayer.mesCartes, std::get<2>(gameInfo.current_enchere));
 
+	if (gameInfo.atout_actuel == Atout::Passe){
+		exit(0);
+	}
+
 	mancheLoop(gameInfo);
 
 	SDL_Quit(); 

@@ -185,7 +185,7 @@ void SendGameInfoPli(Jeu &game, sockvec NetJoueurs, bool ajoutcarte, bool pli_te
 	for (int i=0; i<NetJoueurs.size();i++){
 		sf::TcpSocket *client_socket = NetJoueurs[i];
 		if (client_socket->send(InfoStringPacket) == sf::Socket::Done){}
-		else{std::cout << "Envoi échoué" << std::endl;}
+		else{std::cout << "Envoi échoué" << std::endl; exit(0);}
 	}
 
 }
@@ -270,9 +270,11 @@ int servermain(){
 
 	std::cout << "Enchere gagnante : " << game.current_enchere << std::endl;
 
-	game.who_starts = game.who_speaks;
+	game.who_starts = intToJoueur(2+joueurToInt(game.who_cuts)%4);
 	game.atout_actuel = std::get<2>(game.current_enchere);
-
+	if (game.atout_actuel == Atout::Passe){
+		exit(0);
+	}
 	for (int i=0; i<8; i++){
 		game.who_plays = game.who_starts;
 		game.pli_actuel = {};
