@@ -57,17 +57,21 @@ int GetGameInfoPoints(GameInfo &gameInfo){
 	}
 	InfoLintPacket >> InfoLint;
 
-	gameInfo.tot_points_NS = (int)InfoLint%1000;
-	InfoLint = InfoLint / (long long)1000;
-	gameInfo.tot_points_OE = (int)InfoLint%1000;
-	InfoLint = InfoLint / (long long)1000;
-	gameInfo.points_NS_fait = (int)InfoLint%1000;
-	InfoLint = InfoLint / (long long)1000;
-	gameInfo.points_OE_fait = (int)InfoLint%1000;
-	InfoLint = InfoLint / (long long)1000;
-	gameInfo.points_NS_marque = (int)InfoLint%1000;
-	InfoLint = InfoLint / (long long)1000;
-	gameInfo.points_OE_marque = (int)InfoLint%1000;
+	gameInfo.tot_points_NS = (int)InfoLint%10000;
+	InfoLint = InfoLint / (long long)10000;
+	gameInfo.points_NS_fait = (int)InfoLint%10000;
+	InfoLint = InfoLint / (long long)10000;
+	gameInfo.points_NS_marque = (int)InfoLint%10000;
+
+	gameInfo.client_socket.receive(InfoLintPacket);
+	InfoLintPacket >> InfoLint;
+
+	InfoLint = InfoLint / (long long)10000;
+	gameInfo.tot_points_OE = (int)InfoLint%10000;
+	InfoLint = InfoLint / (long long)10000;
+	gameInfo.points_OE_fait = (int)InfoLint%10000;
+	InfoLint = InfoLint / (long long)10000;
+	gameInfo.points_OE_marque = (int)InfoLint%10000;
 
 	return 0;
 }

@@ -194,8 +194,7 @@ void SendGameInfoPoints(Jeu &game, sockvec NetJoueurs){
 	long long int InfoLint = 0;
 	sf::Packet InfoLintPacket;
 	InfoLintPacket.clear();
-
-	InfoLint = game.tot_points_NS + 1000*game.tot_points_OE + 1000000 * game.points_NS_fait + 1000000000 * game.points_OE_fait + 1000000000000 * game.points_NS_marque + 1000000000000000 * game.points_OE_marque;
+	InfoLint = game.tot_points_NS + 10000*game.points_NS_fait + 100000000 * game.points_NS_marque;
 	InfoLintPacket << InfoLint;
 
 	for (int i=0; i<NetJoueurs.size();i++){
@@ -203,6 +202,15 @@ void SendGameInfoPoints(Jeu &game, sockvec NetJoueurs){
 		if (client_socket->send(InfoLintPacket) == sf::Socket::Done){}
 		else{std::cout << "Envoi échoué points" << std::endl; exit(0);}
 	}
+	InfoLintPacket.clear();
+	InfoLint = game.tot_points_OE + 10000*game.points_OE_fait + 100000000 * game.points_OE_marque;
+	InfoLintPacket << InfoLint;
+	for (int i=0; i<NetJoueurs.size();i++){
+		sf::TcpSocket *client_socket = NetJoueurs[i];
+		if (client_socket->send(InfoLintPacket) == sf::Socket::Done){}
+		else{std::cout << "Envoi échoué points" << std::endl; exit(0);}
+	}
+
 }
 
 void RecupCarteJouee(Jeu &game, sockvec NetJoueurs){
