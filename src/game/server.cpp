@@ -263,6 +263,10 @@ int servermain(){
 
 	RoleDistribution(NetJoueurs, Roles, Pseudos, nb_joueurs_max, selector);
 
+	game.tot_points_NS = 0;
+	game.tot_points_OE = 0;
+	
+
 	CreeEnvoiePaquet(game, NetJoueurs);
 
 	game.enchere_en_cours = true;
@@ -290,6 +294,10 @@ int servermain(){
 	game.defausseOE = {};
 	game.defausseNS = {};
 	game.dix_de_der_winner = Joueur::Nord;
+	game.points_NS_fait = 0;
+	game.points_OE_fait = 0;
+	game.points_NS_marque = 0;
+	game.points_OE_marque = 0;
 
 	if (game.atout_actuel == Atout::Passe){
 		exit(0);
@@ -319,9 +327,9 @@ int servermain(){
 					}
 				}
 				game.dernier_pli = game.pli_actuel;
-				game.pli_actuel = {};
+				/*game.pli_actuel = {};
 				game.who_plays = game.who_starts;
-				SendGameInfoPli(game, NetJoueurs, false, false, false);
+				SendGameInfoPli(game, NetJoueurs, false, false, false); */
 
 			}
 			else{
