@@ -295,7 +295,7 @@ void GameView::renderCartesPli(Joueur you, Joueur who_starts, Paquet pli_en_cour
 	}
 }
 
-void GameView::renderGlobalPoints(int new_nous=0, int new_eux=0, int nous_fait=0, int eux_fait=0, int nous_manche=0, int eux_manche=0) {
+void GameView::renderGlobalPoints(int new_nous, int new_eux, int nous_fait, int eux_fait, int nous_manche, int eux_manche) {
 	clear();
 	int xg = 3*wWindow/8;
 	int xd = 5*wWindow/8;
