@@ -29,6 +29,12 @@ struct GameInfo {
 	bool										ice_speak;
 	int											annonce_min;
 	int											annonce_temp;
+	int											tot_points_NS;
+	int											tot_points_OE;
+	int											points_NS_fait;
+	int											points_OE_fait;
+	int											points_NS_marque;
+	int											points_OE_marque;
 	bool										enchere_en_cours;
 	bool										manche_terminee;
 	bool										pli_termine;
@@ -64,7 +70,7 @@ class Jeu{
 		Couleur couleur_demandee = Couleur::Pique;
 		Atout atout_actuel = Atout::Sa;
 		std::vector<Paquet> allPaquets = {nordP,estP,sudP,ouestP};
-		int tot_points_NS=0, tot_points_OE=0, points_NS=0, points_OE=0;
+		int tot_points_NS=0, tot_points_OE=0, points_NS_fait=0, points_OE_fait=0, points_NS_marque=0, points_OE_marque=0;
 		Enchere current_enchere = {Joueur::Nord,10,Atout::Rien,false,false};
 		std::vector<Enchere> all_enchere = {{Joueur::Nord,10,Atout::Rien,false,false},{Joueur::Est,10,Atout::Rien,false,false},{Joueur::Sud,10,Atout::Rien,false,false},{Joueur::Ouest,10,Atout::Rien,false,false}};
 		Joueur who_cuts = Joueur::Sud, who_speaks = Joueur::Nord, who_plays = Joueur::Nord, who_starts = Joueur::Nord, dix_de_der_winner = Joueur::Nord;

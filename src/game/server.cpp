@@ -185,9 +185,24 @@ void SendGameInfoPli(Jeu &game, sockvec NetJoueurs, bool ajoutcarte, bool pli_te
 	for (int i=0; i<NetJoueurs.size();i++){
 		sf::TcpSocket *client_socket = NetJoueurs[i];
 		if (client_socket->send(InfoStringPacket) == sf::Socket::Done){}
-		else{std::cout << "Envoi échoué" << std::endl; exit(0);}
+		else{std::cout << "Envoi échoué gameinfo" << std::endl; exit(0);}
 	}
 
+}
+
+void SendGameInfoPoints(Jeu &game, sockvec NetJoueurs){
+	long long int InfoLint = 0;
+	sf::Packet InfoLintPacket;
+	InfoLintPacket.clear();
+
+	InfoLint = game.tot_points_NS + 1000*game.tot_points_OE + 1000000 * game.points_NS_fait + 1000000000 * game.points_OE_fait + 1000000000000 * game.points_NS_marque + 1000000000000000 * game.points_OE_marque;
+	InfoLintPacket << InfoLint;
+
+	for (int i=0; i<NetJoueurs.size();i++){
+		sf::TcpSocket *client_socket = NetJoueurs[i];
+		if (client_socket->send(InfoLintPacket) == sf::Socket::Done){}
+		else{std::cout << "Envoi échoué points" << std::endl; exit(0);}
+	}
 }
 
 void RecupCarteJouee(Jeu &game, sockvec NetJoueurs){
@@ -272,6 +287,10 @@ int servermain(){
 
 	game.who_starts = intToJoueur(2+joueurToInt(game.who_cuts)%4);
 	game.atout_actuel = std::get<2>(game.current_enchere);
+	game.defausseOE = {};
+	game.defausseNS = {};
+	game.dix_de_der_winner = Joueur::Nord;
+
 	if (game.atout_actuel == Atout::Passe){
 		exit(0);
 	}
@@ -284,9 +303,19 @@ int servermain(){
 			if (j==3){
 				SendGameInfoPli(game, NetJoueurs, true, true, false);
 				SDL_Delay(3000);
-				for (int m=0; m<4; m++){
-					if (game.pli_actuel[m] == max_of_paquet(game.pli_actuel, game.couleur_demandee, game.atout_actuel)){
-						game.who_starts = intToJoueur(m);
+				for (int m=joueurToInt(game.who_starts); m<joueurToInt(game.who_starts)+4; m++){
+					if (game.pli_actuel[m%4] == max_of_paquet(game.pli_actuel, game.couleur_demandee, game.atout_actuel)){
+						game.who_starts = intToJoueur(m%4);
+						if ((m%4)%2){
+							for (Carte c : game.pli_actuel){game.defausseOE.push_back(c);}
+						}
+						else{
+							for (Carte c : game.pli_actuel){game.defausseNS.push_back(c);}
+						}
+						if (i==7){
+							game.dix_de_der_winner = intToJoueur(m%4);
+						}
+						break;
 					}
 				}
 				game.dernier_pli = game.pli_actuel;
@@ -304,6 +333,34 @@ int servermain(){
 	}
 	SendGameInfoPli(game, NetJoueurs, false, false, true);
 
+	game.comptePoints();
+
+	if (std::get<0>(game.current_enchere) == Joueur::Nord || std::get<0>(game.current_enchere) == Joueur::Sud){
+		if (game.points_NS_fait >= std::get<1>(game.current_enchere)){
+			game.points_NS_marque = std::get<1>(game.current_enchere);
+			game.tot_points_NS += game.points_NS_marque;
+			game.points_OE_marque = 0;
+		}
+		else{
+			game.points_NS_marque = 0;
+			game.points_OE_marque = 160;
+			game.tot_points_OE += game.points_OE_marque;
+		}
+	}
+	else{
+		if (game.points_OE_fait >= std::get<1>(game.current_enchere)){
+			game.points_OE_marque = std::get<1>(game.current_enchere);
+			game.tot_points_OE += game.points_OE_marque;
+			game.points_NS_marque = 0;
+		}
+		else{
+			game.points_OE_marque = 0;
+			game.points_NS_marque = 160;
+			game.tot_points_NS += game.points_NS_marque;
+		}
+	}
+
+	SendGameInfoPoints(game, NetJoueurs);
 
 	selector.clear();
 	NetJoueurs.clear();

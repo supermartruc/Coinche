@@ -15,6 +15,8 @@ void RoleDistribution(sockvec NetJoueurs, std::vector<Joueur> Roles, std::vector
 int AskCuts(Jeu &game, sockvec NetJoueurs);
 int CreeEnvoiePaquet(Jeu &game, sockvec NetJoueurs);
 void SendGameInfo(Jeu &game, sockvec NetJoueurs);
+void SendGameInfoPoints(GameInfo &game, sockvec NetJoueurs);
+
 
 
 int servermain();

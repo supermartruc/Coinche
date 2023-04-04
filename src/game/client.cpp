@@ -43,6 +43,35 @@ int GetGameInfoManche(GameInfo &gameInfo){
 	return 0;
 }
 
+int GetGameInfoPoints(GameInfo &gameInfo){
+	long long int InfoLint=0;
+	sf::Packet InfoLintPacket;
+	InfoLintPacket.clear();
+
+	gameInfo.client_socket.setBlocking(false);
+	if (gameInfo.client_socket.receive(InfoLintPacket) == sf::Socket::Done){
+		gameInfo.client_socket.setBlocking(true);
+	}
+	else{
+		return 1;
+	}
+	InfoLintPacket >> InfoLint;
+
+	gameInfo.tot_points_NS = (int)InfoLint%1000;
+	InfoLint = InfoLint / (long long)1000;
+	gameInfo.tot_points_OE = (int)InfoLint%1000;
+	InfoLint = InfoLint / (long long)1000;
+	gameInfo.points_NS_fait = (int)InfoLint%1000;
+	InfoLint = InfoLint / (long long)1000;
+	gameInfo.points_OE_fait = (int)InfoLint%1000;
+	InfoLint = InfoLint / (long long)1000;
+	gameInfo.points_NS_marque = (int)InfoLint%1000;
+	InfoLint = InfoLint / (long long)1000;
+	gameInfo.points_OE_marque = (int)InfoLint%1000;
+
+	return 0;
+}
+
 int GetGameInfo(GameInfo &gameInfo){
 	int InfoInt=0;
 
@@ -167,6 +196,7 @@ void	loopLobby(GameInfo& gameInfo) {
 	gameInfo.client_socket.setBlocking(false);
 	while (!quit) {
 		quit = !gameInfo.view.handleEvents();
+		if (quit){exit(0);}
 		gameInfo.view.clear(true);
 		SDL_Delay(1000/60);
 		if (!pseudoReceived and gameInfo.client_socket.receive(PseudoReceivePacket) != sf::Socket::Done) {
@@ -212,6 +242,7 @@ void	mancheLoop(GameInfo& gameInfo){
 
 	while (!quit){
 		quit = !gameInfo.view.handleEvents();
+		if (quit){exit(0);}
 		GetGameInfoManche(gameInfo);
 		if (gameInfo.manche_terminee){
 			std::cout << "MANCHE TERMINEE !" << std::endl;
@@ -232,7 +263,7 @@ void	mancheLoop(GameInfo& gameInfo){
 			gameInfo.client_socket.send(carteIntPacket);
 			gameInfo.client_socket.setBlocking(false);
 			gameInfo.who_plays = intToJoueur((1+joueurToInt(gameInfo.who_plays))%4);
-			std::cout << "Jai essaye d'envoyer le : " << intToCarte(carteInt) << std::endl;
+			//std::cout << "Jai essaye d'envoyer le : " << intToCarte(carteInt) << std::endl;
 			for (int i=0;i<gameInfo.myPlayer.mesCartes.size();i++){
 				if (carteInt == carteToInt(gameInfo.myPlayer.mesCartes[i])){
 					gameInfo.myPlayer.mesCartes.erase(gameInfo.myPlayer.mesCartes.begin()+i);
@@ -289,6 +320,23 @@ int clientmain(){
 	}
 
 	mancheLoop(gameInfo);
+
+	bool quit=0;
+	while (GetGameInfoPoints(gameInfo)){
+		quit = !gameInfo.view.handleEvents();
+		if (quit){exit(0);}
+	}
+
+	while (true){
+		if (gameInfo.myPlayer.myRole == Joueur::Nord || gameInfo.myPlayer.myRole == Joueur::Sud){
+			gameInfo.view.renderGlobalPoints(gameInfo.tot_points_NS, gameInfo.tot_points_OE, gameInfo.points_NS_fait, gameInfo.points_OE_fait, gameInfo.points_NS_marque, gameInfo.points_OE_marque);
+		}
+		else{
+			gameInfo.view.renderGlobalPoints(gameInfo.tot_points_OE, gameInfo.tot_points_NS, gameInfo.points_OE_fait, gameInfo.points_NS_fait, gameInfo.points_OE_marque, gameInfo.points_NS_marque);
+		}
+		SDL_Delay(1000/60);
+	}
+
 
 	SDL_Quit(); 
 

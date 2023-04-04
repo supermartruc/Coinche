@@ -433,17 +433,18 @@ Atout keyToAtout(char c){
 
 int carteToPoint(Carte c, Atout a){
     auto [val, coul] = c;
+    bool ta = (a==Atout::Ta);
     bool is_atout=(a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul));
     if ((a==Atout::Ta)||(atoutToInt(a)==couleurToInt(coul))){is_atout = true;}
     switch (val){
         case Valeur::Dix:
-            return 10;
+            if (ta) {return 5;} else {return 10;}
             break;
         case Valeur::Roi:
-            return 4;
+            if (ta) {return 3;} else {return 4;}
             break;
         case Valeur::Dame:
-            return 3;
+            if (ta) {return 1;} else {return 3;}
             break;
         case Valeur::Huit:
             return 0;
@@ -452,13 +453,13 @@ int carteToPoint(Carte c, Atout a){
             return 0;
             break;
         case Valeur::As:
-            if (a==Atout::Sa){return 19;} else {return 11;}
+            if (ta) {return 6;} else {if (a==Atout::Sa) {return 19;} else {return 11;}}
             break;
         case Valeur::Valet:
-            if (is_atout) {return 20;} else {return 2;}
+            if (ta) {return 14;} else {if (is_atout) {return 20;} else {return 2;}}
             break;
         case Valeur::Neuf:
-            if (is_atout) {return 14;} else {return 0;}
+            if (ta) {return 9;} else {if (is_atout) {return 14;} else {return 0;}}
             break;
     }
     return -1;
@@ -609,33 +610,34 @@ int find_index_render(Carte c){
 }
 
 void Jeu::comptePoints(){
-    points_OE = 0;
-    points_NS = 0;
+    points_OE_fait = 0;
+    points_NS_fait = 0;
     int n = defausseNS.size();
     int m = defausseOE.size();
     Atout atout_actuel = std::get<2>(current_enchere);
-    if (n==0) {points_OE += 250;} else {if (m==0) {points_NS += 250;} else {
+    if (n==0) {points_OE_fait += 250;} else {if (m==0) {points_NS_fait += 250;} else {
 
     for (int i=0;i<n;i++){
-        points_NS += carteToPoint(defausseNS[i], atout_actuel);
+        points_NS_fait += carteToPoint(defausseNS[i], atout_actuel);
     }
     for (int j=0;j<m;j++){
-        points_OE += carteToPoint(defausseOE[j], atout_actuel);
+        points_OE_fait += carteToPoint(defausseOE[j], atout_actuel);
     }
     }}
     if (atout_actuel != Atout::Sa && atout_actuel != Atout::Ta){
         Couleur couleur_actuelle = atoutToCouleur(atout_actuel);
         if ((std::find(defausseNS.begin(), defausseNS.end(), Carte(Valeur::Roi,couleur_actuelle)) != defausseNS.end()) && 
             (std::find(defausseNS.begin(), defausseNS.end(), Carte(Valeur::Dame,couleur_actuelle)) != defausseNS.end())){
-                points_NS += 20;
+                points_NS_fait += 20;
             }
         if ((std::find(defausseOE.begin(), defausseOE.end(), Carte(Valeur::Roi,couleur_actuelle)) != defausseOE.end()) && 
             (std::find(defausseOE.begin(), defausseOE.end(), Carte(Valeur::Dame,couleur_actuelle)) != defausseOE.end())){
-                points_OE += 20;
+                points_OE_fait += 20;
             }
     }
-    if (dix_de_der_winner == Joueur::Nord || dix_de_der_winner == Joueur::Sud){points_NS += 10;}
-    else {points_OE += 10;}
+    if (dix_de_der_winner == Joueur::Nord || dix_de_der_winner == Joueur::Sud){points_NS_fait += 10;}
+    else {points_OE_fait += 10;}
+
 }
 
 void Jeu::coupePaquet(int where_to_cut){ 
