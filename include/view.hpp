@@ -31,6 +31,11 @@ class GameView {
 		SDL_Texture* 	dots;
 		SDL_Texture* 	Hline;
 		SDL_Texture* 	Vline;
+		SDL_Texture* 	nous;
+		SDL_Texture* 	eux;
+		SDL_Texture* 	points_faits;
+		SDL_Texture* 	points_marques;
+		SDL_Texture* 	total;
 		SDL_Event		event;
 		int 			wMenu;
 		int 			hMenu;
@@ -70,7 +75,7 @@ class GameView {
 		int		getHCarte() const;
 		bool 	isInsideRectangle( int xcarte, int ycarte, int wcarte);
 		bool 	isInsideCarre( int x, int y, int c);
-		void 	renderGlobalPoints(int old_nous, int old_eux, int nous_manche, int eux_manche);
+		void 	renderGlobalPoints(int new_nous, int new_eux, int nous_fait, int eux_fait, int nous_manche, int eux_manche);
 		void 	renderCartesPli(Joueur you, Joueur who_starts, Paquet pli_en_cours);
 		void 	renderEnchere(Joueur you, Joueur who_deals, Paquet mypaquet, int& annonce_temp, int annonce_min, Joueur who_speaks, std::vector<Enchere> all_encheres);
 		void 	renderManche(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Enchere current_enchere, Joueur who_starts, Paquet pli_en_cours);
