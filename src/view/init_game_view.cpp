@@ -200,4 +200,9 @@ void GameView::init() {
     loadTexture("ressources/Autres/Vline.png", renderer, Vline);
     loadTexture("ressources/Autres/Hline.png", renderer, Hline);
     loadTexture_dim("ressources/Autres/jeton1.png", renderer, jeton, 200, 200, true, 3);
+    loadTexture("ressources/Autres/nous.png", renderer, nous);
+    loadTexture("ressources/Autres/eux.png", renderer, eux);
+    loadTexture("ressources/Autres/points_faits.png", renderer, points_faits);
+    loadTexture("ressources/Autres/points_marques.png", renderer, points_marques);
+    loadTexture("ressources/Autres/total.png", renderer, total);
 }
