@@ -299,42 +299,43 @@ void GameView::renderGlobalPoints(int new_nous, int new_eux, int nous_fait, int 
 	clear();
 	int xg = 3*wWindow/8;
 	int xd = 5*wWindow/8;
-	int y0 = hWindow/4;
+	int y0 = hWindow/8;
 	int marge = wWindow/8;
 	// lignes
-	SDL_Rect rect = {wWindow/2, hWindow/4, 10, hWindow/2};
+	SDL_Rect rect = {wWindow/2, y0, 10, 5*hWindow/8};
 	SDL_RenderCopy(renderer, Vline, NULL, &rect);
-	rect = {3*wWindow/8, 3*hWindow/8, wWindow/4, 10};	
+	rect = {wWindow/4, y0+hWindow/8, wWindow/2, 10};	
 	SDL_RenderCopy(renderer, Hline, NULL, &rect);
 	// nous eux
-	rect = {xg, y0, 30, 10};	
+	y0 += hWindow/16;
+	rect = {xg-20, y0, 80, 30};	
 	SDL_RenderCopy(renderer, nous, NULL, &rect);
-	rect = {xd, y0, 20, 10};	
+	rect = {xd-20, y0, 60, 30};	
 	SDL_RenderCopy(renderer, eux, NULL, &rect);
 	
-	y0 += hWindow /8 + hWindow / 16;
-	rect = {marge, y0, 30, 10};	
+	y0 += hWindow / 8;
+	rect = {marge, y0, 50, 20};	
 	SDL_RenderCopy(renderer, total, NULL, &rect);
-	render_nombre(new_nous-nous_manche, xg, y0, 10);
-	render_nombre(new_eux-eux_manche, xd, y0, 10);
+	render_nombre(new_nous-nous_manche, xg, y0, 20);
+	render_nombre(new_eux-eux_manche, xd, y0, 20);
 
 	y0 += hWindow / 8;
-	rect = {marge, y0, 80, 10};	
+	rect = {marge, y0, 120, 20};	
 	SDL_RenderCopy(renderer, points_faits, NULL, &rect);
-	render_nombre(nous_fait, xg, y0, 10);
-	render_nombre(eux_fait, xd, y0, 10);
+	render_nombre(nous_fait, xg, y0, 20);
+	render_nombre(eux_fait, xd, y0, 20);
 
 	y0 += hWindow / 8;
-	rect = {marge, y0, 80, 10};	
+	rect = {marge, y0, 170, 25};	
 	SDL_RenderCopy(renderer, points_marques, NULL, &rect);
-	render_nombre(nous_manche, xg, y0, 10);
-	render_nombre(eux_manche, xd, y0, 10);
+	render_nombre(nous_manche, xg, y0, 20);
+	render_nombre(eux_manche, xd, y0, 20);
 
 	y0 += hWindow / 8;
-	rect = {marge, y0, 30, 10};	
+	rect = {marge, y0, 50, 20};	
 	SDL_RenderCopy(renderer, total, NULL, &rect);
-	render_nombre(new_nous, xg, y0, 10);
-	render_nombre(new_eux, xd, y0, 10);
+	render_nombre(new_nous, xg, y0, 20);
+	render_nombre(new_eux, xd, y0, 20);
 	SDL_RenderPresent(renderer);
 }
 
