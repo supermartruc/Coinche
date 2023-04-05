@@ -162,10 +162,10 @@ void GameView::init() {
     window = create_window();
     renderer = create_renderer(window);
     SDL_GetWindowSize(window, &wWindow, &hWindow);
-    wCarte = 150*1920 / wWindow;
-    hCarte = 240*1920 / wWindow;
-    wMenu = 480*1920 / wWindow;
-    hMenu = 225*1920 / wWindow;
+    wCarte = 150*wWindow / 1920;
+    hCarte = 240*wWindow / 1920;
+    wMenu = 480*wWindow / 1920;
+    hMenu = 225*wWindow / 1920;
     elevation = 0.1 * hCarte;
     wIcone = (int) (hMenu / 5.5);
 	dec = (int) ((hMenu-4*wIcone)/5);
