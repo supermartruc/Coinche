@@ -320,8 +320,8 @@ int servermain(){
 				SendGameInfoPli(game, NetJoueurs, true, true, false);
 				SDL_Delay(2000);
 				for (int m=0; m<4; m++){
-					if (game.pli_actuel[(m+joueurToInt(game.who_starts))%4] == max_of_paquet(game.pli_actuel, game.couleur_demandee, game.atout_actuel)){
-						std::cout << "Le pli " << game.pli_actuel << " commencé par " << game.who_starts << " a été remporté par " << intToJoueur(m%4) << " avec la carte " << game.pli_actuel[(m+joueurToInt(game.who_starts))%4] << std::endl;
+					if (game.pli_actuel[(m-joueurToInt(game.who_starts))%4] == max_of_paquet(game.pli_actuel, game.couleur_demandee, game.atout_actuel)){
+						std::cout << "Le pli " << game.pli_actuel << " commencé par " << game.who_starts << " a été remporté par " << intToJoueur(m%4) << " avec la carte " << game.pli_actuel[(m-joueurToInt(game.who_starts))%4] << std::endl;
 						game.who_starts = intToJoueur(m%4);
 						if ((m%4)%2){
 							for (Carte c : game.pli_actuel){game.defausseOE.push_back(c);}
