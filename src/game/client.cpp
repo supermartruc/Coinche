@@ -254,10 +254,9 @@ void	mancheLoop(GameInfo& gameInfo){
 		}
 		gameInfo.view.renderManche(gameInfo.myPlayer.myRole, gameInfo.who_deals, gameInfo.myPlayer.mesCartes, gameInfo.taille_paquets, gameInfo.current_enchere, gameInfo.who_starts, gameInfo.pli_en_cours);
 		SDL_Delay(1000/60);
-		std::cout << gameInfo.pli_termine << " " << gameInfo.who_plays << " " << gameInfo.myPlayer.myRole << " " << gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes) << est_valide_carte(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes), gameInfo.myPlayer.mesCartes, gameInfo.couleur_demandee, gameInfo.atout_actuel, gameInfo.pli_en_cours, gameInfo.myPlayer.myRole, gameInfo.who_starts) << std::endl;
 		if (!gameInfo.pli_termine && gameInfo.who_plays == gameInfo.myPlayer.myRole && std::get<0>(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes)) != Valeur::Rien && gameInfo.view.mouse_click){
 			if (!est_valide_carte(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes), gameInfo.myPlayer.mesCartes, gameInfo.couleur_demandee, gameInfo.atout_actuel, gameInfo.pli_en_cours, gameInfo.myPlayer.myRole, gameInfo.who_starts)){
-				std::cout << "Carte invalide : " << gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes);
+				std::cout << "Carte invalide : " << gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes) << std::endl;
 				continue;
 			}
 			carteInt = carteToInt(gameInfo.view.clicToCarte(gameInfo.myPlayer.mesCartes));
@@ -332,6 +331,8 @@ int clientmain(){
 	}
 
 	while (true){
+		quit = !gameInfo.view.handleEvents();
+		if (quit){exit(0);}
 		if (gameInfo.myPlayer.myRole == Joueur::Nord || gameInfo.myPlayer.myRole == Joueur::Sud){
 			gameInfo.view.renderGlobalPoints(gameInfo.tot_points_NS, gameInfo.tot_points_OE, gameInfo.points_NS_fait, gameInfo.points_OE_fait, gameInfo.points_NS_marque, gameInfo.points_OE_marque);
 		}

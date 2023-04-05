@@ -199,7 +199,7 @@ void SendGameInfoPoints(Jeu &game, sockvec NetJoueurs){
 
 	for (int i=0; i<NetJoueurs.size();i++){
 		sf::TcpSocket *client_socket = NetJoueurs[i];
-		if (client_socket->send(InfoLintPacket) == sf::Socket::Done){}
+		if (client_socket->send(InfoLintPacket) == sf::Socket::Done){std::cout << "Premier envoi : " << InfoLint << std::endl;}
 		else{std::cout << "Envoi échoué points" << std::endl; exit(0);}
 	}
 	InfoLintPacket.clear();
@@ -207,7 +207,7 @@ void SendGameInfoPoints(Jeu &game, sockvec NetJoueurs){
 	InfoLintPacket << InfoLint;
 	for (int i=0; i<NetJoueurs.size();i++){
 		sf::TcpSocket *client_socket = NetJoueurs[i];
-		if (client_socket->send(InfoLintPacket) == sf::Socket::Done){}
+		if (client_socket->send(InfoLintPacket) == sf::Socket::Done){std::cout << "Deuxième envoi : " << InfoLint << std::endl;}
 		else{std::cout << "Envoi échoué points" << std::endl; exit(0);}
 	}
 
@@ -318,9 +318,10 @@ int servermain(){
 			RecupCarteJouee(game, NetJoueurs);
 			if (j==3){
 				SendGameInfoPli(game, NetJoueurs, true, true, false);
-				SDL_Delay(3000);
-				for (int m=joueurToInt(game.who_starts); m<joueurToInt(game.who_starts)+4; m++){
-					if (game.pli_actuel[m%4] == max_of_paquet(game.pli_actuel, game.couleur_demandee, game.atout_actuel)){
+				SDL_Delay(2000);
+				for (int m=0; m<4; m++){
+					if (game.pli_actuel[(m+joueurToInt(game.who_starts))%4] == max_of_paquet(game.pli_actuel, game.couleur_demandee, game.atout_actuel)){
+						std::cout << "Le pli " << game.pli_actuel << " commencé par " << game.who_starts << " a été remporté par " << intToJoueur(m%4) << " avec la carte " << game.pli_actuel[(m+joueurToInt(game.who_starts))%4] << std::endl;
 						game.who_starts = intToJoueur(m%4);
 						if ((m%4)%2){
 							for (Carte c : game.pli_actuel){game.defausseOE.push_back(c);}
@@ -350,7 +351,12 @@ int servermain(){
 	SendGameInfoPli(game, NetJoueurs, false, false, true);
 
 	game.comptePoints();
-
+	std::cout << "Points faits NS : " << game.points_NS_fait << std::endl;
+	std::cout << "Points totaux NS : " << game.tot_points_NS << std::endl;
+	std::cout << "Points marqués NS : " << game.points_NS_marque << std::endl;
+	std::cout << "Points faits OE : " << game.points_OE_fait << std::endl;
+	std::cout << "Points totaux OE : " << game.tot_points_OE << std::endl;
+	std::cout << "Points marqués OE : " << game.points_OE_marque << std::endl;
 	if (std::get<0>(game.current_enchere) == Joueur::Nord || std::get<0>(game.current_enchere) == Joueur::Sud){
 		if (game.points_NS_fait >= std::get<1>(game.current_enchere)){
 			game.points_NS_marque = std::get<1>(game.current_enchere);
@@ -375,6 +381,13 @@ int servermain(){
 			game.tot_points_NS += game.points_NS_marque;
 		}
 	}
+
+	std::cout << "Points faits NS : " << game.points_NS_fait << std::endl;
+	std::cout << "Points totaux NS : " << game.tot_points_NS << std::endl;
+	std::cout << "Points marqués NS : " << game.points_NS_marque << std::endl;
+	std::cout << "Points faits OE : " << game.points_OE_fait << std::endl;
+	std::cout << "Points totaux OE : " << game.tot_points_OE << std::endl;
+	std::cout << "Points marqués OE : " << game.points_OE_marque << std::endl;
 
 	SendGameInfoPoints(game, NetJoueurs);
 
