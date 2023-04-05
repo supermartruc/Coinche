@@ -145,7 +145,7 @@ bool GameView::isInsideCarre(int x, int y, int c) {
 
 Atout GameView::iconeToAtout() { //0, P, C, T, Coeur, TA, SA, Passe
 	int x = dec + (int) (3 / 8.0 * wWindow);
-	int y = dec + hWindow - (int) (2.1 * 240);
+	int y = dec + hWindow - (int) (elevation+hCarte+hMenu);
 	if (isInsideCarre( x+dec, y+dec, wIcone)) {
 		return Atout::Sa;
 	} else if (isInsideCarre( x+3*dec+wIcone, y+dec, wIcone)) {
@@ -196,7 +196,7 @@ std::pair<Atout, bool> GameView::pair_icone(Atout atout) {
 void GameView::renderMenu(int x, int y, int &annonce_temp, int annonce_min) {
 	SDL_Rect rect = {x, y, wMenu, hMenu};
 	SDL_RenderCopy(renderer, menu, NULL, &rect);
-
+	render_nombre(0, x, y, 5);
 	x = x + dec;
 	rect = {x+dec, y+dec, wIcone, wIcone};
 	SDL_RenderCopy(renderer, icones[pair_icone(Atout::Sa)], NULL, &rect);
