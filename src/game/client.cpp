@@ -73,6 +73,13 @@ int GetGameInfoPoints(GameInfo &gameInfo){
 	InfoLint = InfoLint / (long long)10000;
 	gameInfo.points_OE_marque = (int)InfoLint%10000;
 
+	std::cout << "Points faits NS : " << gameInfo.points_NS_fait << std::endl;
+	std::cout << "Points totaux NS : " << gameInfo.tot_points_NS << std::endl;
+	std::cout << "Points marqués NS : " << gameInfo.points_NS_marque << std::endl;
+	std::cout << "Points faits OE : " << gameInfo.points_OE_fait << std::endl;
+	std::cout << "Points totaux OE : " << gameInfo.tot_points_OE << std::endl;
+	std::cout << "Points marqués OE : " << gameInfo.points_OE_marque << std::endl;
+
 	return 0;
 }
 
