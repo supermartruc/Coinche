@@ -145,7 +145,7 @@ bool GameView::isInsideCarre(int x, int y, int c) {
 
 Atout GameView::iconeToAtout() { //0, P, C, T, Coeur, TA, SA, Passe
 	int x = dec + (int) (3 / 8.0 * wWindow);
-	int y = dec + hWindow - (int) (elevation+hCarte+hMenu);
+	int y = hWindow - (int) (elevation+hCarte+hMenu);
 	if (isInsideCarre( x+dec, y+dec, wIcone)) {
 		return Atout::Sa;
 	} else if (isInsideCarre( x+3*dec+wIcone, y+dec, wIcone)) {
