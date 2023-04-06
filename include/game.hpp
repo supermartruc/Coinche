@@ -65,6 +65,7 @@ class Jeu{
 		void affichePaquetListe(Paquet paquet);
 		void afficheAllPaquetsListe();
 		Paquet getPaquet(Joueur j);
+		std::string makeSendableString(int data, int base);
 
 		Paquet paquet={}, nordP={}, estP={}, sudP={}, ouestP={}, defausseNS={}, defausseOE={}, dernier_pli={}, pli_actuel={};
 		Couleur couleur_demandee = Couleur::Pique;
@@ -77,6 +78,7 @@ class Jeu{
 		Joueur you = Joueur::Nord;
 		bool enchere_en_cours = false;
 		bool pli_en_cours = false;
+		std::pair<bool,Joueur> belote;
 
 	private:
 		std::vector<Couleur> couleurs {Couleur::Pique, Couleur::Carreau, Couleur::Trefle, Couleur::Coeur};

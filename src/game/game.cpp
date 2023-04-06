@@ -615,29 +615,28 @@ void Jeu::comptePoints(){
     int n = defausseNS.size();
     int m = defausseOE.size();
     Atout atout_actuel = std::get<2>(current_enchere);
-    if (n==0) {points_OE_fait += 250;} else {if (m==0) {points_NS_fait += 250;} else {
+    if (n==0) {points_OE_fait += 252;} 
+    else {if (m==0) {points_NS_fait += 252;} else {
 
-    for (int i=0;i<n;i++){
-        points_NS_fait += carteToPoint(defausseNS[i], atout_actuel);
-    }
-    for (int j=0;j<m;j++){
-        points_OE_fait += carteToPoint(defausseOE[j], atout_actuel);
-    }
-    }}
-    if (atout_actuel != Atout::Sa && atout_actuel != Atout::Ta){
-        Couleur couleur_actuelle = atoutToCouleur(atout_actuel);
-        if ((std::find(defausseNS.begin(), defausseNS.end(), Carte(Valeur::Roi,couleur_actuelle)) != defausseNS.end()) && 
-            (std::find(defausseNS.begin(), defausseNS.end(), Carte(Valeur::Dame,couleur_actuelle)) != defausseNS.end())){
+        for (int i=0;i<n;i++){
+            points_NS_fait += carteToPoint(defausseNS[i], atout_actuel);
+        }
+        for (int j=0;j<m;j++){
+            points_OE_fait += carteToPoint(defausseOE[j], atout_actuel);
+        }
+        if (std::get<0>(belote)){
+            if (std::get<1>(belote) == Joueur::Nord || std::get<1>(belote) == Joueur::Sud){
                 points_NS_fait += 20;
             }
-        if ((std::find(defausseOE.begin(), defausseOE.end(), Carte(Valeur::Roi,couleur_actuelle)) != defausseOE.end()) && 
-            (std::find(defausseOE.begin(), defausseOE.end(), Carte(Valeur::Dame,couleur_actuelle)) != defausseOE.end())){
+            else{
                 points_OE_fait += 20;
             }
+        }
+        
+        if (dix_de_der_winner == Joueur::Nord || dix_de_der_winner == Joueur::Sud){points_NS_fait += 10;}
+        else {points_OE_fait += 10;}
+        }
     }
-    if (dix_de_der_winner == Joueur::Nord || dix_de_der_winner == Joueur::Sud){points_NS_fait += 10;}
-    else {points_OE_fait += 10;}
-
 }
 
 void Jeu::coupePaquet(int where_to_cut){ 
@@ -795,4 +794,13 @@ void Jeu::afficheAllPaquetsListe(){
 
 Paquet Jeu::getPaquet(Joueur j){
 	return allPaquets[joueurToInt(j)];
+}
+
+std::string Jeu::makeSendableString(int data, int base){
+    std::string res = std::to_string(data);
+    for (int i=res.size(); i<base; i++){
+        res = "0" + res;
+    }
+
+    return res;
 }

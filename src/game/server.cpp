@@ -191,25 +191,18 @@ void SendGameInfoPli(Jeu &game, sockvec NetJoueurs, bool ajoutcarte, bool pli_te
 }
 
 void SendGameInfoPoints(Jeu &game, sockvec NetJoueurs){
-	long long int InfoLint = 0;
-	sf::Packet InfoLintPacket;
-	InfoLintPacket.clear();
-	InfoLint = (long long int)game.tot_points_NS + (long long int)10000*(long long int)game.points_NS_fait + (long long int)100000000 * (long long int)game.points_NS_marque;
-	InfoLintPacket << InfoLint;
+	std::string InfoString = "";
+	sf::Packet InfoStringPacket;
+	InfoStringPacket.clear();
+	InfoString = game.makeSendableString(game.tot_points_NS, 4) + game.makeSendableString(game.points_NS_fait, 4) + game.makeSendableString(game.points_NS_marque, 4) + game.makeSendableString(game.tot_points_OE, 4) + game.makeSendableString(game.points_OE_fait, 4) + game.makeSendableString(game.points_OE_marque, 4);
+	InfoStringPacket << InfoString;
 
 	for (int i=0; i<NetJoueurs.size();i++){
 		sf::TcpSocket *client_socket = NetJoueurs[i];
-		if (client_socket->send(InfoLintPacket) == sf::Socket::Done){std::cout << "Premier envoi : " << InfoLint << std::endl;}
+		if (client_socket->send(InfoStringPacket) == sf::Socket::Done){std::cout << "Envoi points : " << InfoString << std::endl;}
 		else{std::cout << "Envoi échoué points" << std::endl; exit(0);}
 	}
-	InfoLintPacket.clear();
-	InfoLint = (long long int)game.tot_points_OE + (long long int)10000*(long long int)game.points_OE_fait + (long long int)100000000 * (long long int)game.points_OE_marque;
-	InfoLintPacket << InfoLint;
-	for (int i=0; i<NetJoueurs.size();i++){
-		sf::TcpSocket *client_socket = NetJoueurs[i];
-		if (client_socket->send(InfoLintPacket) == sf::Socket::Done){std::cout << "Deuxième envoi : " << InfoLint << std::endl;}
-		else{std::cout << "Envoi échoué points" << std::endl; exit(0);}
-	}
+
 
 }
 
@@ -273,7 +266,8 @@ int servermain(){
 
 	game.tot_points_NS = 0;
 	game.tot_points_OE = 0;
-	
+	// DEBUT DE LA GAME
+
 
 	CreeEnvoiePaquet(game, NetJoueurs);
 
@@ -299,6 +293,9 @@ int servermain(){
 
 	game.who_starts = intToJoueur(2+joueurToInt(game.who_cuts)%4);
 	game.atout_actuel = std::get<2>(game.current_enchere);
+	if (game.atout_actuel == Atout::Passe){
+		exit(0);
+	}
 	game.defausseOE = {};
 	game.defausseNS = {};
 	game.dix_de_der_winner = Joueur::Nord;
@@ -306,10 +303,24 @@ int servermain(){
 	game.points_OE_fait = 0;
 	game.points_NS_marque = 0;
 	game.points_OE_marque = 0;
-
-	if (game.atout_actuel == Atout::Passe){
-		exit(0);
+	game.belote = {false, Joueur::Nord};
+	if (game.atout_actuel != Atout::Sa || game.atout_actuel != Atout::Ta){
+		Couleur couleur_belote = atoutToCouleur(game.atout_actuel);
+		for (int m=0; m<4; m++){
+			if (std::get<0>(game.belote)){break;}
+			int possede_semi_belote = 0;
+			for (Carte c : game.allPaquets[m]){
+				if ((std::get<0>(c) == Valeur::Roi || std::get<0>(c) == Valeur::Dame) && std::get<1>(c) == couleur_belote){
+					if (possede_semi_belote++){
+						game.belote = {true, intToJoueur(m)};
+						break;
+					}
+				}
+			}
+		}
 	}
+
+
 	for (int i=0; i<8; i++){
 		game.who_plays = game.who_starts;
 		game.pli_actuel = {};
@@ -319,7 +330,10 @@ int servermain(){
 			if (j==3){
 				SendGameInfoPli(game, NetJoueurs, true, true, false);
 				SDL_Delay(2000);
+				Carte carte_gagnante = max_of_paquet(game.pli_actuel, game.couleur_demandee, game.atout_actuel);
+				std::cout << "Carte gagnante : " << carte_gagnante << std::endl;
 				for (int m=0; m<4; m++){
+					std::cout << intToJoueur(m%4) << " a joué : " << game.pli_actuel[(m-joueurToInt(game.who_starts))%4] << std::endl;
 					if (game.pli_actuel[(m-joueurToInt(game.who_starts))%4] == max_of_paquet(game.pli_actuel, game.couleur_demandee, game.atout_actuel)){
 						std::cout << "Le pli " << game.pli_actuel << " commencé par " << game.who_starts << " a été remporté par " << intToJoueur(m%4) << " avec la carte " << game.pli_actuel[(m-joueurToInt(game.who_starts))%4] << std::endl;
 						game.who_starts = intToJoueur(m%4);

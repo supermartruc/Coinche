@@ -1,4 +1,4 @@
-#include "client.hpp"
+#include"client.hpp"
 #include"timer.hpp"
 
 int ConnexionServer(sf::TcpSocket &client_socket, std::string ipaddress, int port, std::string &my_pseudo){
@@ -44,34 +44,25 @@ int GetGameInfoManche(GameInfo &gameInfo){
 }
 
 int GetGameInfoPoints(GameInfo &gameInfo){
-	long long int InfoLint=0;
-	sf::Packet InfoLintPacket;
-	InfoLintPacket.clear();
+	std::string InfoString;
+	sf::Packet InfoStringPacket;
+	InfoStringPacket.clear();
 
 	gameInfo.client_socket.setBlocking(false);
-	if (gameInfo.client_socket.receive(InfoLintPacket) == sf::Socket::Done){
+	if (gameInfo.client_socket.receive(InfoStringPacket) == sf::Socket::Done){
 		gameInfo.client_socket.setBlocking(true);
 	}
 	else{
 		return 1;
 	}
-	InfoLintPacket >> InfoLint;
+	InfoStringPacket >> InfoString;
 
-	gameInfo.tot_points_NS = (int)InfoLint%10000;
-	InfoLint = InfoLint / (long long)10000;
-	gameInfo.points_NS_fait = (int)InfoLint%10000;
-	InfoLint = InfoLint / (long long)10000;
-	gameInfo.points_NS_marque = (int)InfoLint%10000;
-
-	gameInfo.client_socket.receive(InfoLintPacket);
-	InfoLintPacket >> InfoLint;
-
-	InfoLint = InfoLint / (long long)10000;
-	gameInfo.tot_points_OE = (int)InfoLint%10000;
-	InfoLint = InfoLint / (long long)10000;
-	gameInfo.points_OE_fait = (int)InfoLint%10000;
-	InfoLint = InfoLint / (long long)10000;
-	gameInfo.points_OE_marque = (int)InfoLint%10000;
+	gameInfo.tot_points_NS = std::stoi(InfoString.substr(0,4));
+	gameInfo.points_NS_fait = std::stoi(InfoString.substr(4,4));
+	gameInfo.points_NS_marque = std::stoi(InfoString.substr(8,4));
+	gameInfo.tot_points_OE = std::stoi(InfoString.substr(12,4));
+	gameInfo.points_OE_fait = std::stoi(InfoString.substr(16,4));
+	gameInfo.points_OE_marque = std::stoi(InfoString.substr(20,4));
 
 	std::cout << "Points faits NS : " << gameInfo.points_NS_fait << std::endl;
 	std::cout << "Points totaux NS : " << gameInfo.tot_points_NS << std::endl;
