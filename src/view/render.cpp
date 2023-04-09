@@ -237,9 +237,9 @@ void GameView::renderMenu(int x, int y, int &annonce_temp, int annonce_min) {
 }
 
 void GameView::render_dots(int x, int y) {
-	SDL_Rect rect = {x+12, y+6, 130, 37};
+	SDL_Rect rect = {x+12, y+5, 9*wCarte/10, wCarte/4};
 	SDL_RenderCopy(renderer, dots, NULL, &rect);
-	rect = {x, y-5, wCarte+5, 60};
+	rect = {x, y-5, wCarte+5, 3*wCarte/8};
 	SDL_RenderCopy(renderer, encadrement, NULL, &rect);
 }
 
@@ -248,16 +248,16 @@ void GameView::render_une_annonce(int x, int y, int pointEnchere, Atout atoutEnc
 	if (atoutEnchere == Atout::Rien) {
 		return;
 	} else if (atoutEnchere == Atout::Passe) {
-		rect = {x, y-5, wCarte+5, 60};
+		rect = {x, y-5, wCarte+5, 3*wCarte/8};
 		SDL_RenderCopy(renderer, icones[{Atout::Passe, true}], NULL, &rect);
 	} else {
 		if (atoutEnchere != Atout::Rien) {
-			rect = {x, y-5, wCarte+5, 60};
+			rect = {x, y-5, wCarte+5, 2*wCarte/5};
 			SDL_RenderCopy(renderer, encadrement, NULL, &rect);
-			render_nombre(pointEnchere, x+10, y+5, 40);
+			render_nombre(pointEnchere, x+10, y+5, wCarte/4);
 		}
 		int ch2 = (pointEnchere < 100) ? 10 : 0;
-		rect = {x+wCarte-50-ch2, y+5, 40, 40};
+		rect = {x+wCarte-50-ch2, y+5, wCarte/4, wCarte/4};
 		SDL_RenderCopy(renderer, icones[{atoutEnchere,false}], NULL, &rect);
 	}
 }
@@ -266,17 +266,13 @@ void GameView::renderAnnonces(Joueur you, Joueur who_speaks, std::vector<Enchere
 	int x, y;
 	int player;
 	for (auto &t : all_encheres) {
-		if (you!=std::get<0>(t)) {
-			player = joueurToInt(std::get<0>(t))-joueurToInt(you)+4;
-			if (player%2 == 0) {
-				x = wWindow/2 + (player%4==0)*wCarte - (player%4)*wCarte - wCarte/2;
-				y = hCarte + elevation/2;
-			} else {
-				x = player%4 == 1 ? hCarte + elevation/2 : wWindow - (hCarte + elevation + wCarte);
-				y = hWindow/2;
-			}
+		player = joueurToInt(std::get<0>(t))-joueurToInt(you)+4;
+		if (player%2 == 0) {
+			x = wWindow/2 + 2*(player%4==0)*wCarte - 2*(player%4!=0)*wCarte - wCarte/2;
+			y = player%4==0 ? hWindow - (hCarte + elevation/2 + 50) : hCarte + elevation/2;
 		} else {
-			continue;
+			x = player%4 == 1 ? hCarte + elevation/2 : wWindow - (hCarte + elevation + wCarte);
+			y = hWindow/2;
 		}
 		if (std::get<0>(t) == who_speaks) { 
 			render_dots(x, y);
