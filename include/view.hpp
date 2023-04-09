@@ -36,6 +36,8 @@ class GameView {
 		SDL_Texture* 	points_faits;
 		SDL_Texture* 	points_marques;
 		SDL_Texture* 	total;
+		SDL_Texture* 	belote;
+		SDL_Texture* 	rebelote;
 		SDL_Event		event;
 		int 			wMenu;
 		int 			hMenu;
@@ -67,6 +69,7 @@ class GameView {
 		Atout	iconeToAtout();
 		Carte 	clicToCarte(Paquet mypaquet_trie);
 		void	render_nombre(int nombre, int x, int y, int taille);
+		void	renderBelote(Joueur you, Joueur bel, bool re);
 		std::pair <Atout, bool> pair_icone(Atout atout);
 		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
 		void	clear(bool renderPresent = false);

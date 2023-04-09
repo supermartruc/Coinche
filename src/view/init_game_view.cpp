@@ -205,4 +205,6 @@ void GameView::init() {
     loadTexture("ressources/Autres/points_faits.png", renderer, points_faits);
     loadTexture("ressources/Autres/points_marques.png", renderer, points_marques);
     loadTexture("ressources/Autres/total.png", renderer, total);
+    loadTexture("ressources/Autres/belote.png", renderer, belote);
+    loadTexture("ressources/Autres/rebelote.png", renderer, rebelote);
 }
