@@ -69,7 +69,7 @@ class GameView {
 		Atout	iconeToAtout();
 		Carte 	clicToCarte(Paquet mypaquet_trie);
 		void	render_nombre(int nombre, int x, int y, int taille);
-		void	renderBelote(Joueur you, Joueur bel, bool re);
+		void	renderBelote(Joueur you, Joueur bel, int beloteur);
 		std::pair <Atout, bool> pair_icone(Atout atout);
 		//void	renderTexte(std::string text, int x, int y, int taille, SDL_Color color);
 		void	clear(bool renderPresent = false);
@@ -81,7 +81,7 @@ class GameView {
 		void 	renderGlobalPoints(int new_nous, int new_eux, int nous_fait, int eux_fait, int nous_manche, int eux_manche);
 		void 	renderCartesPli(Joueur you, Joueur who_starts, Paquet pli_en_cours);
 		void 	renderEnchere(Joueur you, Joueur who_deals, Paquet mypaquet, int& annonce_temp, int annonce_min, Joueur who_speaks, std::vector<Enchere> all_encheres);
-		void 	renderManche(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Enchere current_enchere, Joueur who_starts, Paquet pli_en_cours);
+		void 	renderManche(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Enchere current_enchere, Joueur who_starts, Paquet pli_en_cours, int belote=0, Joueur beloteur=Joueur::Sud);
 };
 
 #endif

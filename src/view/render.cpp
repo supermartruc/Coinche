@@ -135,7 +135,10 @@ void 	GameView::render_nombre(int nombre, int x, int y, int taille) {
 	}
 }
 
-void 	GameView::renderBelote(Joueur you, Joueur bel, bool re) {
+void 	GameView::renderBelote(Joueur you, Joueur bel, int belote) {
+	if (belote==0) {
+		return;
+	}
 	int player = (joueurToInt(bel)-joueurToInt(you)+4)%4;
 	int x, y;
 	if (player%2 == 0) {
@@ -148,7 +151,7 @@ void 	GameView::renderBelote(Joueur you, Joueur bel, bool re) {
 	SDL_Rect rect = {x-10, y, wCarte+30, 2*wCarte/5};
 	SDL_RenderCopy(renderer, encadrement, NULL, &rect);
 	rect = {x, y, wCarte+10, 2*wCarte/5};
-	SDL_RenderCopy(renderer, re ? rebelote : belote, NULL, &rect);
+	SDL_RenderCopy(renderer, belote == 2 ? rebelote : belote, NULL, &rect);
 }
 
 bool GameView::isInsideRectangle(int xcarte, int ycarte, int wcarte){
@@ -363,7 +366,7 @@ void GameView::renderEnchere(Joueur you, Joueur who_deals, Paquet mypaquet, int&
 	SDL_RenderPresent(renderer);
 }
 
-void GameView::renderManche(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Enchere current_enchere, Joueur who_starts, Paquet pli_en_cours) {
+void GameView::renderManche(Joueur you, Joueur who_deals, Paquet mypaquet, std::vector<int> taille_paquets, Enchere current_enchere, Joueur who_starts, Paquet pli_en_cours, int belote, Joueur beloteur) {
 	int int_you = joueurToInt(you);
 	clear();
 	renderPaquet(mypaquet);
@@ -371,9 +374,6 @@ void GameView::renderManche(Joueur you, Joueur who_deals, Paquet mypaquet, std::
 	renderDealer(joueurToInt(who_deals)-int_you);
 	renderAnnonces(you, intToJoueur(1 + joueurToInt(std::get<0>(current_enchere))%4), {current_enchere});
 	renderCartesPli(you, who_starts, pli_en_cours);
-	renderBelote(you, you, true); // c'est faux le 2e joeur doit être celui qui annonce la belote, true si rebelote
-	/*if (belote) {
-		renderBelote(you, you, false); // c'est faux le 2e joeur doit être celui qui annonce la belote, true si rebelote
-	}*/
+	renderBelote(you, beloteur, belote);
 	SDL_RenderPresent(renderer);
 }
